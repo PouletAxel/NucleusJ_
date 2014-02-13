@@ -58,7 +58,20 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	
+	<developers>
+		<developer>
+			<id>PouletAxel</id>
+			<name>Axel Poulet</name>
+			<email>pouletaxel@gmail.com</email>			
+			<organization>GRED</organization>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>+1</timezone>
+		</developer>
+	</developers>
 
 
 	<repositories>
@@ -70,4 +83,10 @@
 	</repositories>
 
 
+	<scm>
+		<connection>scm:git:git://github.com/PouletAxel/Nucleus_Analysis</connection>
+		<developerConnection>scm:git:git@github.com:PouletAxel/Nucleus_Analysis</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/PouletAxel/Nucleus_Analysis</url>
+	</scm>
 </project>
