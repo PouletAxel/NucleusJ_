@@ -22,7 +22,7 @@ import javax.swing.JTextPane;
 
 /**
  * 
- * @author lom
+ * @author pouletaxel
  *
  */
 
