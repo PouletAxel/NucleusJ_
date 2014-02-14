@@ -1,4 +1,4 @@
-package gred.nucleus.treatment;
+package gred.nucleus.core;
 
 import ij.measure.*;
 import ij.*;
@@ -12,7 +12,7 @@ import ij.process.*;
  * @author Poulet Axel
 
  */
-public class PostTreatmentAfterWatershed
+public class ChromocentersSegmentation
 {
 	/** Image deconvolved*/
 	ImagePlus _imagePlusDeconv;
@@ -25,10 +25,12 @@ public class PostTreatmentAfterWatershed
 	 * @param imagePlusWatershed Image results of the watershed
 	 */
 
-	public PostTreatmentAfterWatershed (ImagePlus imagePlusDeconv, ImagePlus imagePlusWatershed)
+	public ChromocentersSegmentation (ImagePlus imagePlusDeconv, ImagePlus imagePlusWatershed)
 	{
 		_imagePlusDeconv = imagePlusDeconv;
 		_imagePlusWatershed = imagePlusWatershed ;
+		imagePlusWatershed.setTitle("plopi");
+		imagePlusWatershed.show();
 	}
 
 	/**
@@ -89,7 +91,7 @@ public class PostTreatmentAfterWatershed
 	 * @return table of the contrast value for each region
 	 */
 
-	@SuppressWarnings("unused")
+	
 	public double [] computeContrast ()
 	{
 		double rag[][] = getRag();
@@ -109,8 +111,8 @@ public class PostTreatmentAfterWatershed
 				}
 			}
 			if (tabContrast[i] <= 0)  tabContrast[i] = 0;
-			//else tabContrast[i] = tabContrast[i] / neigbVolumeTotal;
-			else tabContrast[i] = tabContrast[i] ;
+			else tabContrast[i] = tabContrast[i] / neigbVolumeTotal;
+			
 		}
 		return tabContrast;
    }

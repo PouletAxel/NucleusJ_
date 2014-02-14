@@ -1,5 +1,5 @@
 package gred.nucleus.plugins;
-import gred.nucleus.treatment.FillingHoles;
+import gred.nucleus.utils.FillingHoles;
 import ij.*;
 import ij.plugin.*;
 
@@ -34,8 +34,8 @@ public class FillingHoles2D_ implements PlugIn
 	    }
 	    if (IJ.versionLessThan("1.32c"))   return;
 	    ImagePlus temp = _imagePlus;
-	    FillingHoles fh = new FillingHoles(temp);
-	    _imagePlusRef = fh.apply2D();
+	    FillingHoles fh = new FillingHoles();
+	    _imagePlusRef = fh.apply2D(temp);
 	    _imagePlusRef.setTitle("2D"+_imagePlus.getTitle());
 	    _imagePlusRef.show();
 	}

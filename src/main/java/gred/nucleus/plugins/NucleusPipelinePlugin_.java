@@ -1,8 +1,10 @@
 package gred.nucleus.plugins;
 
 
-import gred.nucleus.graphicInterface.FenetreCalib;
-import gred.nucleus.nucleusAnalysis.*;
+import java.util.ArrayList;
+
+import gred.nucleus.core.*;
+import gred.nucleus.dialogs.NucleusPipelineDialog;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
@@ -14,15 +16,12 @@ import ij.plugin.PlugIn;
  * @author gred
  *
  */
-public class NucleusProcessAndAnalysis_ implements PlugIn
+//enlever les données membres inutiles
+public class NucleusPipelinePlugin_ implements PlugIn
 {
 	 /** image to process*/
 	ImagePlus _imagePlus;
-	/** Voxel calibration in µm*/
-	double _dimX, _dimY, _dimZ;
-	String _unit;
-	/** */
-	double _segMin, _segMax;
+
 
 	
 	/**
@@ -42,49 +41,47 @@ public class NucleusProcessAndAnalysis_ implements PlugIn
 			return;
 		}
 		if (IJ.versionLessThan("1.32c"))   return;
-		FenetreCalib fc = new FenetreCalib();
-		while( fc.isShowing())
+		NucleusPipelineDialog dialog = new NucleusPipelineDialog();
+		while( dialog.isShowing())
 		{
 	    	 try {Thread.sleep(1);}
 	    	 catch (InterruptedException e) {e.printStackTrace();}
 	    }
 	   
-		if (fc.isStart())
+		if (dialog.isStart())
 		{
-			_dimX =fc.getx();
-			_dimY = fc.gety();
-			_dimZ = fc.getz();
-			_unit = fc.getUnit();
-			_segMin = fc.getMinSeg();
-			_segMax = fc.getMaxSeg();
+			double dimX =dialog.getx();
+			double dimY = dialog.gety();
+			double dimZ = dialog.getz();
+			String unit = dialog.getUnit();
+			double vmin = dialog.getMinSeg();
+			double vmax = dialog.getMaxSeg();
 			Calibration cal = new Calibration();
-			cal.pixelDepth = _dimZ;
-			cal.pixelWidth = _dimX;
-			cal.pixelHeight = _dimY;
-			cal.setUnit(_unit);
+			cal.pixelDepth = dimZ;
+			cal.pixelWidth = dimX;
+			cal.pixelHeight = dimY;
+			cal.setUnit(unit);
 			_imagePlus.setCalibration(cal);
 			IJ.log("Begin image processing "+_imagePlus.getTitle());
-			NucleusProcess np = new NucleusProcess(_imagePlus,_segMin,_segMax);
-			np.run();
-			if (np.getIndiceMax() > 0)
+			NucleusPipeline nucleusPipeline = new NucleusPipeline();
+			nucleusPipeline.setVMinAndMax(vmin, vmax);
+			ArrayList<ImagePlus> arrayList = nucleusPipeline.run(_imagePlus);
+			if (nucleusPipeline.getIndiceMax() > 0)
 			{
-				ImagePlus binaire = np.getImagePlusBinary();
+				ImagePlus binaire = arrayList.get(0);
 				binaire.setTitle("Binary_"+_imagePlus.getTitle());
 				binaire.show();
-				ImagePlus gradient = np.getImagePlusGradient();
-				gradient.setTitle("Gradient_"+_imagePlus.getTitle());
-				gradient.show();
-				ImagePlus contrast = np.getImagePlusContrast();
+				ImagePlus contrast = arrayList.get(1);
 				contrast.setTitle("Contrast_"+_imagePlus.getTitle());
 				contrast.show();
 				NucleusAnalysis na = new NucleusAnalysis(binaire);
-				if (fc.isTheBoth())
+				if (dialog.isTheBoth())
 				{
-					na.NucleusParameter3D();
-					na.NucleusParameter2D();
+					na.nucleusParameter3D();
+					na.nucleusParameter2D();
 				}
-				else if(fc.is3D())  na.NucleusParameter3D();
-				else na.NucleusParameter2D();
+				else if(dialog.is3D())  na.nucleusParameter3D();
+				else na.nucleusParameter2D();
 			}
 		}
 	}

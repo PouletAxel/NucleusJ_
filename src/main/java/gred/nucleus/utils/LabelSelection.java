@@ -1,8 +1,7 @@
-package gred.nucleus.treatment;
+package gred.nucleus.utils;
 
 import java.util.HashMap;
 
-import gred.nucleus.utilitaires.Histogram;
 import ij.*;
 import ij.measure.Calibration;
 
@@ -13,7 +12,9 @@ import ij.measure.Calibration;
  *
  * @author Poulet Axel
  */
-public class ArtefactTreatement
+
+// a metttre dans nucleus Segmentation
+public class LabelSelection
 {
   /** Image label input */
   ImagePlus _imagePluslab ;
@@ -25,7 +26,7 @@ public class ArtefactTreatement
    * @param imagePluslab 
    */
 
-  public ArtefactTreatement (ImagePlus imagePluslab)
+  public LabelSelection (ImagePlus imagePluslab)
   {
     _imagePluslab = imagePluslab;
     _hist =new Histogram(_imagePluslab);
@@ -38,7 +39,7 @@ public class ArtefactTreatement
    * @param imagePluslab Image labeled
    */
 
-  public void deleteArtefactNoyau ()
+  public void deleteArtefactNucleus ()
   {
     int i,j,k;
     double voxel;
@@ -62,13 +63,13 @@ public class ArtefactTreatement
 
   public double getLabelOfLargestObject()
   {
+	  //parcourir autrement
     double indiceVmax = 0, vmax = 0, volume=0;
-    Calibration calibration=_imagePluslab.getCalibration();
     double tabHisto []= _hist.getLabel();
     HashMap<Double , Integer> hhistogram = _hist.getHisto();
     for (int i = 0; i < tabHisto.length;++i)
     {
-       	volume = hhistogram.get(tabHisto[i]) * calibration.pixelDepth * calibration.pixelHeight * calibration.pixelWidth;
+       	volume = hhistogram.get(tabHisto[i]);
         if (volume > vmax)
         {
         	vmax = volume;

@@ -1,4 +1,4 @@
-package gred.nucleus.chromocenterAnalysis;
+package gred.nucleus.core;
 
 
 
@@ -7,11 +7,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import gred.nucleus.parameters.*;
 import ij.IJ;
 import ij.ImagePlus;
 
-public class NucleusAnalysisAndCC
+public class NucleusChromocentersAnalysis
 {
 	 
 	  /** Segmented image of chrmocenters */
@@ -31,7 +30,7 @@ public class NucleusAnalysisAndCC
 	   * @param imagePlusInput Image of semented chromocneters
 	   */
 
-	   public NucleusAnalysisAndCC (ImagePlus ipRaw, ImagePlus ipCC,ImagePlus ipNucBin )
+	   public NucleusChromocentersAnalysis (ImagePlus ipRaw, ImagePlus ipCC,ImagePlus ipNucBin )
 	   {
 		   _imagePlusDeconv = ipRaw;
 		   _imagePlusSegmentationChromocenter = ipCC;
@@ -46,11 +45,11 @@ public class NucleusAnalysisAndCC
 	   
 	   public void computeParameters (String rhfChoice)
 	   {
-		   GeometricParameters3D gp3d = new GeometricParameters3D (_imagePlusBinaryNucleus,255);
+		   Measure3D gp3d = new Measure3D (_imagePlusBinaryNucleus,255);
 		   ShapeParameters3D sp3d = new ShapeParameters3D (_imagePlusBinaryNucleus,255); 
 		   double [] volume =  _poso.computeVolumeofAllObjects();
 		   RadialDistance rd = new RadialDistance (_imagePlusSegmentationChromocenter,_imagePlusBinaryNucleus);
-		   double dr [] = rd.determinationRadialDistanceNuclearEnveloppeEdgeObject();
+		   double dr [] = rd.computeBorderToBorderDistances();
 		   RhfCompute rhf = new RhfCompute(_imagePlusDeconv ,_imagePlusSegmentationChromocenter, _imagePlusBinaryNucleus);
 		   IJ.log("3D PARAMETERS");
 		   
@@ -87,11 +86,11 @@ public class NucleusAnalysisAndCC
 	   public void computeParameters (String pathFile ,String rhfChoice) throws IOException
 	   {
 		   SapheParameters2D sp2D = new SapheParameters2D (_imagePlusBinaryNucleus);
-		   GeometricParameters3D gp3d = new GeometricParameters3D (_imagePlusBinaryNucleus,255);
+		   Measure3D gp3d = new Measure3D (_imagePlusBinaryNucleus,255);
 		   ShapeParameters3D sp3d = new ShapeParameters3D (_imagePlusBinaryNucleus,255); 
 		   double [] volume =  _poso.computeVolumeofAllObjects();
 		   RadialDistance rd = new RadialDistance (_imagePlusSegmentationChromocenter,_imagePlusBinaryNucleus);
-		   double dr [] = rd.determinationRadialDistanceNuclearEnveloppeEdgeObject();
+		   double dr [] = rd.computeBorderToBorderDistances();
 		   RhfCompute rhf = new RhfCompute(_imagePlusDeconv ,_imagePlusSegmentationChromocenter, _imagePlusBinaryNucleus);
 		   File fileResu = new File (pathFile);
 		   boolean exist = fileResu.exists();

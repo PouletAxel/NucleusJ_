@@ -1,7 +1,7 @@
 package gred.nucleus.plugins;
 
-import gred.nucleus.parameters.SapheParameters2D;
-import gred.nucleus.utilitaires.Histogram;
+import gred.nucleus.core.SapheParameters2D;
+import gred.nucleus.utils.Histogram;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;

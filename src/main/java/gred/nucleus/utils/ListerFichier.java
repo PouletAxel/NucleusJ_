@@ -1,4 +1,4 @@
-package gred.nucleus.utilitaires;
+package gred.nucleus.utils;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;

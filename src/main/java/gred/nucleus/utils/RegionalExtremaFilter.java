@@ -1,10 +1,12 @@
-package gred.nucleus.treatment;
+package gred.nucleus.utils;
 
 import ij.*;
 import ij.process.*;
 import ij.plugin.filter.*;
+
 import java.util.ArrayList;
-import gred.nucleus.utilitaires.*;
+
+import gred.nucleus.utils.*;
 
 /**
  * Class to detect the region minima from a 3D image gradient

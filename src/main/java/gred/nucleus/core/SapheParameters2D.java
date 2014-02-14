@@ -1,4 +1,4 @@
-package gred.nucleus.parameters;
+package gred.nucleus.core;
 
 import ij.*;
 import ij.plugin.filter.*;

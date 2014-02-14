@@ -1,19 +1,16 @@
-package gred.nucleus.nucleusAnalysis;
-
+package gred.nucleus.core;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
-import gred.nucleus.analysis.MyCounter3D;
 import gred.nucleus.myGradient.MyGradient;
-import gred.nucleus.nucleusSegmentation.MySegmentation;
-import gred.nucleus.treatment.PostTreatmentAfterWatershed;
-import gred.nucleus.treatment.RegionalExtremaFilter;
+import gred.nucleus.utils.RegionalExtremaFilter;
+import inra.ijpb.binary.ConnectedComponents;
 import inra.ijpb.watershed.*;
 import ij.IJ;
 import ij.ImagePlus;
-import ij.process.StackConverter;
 
 
 
@@ -24,52 +21,20 @@ import ij.process.StackConverter;
  *
  */
 
-public class NucleusProcess
+public class NucleusPipeline
 {
-	/**Image deconvolved */
-	private ImagePlus _imagePlusDeconv;
-	/** Binary image*/
-	private ImagePlus _imagePlusBinary;
-	/** Image gradient*/
-	private ImagePlus _imagePlusGradient;
-	/** Image contrast*/
-	private ImagePlus _imagePlusContrast;
+
+	private double _volumeMin, _volumeMax;
 	/** */
-	private double _vmin, _vmax;
-	/** */
-	int _indiceMax;
+	int _bestThreshold;
 	/** */
 	String _logErrorSeg = "";
   
-	/**
-	 * 
-	 * @param imagePlus
-	 * @param volumeMin
-	 * @param volumeMax
-	 * @param logErrorSeg
-	 */
 	
-	public NucleusProcess (ImagePlus imagePlus, double volumeMin, double volumeMax, String logErrorSeg)
-	{
-		_imagePlusDeconv = imagePlus; 
-		_vmin = volumeMin;
-		_vmax = volumeMax;
-		_logErrorSeg = logErrorSeg;
-	}
-  
 	/**
-	 * 
-	 * @param imagePlus
-	 * @param volumeMin
-	 * @param volumeMax
+	 *   
 	 */
-  
-	public NucleusProcess (ImagePlus imagePlus, double volumeMin, double volumeMax)
-	{
-		_imagePlusDeconv = imagePlus; 
-		_vmin = volumeMin;
-		_vmax = volumeMax;
-	}
+	public NucleusPipeline ()	{	}
   
 	/**
 	 * Method which run the process in input image. This image will be segmented, and
@@ -79,26 +44,30 @@ public class NucleusProcess
 	 * that a manual thresholding is necessary to segment chromocentre.
 	 * @param arg
 	 */
-	public void run()
+
+	public ArrayList<ImagePlus> run(ImagePlus imagePlusInput)
 	{
-		IJ.log("Begin segmentation "+_imagePlusDeconv.getTitle());
-		_imagePlusBinary = computeNucleusSegmentation ();
-		if (_indiceMax > 0)
+		ArrayList<ImagePlus> outPutImageArrayList = new ArrayList<ImagePlus>();
+		IJ.log("Begin segmentation "+imagePlusInput.getTitle());
+		ImagePlus imagePlusBinary = computeNucleusSegmentation (imagePlusInput);
+		if (_bestThreshold > 0)
 		{
-			IJ.log("End segmentation "+_imagePlusDeconv.getTitle());
-			IJ.log("Begin gradient "+_imagePlusDeconv.getTitle());
-			_imagePlusGradient = computeImageGradient ();
-			IJ.log("End gradient "+_imagePlusDeconv.getTitle());
-			IJ.log("Begin watershed "+_imagePlusDeconv.getTitle());
-			_imagePlusContrast = computeImageContrast ();
-			IJ.log("End watershed "+_imagePlusDeconv.getTitle());
+			IJ.log("End segmentation "+imagePlusInput.getTitle());
+			IJ.log("Begin gradient "+imagePlusInput.getTitle());
+			ImagePlus imagePlusGradient = computeImageGradient (imagePlusInput, imagePlusBinary);
+			IJ.log("End gradient "+imagePlusInput.getTitle());
+			IJ.log("Begin watershed "+imagePlusInput.getTitle());
+			ImagePlus imagePlusContrast = computeImageContrast (imagePlusInput, imagePlusBinary, imagePlusGradient);
+			IJ.log("End watershed "+imagePlusInput.getTitle());
+			outPutImageArrayList.add(imagePlusBinary);
+			outPutImageArrayList.add(imagePlusContrast);
 		}
 		else
 		{
 			if (_logErrorSeg.length()==0)
 			{
 				IJ.showMessage("Error Segmentation", "Bad parameter for the segmentation, any object is detected between "
-    				  +_vmin+" and "+ _vmax+" "+ _imagePlusDeconv.getCalibration().getUnit()+"^3");
+    				  +_volumeMin+" and "+ _volumeMax+" "+ imagePlusInput.getCalibration().getUnit()+"^3");
 			}
 			else
 			{
@@ -109,81 +78,90 @@ public class NucleusProcess
 				{
 					fw = new FileWriter(fileResu, true);
 					output = new BufferedWriter(fw);
-					output.write(_imagePlusDeconv.getTitle()+"\n");
+					output.write(imagePlusInput.getTitle()+"\n");
 					output.flush();
 					output.close();
 				}
 				catch (IOException e) { e.printStackTrace(); } 
 			}
 		}
+		return outPutImageArrayList;
 	}
  
-	/**
-	 * 
-	 * @return
-	 */
-	public ImagePlus getImagePlusBinary () {return _imagePlusBinary;}
 
 	/**
 	 * 
+	 * @param imagePlusInput
 	 * @return
 	 */
-	public ImagePlus getImagePlusGradient () {return _imagePlusGradient;}
-	/**
-	 * 
-	 * @return
-	 */
-	public ImagePlus getImagePlusContrast () {return _imagePlusContrast;}
-
-	/**
-	 * Method which realize the segmentation
-	 *
-	 * @return Segmented image
-	 */
-	public ImagePlus computeNucleusSegmentation ()
+	public ImagePlus computeNucleusSegmentation (ImagePlus imagePlusInput)
 	{
-		MySegmentation mySeg = new MySegmentation(_imagePlusDeconv,_vmin, _vmax);
-		ImagePlus imagePlus = mySeg.computeSegmentation();  
-		_indiceMax = mySeg.getIndiceMax();
-		return imagePlus;
+		NucleusSegmentation nucleusSegmentation = new NucleusSegmentation();
+		nucleusSegmentation.setVolumeRange(_volumeMin, _volumeMax);
+		ImagePlus imagePlusOutput = nucleusSegmentation.apply(imagePlusInput);  
+		_bestThreshold = nucleusSegmentation.getBestThreshold();
+		return imagePlusOutput;
 	}
 	
-	public int getIndiceMax(){return _indiceMax;}
-	
 	/**
-	 * Method with compute the image gradient
-	 * @return  Image Gradient
+	 * 
+	 * @return
 	 */
+	public int getIndiceMax(){return _bestThreshold;}
+	
   
-	public ImagePlus computeImageGradient ()
+	/**
+	 * 
+	 * @param imagePlusInput
+	 * @param imagePlusBinary
+	 * @return
+	 */
+	public ImagePlus computeImageGradient (ImagePlus imagePlusInput, ImagePlus imagePlusBinary)
 	{
-		MyGradient myGradient = new MyGradient (_imagePlusDeconv,_imagePlusBinary);
+		MyGradient myGradient = new MyGradient (imagePlusInput,imagePlusBinary);
 		ImagePlus imagePlusGradient = myGradient.run();
 		return imagePlusGradient;
 	}
 
+	
+
 	/**
-	 * Method which compute the image contrast
-	 * @return Image contrast
+	 * 	
+	 * @param imagePlusInput
+	 * @param imagePlusBinary
+	 * @param imagePlusGradient
+	 * @return
 	 */
-	@SuppressWarnings("static-access")
-	public ImagePlus computeImageContrast ()
+	public ImagePlus computeImageContrast (ImagePlus imagePlusInput, ImagePlus imagePlusBinary, ImagePlus imagePlusGradient)
 	{
-		ImagePlus labelImagePlus = _imagePlusDeconv.duplicate();
+		
 		RegionalExtremaFilter regionalExtremaFilter = new RegionalExtremaFilter();
-	    regionalExtremaFilter.setMask(_imagePlusBinary);
-	    labelImagePlus = regionalExtremaFilter.applyWithMask( labelImagePlus );
-	    StackConverter stackConverter = new StackConverter( labelImagePlus );
-	    if (labelImagePlus.getType() == labelImagePlus.GRAY32)
-	    	stackConverter.convertToGray16();
-	    MyCounter3D myCounter3D = new MyCounter3D( labelImagePlus );
-	    labelImagePlus = myCounter3D.getObjMap();
-	    stackConverter = new StackConverter( labelImagePlus );
-	    stackConverter.convertToGray32();
-	    WatershedTransform3D  watershedTransform = new WatershedTransform3D(_imagePlusGradient,_imagePlusBinary,labelImagePlus);
-		_imagePlusGradient = watershedTransform.apply();
-		PostTreatmentAfterWatershed segmentationTools = new PostTreatmentAfterWatershed(_imagePlusDeconv,_imagePlusGradient);
+	    regionalExtremaFilter.setMask(imagePlusBinary);
+	    ImagePlus extrema = regionalExtremaFilter.applyWithMask( imagePlusGradient );
+	    ImagePlus ImagePlusLabels = ConnectedComponents.computeLabels(extrema, 26, 32);
+	    WatershedTransform3D  watershedTransform = new WatershedTransform3D(imagePlusGradient,ImagePlusLabels,imagePlusBinary);
+		imagePlusGradient = watershedTransform.apply();
+		ChromocentersSegmentation segmentationTools = new ChromocentersSegmentation(imagePlusInput,imagePlusGradient);
     	return segmentationTools.applyContrast();
 	}
 	
+	/**
+	 * 
+	 * @param logErrorSeg
+	 */
+	public void setLogErrorSegmentationFile (String logErrorSeg)
+	{
+		_logErrorSeg = logErrorSeg;
+	}
+	
+	/**
+	 * 
+	 * @param volumeMin
+	 * @param volumeMax
+	 */
+	public void setVMinAndMax(double volumeMin, double volumeMax)
+	{
+		_volumeMin = volumeMin;
+		_volumeMax = volumeMax;
+	}
 }

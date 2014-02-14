@@ -20,7 +20,7 @@ public class MyGradient
 	private static boolean compute = true;
 	private static boolean suppress = false;
 	private boolean mask;
-	private static String scale = "2.0";
+	private static String scale = "1.0";
 	private static String lower = "";
 	private static String higher = "";
 	ImagePlus _imagePlus;

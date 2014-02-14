@@ -1,7 +1,9 @@
-package gred.nucleus.utilitaires;
+package gred.nucleus.utils;
 
+import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -23,6 +25,7 @@ public class Histogram
     HashMap<Double , Integer> _hHisto = new HashMap <Double , Integer>() ;
     /** All the value present on the image */
     private double [] _label;
+    private double _maxValue;
     
     /**
      * Constructor
@@ -35,6 +38,7 @@ public class Histogram
         _width = _imageStack.getWidth();
         _height= _imageStack.getHeight();
         _depth = _imageStack.getSize();
+        getLabel();
     }
    
     
@@ -63,7 +67,6 @@ public class Histogram
                         else _hHisto.put(voxelValue, 1);
                     }
                 }
-        
         return _hHisto;
     }
     
@@ -77,6 +80,12 @@ public class Histogram
     	_label = new double[temp.length];
     	for (int i = 0; i < temp.length; ++i)   _label[i] = Double.parseDouble(temp[i].toString());
     	Arrays.sort(_label);
+    	_maxValue = _label[_label.length-1];
     	return _label;
     }//getLabelObject
+    
+    public double getMaxValue()
+    {
+    	return _maxValue;
+    }
 }

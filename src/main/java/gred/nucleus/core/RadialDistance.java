@@ -1,7 +1,7 @@
-package gred.nucleus.parameters;
+package gred.nucleus.core;
 
-import gred.nucleus.analysis.Distance_Map;
-import gred.nucleus.utilitaires.Histogram;
+import gred.nucleus.utils.Distance_Map;
+import gred.nucleus.utils.Histogram;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.Calibration;
@@ -80,7 +80,7 @@ public class RadialDistance
 	 * nuclear envelope
 	 * @return Table of radial distance for each chromocenter
 	 */
-	public double[] determinationRadialDistanceNuclearEnveloppeEdgeObject ()
+	public double[] computeBorderToBorderDistances ()
 	{
 		Resizer resizer = new Resizer();
 		ImagePlus imagePlusTmp = _imagePlusSegmentedChromocenter.duplicate();
@@ -94,7 +94,7 @@ public class RadialDistance
 		double distanceRadial [] = new double [tabLabel.length];
 		for (l = 0; l < tabLabel.length; ++l)
 		{
-			voxelValueMin = _width;
+			voxelValueMin = Double.MAX_VALUE;
 			for (k = 0; k < imagePlusTmp.getNSlices(); ++k)
 				for (i = 0; i < _width; ++i)
 					for (j = 0; j < _height; ++j)

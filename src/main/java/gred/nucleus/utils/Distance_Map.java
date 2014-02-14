@@ -1,4 +1,4 @@
-package gred.nucleus.analysis;
+package gred.nucleus.utils;
 
 import ij.*;
 import ij.plugin.filter.PlugInFilter;

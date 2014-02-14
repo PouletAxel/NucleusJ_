@@ -1,12 +1,10 @@
-package gred.nucleus.chromocenterAnalysis;
+package gred.nucleus.core;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import gred.nucleus.parameters.ParametersOfSeveralObject;
-import gred.nucleus.parameters.RadialDistance;
 import ij.IJ;
 import ij.ImagePlus;
 
@@ -46,7 +44,7 @@ public class ChromocenterAnalysis
 		  double [] volume =  _poso.computeVolumeofAllObjects();
 		  RadialDistance rd = new RadialDistance (_imagePlusSegmentationChromocenter,_imagePlusBinaryNucleus);
 		  IJ.log("CHROMOCENTER PARAMETERS");
-		  double dr [] = rd.determinationRadialDistanceNuclearEnveloppeEdgeObject();
+		  double dr [] = rd.computeBorderToBorderDistances();
 		  for (int i = 0; i < dr.length;++i )
 		  {
 			
@@ -64,7 +62,7 @@ public class ChromocenterAnalysis
 	   {
 		  double [] volume =  _poso.computeVolumeofAllObjects();
 		  RadialDistance rd = new RadialDistance (_imagePlusSegmentationChromocenter,_imagePlusBinaryNucleus);
-		  double dr [] = rd.determinationRadialDistanceNuclearEnveloppeEdgeObject();
+		  double dr [] = rd.computeBorderToBorderDistances();
 		  File fileResu = new File (pathFile);
 
 		  FileWriter fw = new FileWriter(fileResu, true);

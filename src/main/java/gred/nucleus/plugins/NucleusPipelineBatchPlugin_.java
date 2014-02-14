@@ -1,9 +1,9 @@
 package gred.nucleus.plugins;
 import java.io.File;
 
-import gred.nucleus.graphicInterface.JFParameterFotSeveralObject;
+import gred.nucleus.dialogs.NucleusPipelineBatchDialog;
 import gred.nucleus.multiThread.*;
-import gred.nucleus.utilitaires.ListerFichier;
+import gred.nucleus.utils.ListerFichier;
 import ij.plugin.PlugIn;
 
 
@@ -13,9 +13,9 @@ import ij.plugin.PlugIn;
  * @author gred
  *
  */
-public class SeveralNucleusAnalysis_ implements PlugIn
+public class NucleusPipelineBatchPlugin_ implements PlugIn
 {
-	JFParameterFotSeveralObject _jfpfso = new JFParameterFotSeveralObject();
+	NucleusPipelineBatchDialog _jfpfso = new NucleusPipelineBatchDialog();
 	
 	/**
 	 * 

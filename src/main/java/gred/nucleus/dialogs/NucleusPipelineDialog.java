@@ -1,4 +1,4 @@
-package gred.nucleus.graphicInterface;
+package gred.nucleus.dialogs;
 
 import java.awt.Container;
 import java.awt.GridBagConstraints;
@@ -21,7 +21,7 @@ import javax.swing.JTextField;
  *
  */
 
-public class FenetreCalib extends JFrame
+public class NucleusPipelineDialog extends JFrame
 {
 
 	private static final long serialVersionUID = 1L;
@@ -47,7 +47,7 @@ public class FenetreCalib extends JFrame
 	 */
 	public static void main(String[] args)  
 	{
-		FenetreCalib fenetre = new FenetreCalib();
+		NucleusPipelineDialog fenetre = new NucleusPipelineDialog();
 		fenetre.setLocationRelativeTo(null);
 	}
 	
@@ -57,7 +57,7 @@ public class FenetreCalib extends JFrame
 	 *
 	 */
 	
-	public FenetreCalib ()
+	public NucleusPipelineDialog ()
 	{
 		this.setTitle("Plopi");
 		this.setSize(500, 350);
@@ -193,8 +193,8 @@ public class FenetreCalib extends JFrame
 	class StartListener implements ActionListener 
 	{
 		
-		FenetreCalib _jfc;	
-		public  StartListener (FenetreCalib jfc) {_jfc = jfc;}
+		NucleusPipelineDialog _jfc;	
+		public  StartListener (NucleusPipelineDialog jfc) {_jfc = jfc;}
 		/**
 		 * 
 		 */
@@ -212,8 +212,8 @@ public class FenetreCalib extends JFrame
 	 */
 	class QuitListener implements ActionListener 
 	{
-		FenetreCalib _jfc;	
-		public  QuitListener (FenetreCalib jfc) {_jfc = jfc;}
+		NucleusPipelineDialog _jfc;	
+		public  QuitListener (NucleusPipelineDialog jfc) {_jfc = jfc;}
 		public void actionPerformed(ActionEvent actionEvent) { _jfc.dispose(); }
 	}
 }

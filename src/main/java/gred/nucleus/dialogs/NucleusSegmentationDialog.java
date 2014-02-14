@@ -1,4 +1,4 @@
-package gred.nucleus.graphicInterface;
+package gred.nucleus.dialogs;
 
 import java.awt.Container;
 import java.awt.GridBagConstraints;
@@ -17,7 +17,7 @@ import javax.swing.JLabel;
  *
  */
 
-public class JFSegmentation  extends JFrame
+public class NucleusSegmentationDialog  extends JFrame
 {
 	
 	private static final long serialVersionUID = 1L;
@@ -35,14 +35,14 @@ public class JFSegmentation  extends JFrame
 	
 	public static void main(String[] args)  
 	{
-		JFSegmentation fenetre = new JFSegmentation("pixel");
+		NucleusSegmentationDialog fenetre = new NucleusSegmentationDialog("pixel");
 	   	fenetre.setLocationRelativeTo(null);
 	}
 		
 	    
 	  
 	    
-	public JFSegmentation (String unit)
+	public NucleusSegmentationDialog (String unit)
 	{
 		this.setTitle("Segmentation 3D");
 		this.setSize(500, 250);
@@ -128,8 +128,8 @@ public class JFSegmentation  extends JFrame
 		 
 	class StartListener implements ActionListener 
 	{
-		JFSegmentation _jfSeg;	
-		public  StartListener (JFSegmentation jfSeg) {_jfSeg = jfSeg;}
+		NucleusSegmentationDialog _jfSeg;	
+		public  StartListener (NucleusSegmentationDialog jfSeg) {_jfSeg = jfSeg;}
 		/**
 		 * 
 		 */
@@ -149,8 +149,8 @@ public class JFSegmentation  extends JFrame
 	
 	class QuitListener implements ActionListener 
 	{
-		JFSegmentation _jfSeg;	
-		public  QuitListener (JFSegmentation jfSeg) {_jfSeg = jfSeg;}
+		NucleusSegmentationDialog _jfSeg;	
+		public  QuitListener (NucleusSegmentationDialog jfSeg) {_jfSeg = jfSeg;}
 		public void actionPerformed(ActionEvent actionEvent) { _jfSeg.dispose(); }
 	}
 }

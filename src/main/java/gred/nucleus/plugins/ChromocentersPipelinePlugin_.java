@@ -5,14 +5,15 @@ import ij.WindowManager;
 import ij.gui.GenericDialog;
 import ij.measure.Calibration;
 import ij.plugin.PlugIn;
-import gred.nucleus.chromocenterAnalysis.*;
+import gred.nucleus.core.ChromocenterAnalysis;
+import gred.nucleus.core.NucleusChromocentersAnalysis;
 
 /**
  * 
  * @author gred
  *
  */
-public class ChromocenterAnalysis_   implements PlugIn
+public class ChromocentersPipelinePlugin_   implements PlugIn
 {
 	
 	public void run(String arg)
@@ -69,7 +70,7 @@ public class ChromocenterAnalysis_   implements PlugIn
         {
         	 ChromocenterAnalysis ca = new ChromocenterAnalysis(ipCcSeg,ipNucSeg);
              ca.computeParametersChromocenter();
-             NucleusAnalysisAndCC naacc = new NucleusAnalysisAndCC(ipRawImage,ipCcSeg,ipNucSeg); 
+             NucleusChromocentersAnalysis naacc = new NucleusChromocentersAnalysis(ipRawImage,ipCcSeg,ipNucSeg); 
              naacc.computeParameters(choiceRhf);
         }
         else if (choiceOutput.equals("Chromocenter parameters"))
@@ -79,7 +80,7 @@ public class ChromocenterAnalysis_   implements PlugIn
         }
         else
         {
-        	NucleusAnalysisAndCC naacc = new NucleusAnalysisAndCC(ipRawImage,ipCcSeg,ipNucSeg); 
+        	NucleusChromocentersAnalysis naacc = new NucleusChromocentersAnalysis(ipRawImage,ipCcSeg,ipNucSeg); 
             naacc.computeParameters(choiceRhf);
         }
 	}

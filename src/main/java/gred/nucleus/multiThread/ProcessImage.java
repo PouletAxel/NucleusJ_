@@ -1,6 +1,6 @@
 package gred.nucleus.multiThread;
 
-import gred.nucleus.plugins.SeveralNucleusAnalysis_;
+import gred.nucleus.plugins.NucleusPipelineBatchPlugin_;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
@@ -19,14 +19,14 @@ public class ProcessImage
 	private File [] _rawImage;
 	private Calibration _cal = new Calibration();
 	private String _workDir;
-	private double _segMin, _segMax;
+	private double _vmin, _vmax;
 	private boolean _2D3DAnalysis, _3DAnalysis;
 	
-	public ProcessImage(SeveralNucleusAnalysis_ sna, File[] inputFile)
+	public ProcessImage(NucleusPipelineBatchPlugin_ sna, File[] inputFile)
 	{
 		_rawImage = inputFile;
-		_segMin = sna.getSegMinValue();
-		_segMax = sna.getSegMaxValue();
+		_vmin = sna.getSegMinValue();
+		_vmax = sna.getSegMaxValue();
 		_workDir = sna.getWorkDir();
 		_cal.pixelDepth = sna.getPixelDepth();
 		_cal.pixelWidth = sna.getPixelWidth();
@@ -55,7 +55,7 @@ public class ProcessImage
 			IJ.log("image"+(i+1)+" / "+_rawImage.length);
 			ImagePlus imagePlus = IJ.openImage(_rawImage[i].toString());
 			imagePlus.setCalibration(_cal);
-			imageThread.add(new RunnableProcessImage(imagePlus,_segMin,_segMax,_workDir,_2D3DAnalysis,_3DAnalysis));
+			imageThread.add(new RunnableProcessImage(imagePlus,_vmin,_vmax,_workDir,_2D3DAnalysis,_3DAnalysis));
 			imageThread.get(j).start();
 			while (_continuer == false)
 				Thread.sleep(10);

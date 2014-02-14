@@ -1,6 +1,6 @@
 package gred.nucleus.plugins;
-import gred.nucleus.graphicInterface.JFSegmentation;
-import gred.nucleus.nucleusSegmentation.*;
+import gred.nucleus.core.*;
+import gred.nucleus.dialogs.NucleusSegmentationDialog;
 import ij.*;
 import ij.measure.Calibration;
 import ij.plugin.*;
@@ -10,12 +10,10 @@ import ij.plugin.*;
  * @author gred
  *
  */
-public class ObjectSegmentation3D_ implements PlugIn
+public class NucleusSegmentationPlugin_ implements PlugIn
 {
 	/** image to process*/
 	ImagePlus _imagePlus;
-	/** output image*/
-	ImagePlus _imagePlusOut;
 	
 	/**
 	 * This method permit to execute the ReginalExtremFilter on the selected image
@@ -36,24 +34,25 @@ public class ObjectSegmentation3D_ implements PlugIn
 	    }
 	    if (IJ.versionLessThan("1.32c"))   return;
 	    Calibration cal = _imagePlus.getCalibration();
-	    JFSegmentation jfSeg = new JFSegmentation(cal.getUnit());
-	    while( jfSeg.isShowing())
+	    NucleusSegmentationDialog nucleusSegDialog = new NucleusSegmentationDialog(cal.getUnit());
+	    while( nucleusSegDialog.isShowing())
 		{
 			try {Thread.sleep(1);}
 			catch (InterruptedException e) {e.printStackTrace();}
 	    }	
-		if (jfSeg.isStart())
+		if (nucleusSegDialog.isStart())
 		{
-			_imagePlusOut= _imagePlus;
-			MySegmentation seg = new MySegmentation(_imagePlusOut,jfSeg.getMinSeg(),jfSeg.getMaxSeg());
-			_imagePlusOut = seg.computeSegmentation();
-			if(seg.getIndiceMax()==0)
-				IJ.showMessageWithCancel("Segmentation error", "Any object is detected between "+jfSeg.getMinSeg()
-					+"and"+jfSeg.getMaxSeg()+" "+cal.getUnit());
+			ImagePlus imagePlusOut= _imagePlus;
+			NucleusSegmentation nucleusSegmentation = new NucleusSegmentation();
+			nucleusSegmentation.setVolumeRange(nucleusSegDialog.getMinSeg(), nucleusSegDialog.getMaxSeg());
+			imagePlusOut = nucleusSegmentation.apply(imagePlusOut);
+			if(nucleusSegmentation.getBestThreshold()==0)
+				IJ.showMessageWithCancel("Segmentation error", "No object is detected between "+nucleusSegDialog.getMinSeg()
+					+"and"+nucleusSegDialog.getMaxSeg()+" "+cal.getUnit());
 			else
 			{
-				_imagePlusOut.setTitle("Seg"+_imagePlus.getTitle());
-				_imagePlusOut.show();
+				imagePlusOut.setTitle("Seg"+_imagePlus.getTitle());
+				imagePlusOut.show();
 			}
 		}
 	}

@@ -1,11 +1,13 @@
 package gred.nucleus.multiThread;
 
-import gred.nucleus.nucleusAnalysis.*;
+import gred.nucleus.core.NucleusAnalysis;
+import gred.nucleus.core.NucleusPipeline;
 import ij.ImagePlus;
 import ij.io.FileSaver;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 
@@ -14,15 +16,15 @@ public class RunnableProcessImage extends Thread implements Runnable
 
 	String _workDir;
 	ImagePlus _imagePlus;
-	double _segMin, _segMax;
+	double _vmin, _vmax;
 	boolean _isanalysis3D, _isanalysis2D3D;
 
-	public RunnableProcessImage (ImagePlus imagePlusInput, double segMin, double segMax, String workDir,boolean analysis3D2D
+	public RunnableProcessImage (ImagePlus imagePlusInput, double vmin, double vmax, String workDir,boolean analysis3D2D
 			,boolean analysis3D)
 	{
 		_imagePlus = imagePlusInput;
-		_segMin = segMin;
-		_segMax = segMax;
+		_vmin = vmin;
+		_vmax = vmax;
 		_workDir = workDir;
 		_isanalysis3D = analysis3D;
 		_isanalysis2D3D = analysis3D2D;
@@ -32,14 +34,16 @@ public class RunnableProcessImage extends Thread implements Runnable
 	{
 		ProcessImage._nbLance++;
 		ProcessImage._continuer = true;
-		NucleusProcess np = new NucleusProcess(_imagePlus,_segMin,_segMax,_workDir+File.separator+"logErrorSeg.txt");
-		np.run();
-		if (np.getIndiceMax() > 0)
+		NucleusPipeline nucleusPipeline = new NucleusPipeline();
+		nucleusPipeline.setLogErrorSegmentationFile(_workDir+File.separator+"logErrorSeg.txt");
+		nucleusPipeline.setVMinAndMax(_vmin, _vmax);
+		ArrayList<ImagePlus> arrayList = nucleusPipeline.run(_imagePlus);
+		if (nucleusPipeline.getIndiceMax() > 0)
 		{
-			ImagePlus binaire = np.getImagePlusBinary();
+			ImagePlus binaire = arrayList.get(0);
 			binaire.setTitle(_imagePlus.getTitle());
 			saveFile (binaire,_workDir+File.separator+"SegmentedDataNucleus");
-			ImagePlus contrast = np.getImagePlusContrast();
+			ImagePlus contrast = arrayList.get(1);
 			contrast.setTitle(_imagePlus.getTitle());
 			saveFile (contrast,_workDir+File.separator+"Contrast");
 			NucleusAnalysis na = new NucleusAnalysis(binaire);
@@ -47,11 +51,11 @@ public class RunnableProcessImage extends Thread implements Runnable
 			{
 				if (_isanalysis2D3D)
 				{
-					na.NucleusParameter3D(_workDir+File.separator+"3DNucleiParameters.tab");
-					na.NucleusParameter2D(_workDir+File.separator+"2DNucleiParameters.tab");
+					na.nucleusParameter3D(_workDir+File.separator+"3DNucleiParameters.tab");
+					na.nucleusParameter2D(_workDir+File.separator+"2DNucleiParameters.tab");
 				}
-				else if(_isanalysis3D)  na.NucleusParameter3D(_workDir+File.separator+"3DNucleiParameters.tab");
-				else na.NucleusParameter2D(_workDir+File.separator+"2DNucleiParameters.tab");
+				else if(_isanalysis3D)  na.nucleusParameter3D(_workDir+File.separator+"3DNucleiParameters.tab");
+				else na.nucleusParameter2D(_workDir+File.separator+"2DNucleiParameters.tab");
 			}
 			catch (IOException e) {	e.printStackTrace();	}
 		}

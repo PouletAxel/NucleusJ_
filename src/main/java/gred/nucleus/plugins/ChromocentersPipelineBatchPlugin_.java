@@ -3,22 +3,24 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
 import ij.plugin.PlugIn;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import gred.nucleus.chromocenterAnalysis.ChromocenterAnalysis;
-import gred.nucleus.chromocenterAnalysis.NucleusAnalysisAndCC;
-import gred.nucleus.graphicInterface.JFParameterSeveralImageCc;
-import gred.nucleus.utilitaires.ListerFichier;
+
+import gred.nucleus.core.ChromocenterAnalysis;
+import gred.nucleus.core.NucleusChromocentersAnalysis;
+import gred.nucleus.dialogs.ChromocentersPipelineBatchDialog;
+import gred.nucleus.utils.ListerFichier;
 
 /**
  * 
  * @author gred
  *
  */
-public class ChromocenterAnalysisForSeveralImage_ implements PlugIn
+public class ChromocentersPipelineBatchPlugin_ implements PlugIn
 {
 	/** Voxel calibration in µm*/
 	double _dimX, _dimY, _dimZ;
@@ -36,7 +38,7 @@ public class ChromocenterAnalysisForSeveralImage_ implements PlugIn
 	 */
 	public void run(String arg)
 	{
-		JFParameterSeveralImageCc jfpfso = new JFParameterSeveralImageCc();
+		ChromocentersPipelineBatchDialog jfpfso = new ChromocentersPipelineBatchDialog();
 	
 		while( jfpfso.isShowing())
 		{
@@ -93,7 +95,7 @@ public class ChromocenterAnalysisForSeveralImage_ implements PlugIn
 								ChromocenterAnalysis ca = new ChromocenterAnalysis(ipCc,ipNucBin);
 								IJ.log("ca compute");
 								ca.computeParametersChromocenter(nameFileCc);
-								NucleusAnalysisAndCC naacc = new NucleusAnalysisAndCC(ipRawNuc,ipCc,ipNucBin); 
+								NucleusChromocentersAnalysis naacc = new NucleusChromocentersAnalysis(ipRawNuc,ipCc,ipNucBin); 
 								IJ.log("naac compute");
 								naacc.computeParameters(nameFileCcNuc,choiceRhf);
 							}
@@ -104,7 +106,7 @@ public class ChromocenterAnalysisForSeveralImage_ implements PlugIn
 							}
 							else
 							{
-								NucleusAnalysisAndCC naacc = new NucleusAnalysisAndCC(ipRawNuc,ipCc,ipNucBin); 
+								NucleusChromocentersAnalysis naacc = new NucleusChromocentersAnalysis(ipRawNuc,ipCc,ipNucBin); 
 								naacc.computeParameters(nameFileCcNuc,choiceRhf);
 							}
 						}

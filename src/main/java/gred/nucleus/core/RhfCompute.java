@@ -1,4 +1,4 @@
-package gred.nucleus.parameters;
+package gred.nucleus.core;
 
 import ij.ImagePlus;
 import ij.ImageStack;
@@ -72,7 +72,7 @@ public class RhfCompute
 	    
 	    double tabVolume[] = poso.computeVolumeofAllObjects();
 	    for (i = 0; i < tabVolume.length; ++i) volumeCc += tabVolume[i];
-	    GeometricParameters3D gp3D = new GeometricParameters3D(_imagePlusBinaryNucleus, 255);
+	    Measure3D gp3D = new Measure3D(_imagePlusBinaryNucleus, 255);
 	    double volumeNucleus = gp3D.computeVolumeObject();
 
 	    return volumeCc / volumeNucleus;

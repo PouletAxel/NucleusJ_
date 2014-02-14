@@ -1,4 +1,4 @@
-package gred.nucleus.graphicInterface;
+package gred.nucleus.dialogs;
 
 import java.awt.Container;
 import java.awt.Cursor;
@@ -26,7 +26,7 @@ import javax.swing.JTextPane;
  *
  */
 
-public class JFParameterSeveralImageCc extends JFrame
+public class ChromocentersPipelineBatchDialog extends JFrame
 {
 	/**
 	 * 
@@ -56,7 +56,7 @@ public class JFParameterSeveralImageCc extends JFrame
 	
 	public static void main(String[] args)  
     {
-		JFParameterSeveralImageCc fenetre = new JFParameterSeveralImageCc();
+		ChromocentersPipelineBatchDialog fenetre = new ChromocentersPipelineBatchDialog();
     	fenetre.setLocationRelativeTo(null);
     }
 	
@@ -66,7 +66,7 @@ public class JFParameterSeveralImageCc extends JFrame
      *
      */
     
-	public JFParameterSeveralImageCc ()
+	public ChromocentersPipelineBatchDialog ()
 	{
 		this.setTitle("Plop");
 		this.setSize(500, 600);
@@ -234,8 +234,8 @@ public class JFParameterSeveralImageCc extends JFrame
 	class StartListener implements ActionListener 
 	{
 	
-		JFParameterSeveralImageCc _jfpfso;	
-		public  StartListener (JFParameterSeveralImageCc jfpfso) {_jfpfso = jfpfso;}
+		ChromocentersPipelineBatchDialog _jfpfso;	
+		public  StartListener (ChromocentersPipelineBatchDialog jfpfso) {_jfpfso = jfpfso;}
 		/**
 		  * 
 		  */
@@ -260,8 +260,8 @@ public class JFParameterSeveralImageCc extends JFrame
 	
 	class QuitListener implements ActionListener 
 	{
-		JFParameterSeveralImageCc _jfpfso;	
-		public  QuitListener (JFParameterSeveralImageCc jfpfso) {_jfpfso = jfpfso;}
+		ChromocentersPipelineBatchDialog _jfpfso;	
+		public  QuitListener (ChromocentersPipelineBatchDialog jfpfso) {_jfpfso = jfpfso;}
 		public void actionPerformed(ActionEvent actionEvent) { _jfpfso.dispose(); }
 	}
 	

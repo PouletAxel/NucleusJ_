@@ -1,9 +1,9 @@
-package gred.nucleus.parameters;
+package gred.nucleus.core;
 import ij.ImagePlus;
 
 import java.util.HashMap;
 
-import gred.nucleus.utilitaires.*;
+import gred.nucleus.utils.*;
 
 
 
@@ -45,7 +45,7 @@ public class ParametersOfSeveralObject
 		objectVolume[0] = 0;
 		for (int i = 0; i < tabLabel.length; ++i)
 		{
-			GeometricParameters3D gp3D = new  GeometricParameters3D (_inputImage, tabLabel[i]);
+			Measure3D gp3D = new  Measure3D (_inputImage, tabLabel[i]);
 			objectVolume[i] = gp3D.computeVolumeObject();
 		}
 		return objectVolume;

@@ -1,16 +1,17 @@
-package gred.nucleus.nucleusSegmentation;
+package gred.nucleus.core;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import gred.nucleus.parameters.ShapeParameters3D;
-import gred.nucleus.treatment.*;
-import gred.nucleus.analysis.MyCounter3D;
-import gred.nucleus.utilitaires.Histogram;
+import gred.nucleus.utils.FillingHoles;
+import gred.nucleus.utils.Histogram;
+import gred.nucleus.utils.LabelSelection;
 import ij.*;
+import ij.plugin.Filters3D;
 import ij.process.*;
 import ij.measure.*;
 import ij.process.AutoThresholder.Method;
-import Filter3D.*;
+import inra.ijpb.binary.ConnectedComponents;
 
 /**
  * Class to realise the segmention of object in the image in input. This segmentation
@@ -20,43 +21,22 @@ import Filter3D.*;
  * @author Poulet Axel
  *
  */
-public class MySegmentation
+public class NucleusSegmentation
 {
-	/** Image to be process*/
-	ImagePlus _imagePlusInput;
-	/** Voxel calibration in µm*/
-	private double _dimX, _dimY, _dimZ;
-	/** height, width, depth of image in pixel*/
-	private int _height, _width,_depth;
-	/** Image stack of _imagePlusInput*/
-	ImageStack _imageStackInput = new ImageStack();
-	/** Better Threshold value */
+	
 	private int _bestThreshold = 0;
 	/** Segmentation parameters*/
-	private double _vmin, _vmax;
-	Calibration _cal;
-	private double _imageVolume;
+	private double _volumeMin, _volumeMax;
+
   
 	/**
 	 * Constructor
 	 * @param imagePlusInput Image to be segmente
 	 */
 
-	public MySegmentation (ImagePlus imagePlusInput, double volumeMin, double volumeMax)
+	public NucleusSegmentation ()
 	{
-		_imagePlusInput = imagePlusInput;
-		_vmin = volumeMin;
-		_vmax = volumeMax;
-		_cal = _imagePlusInput.getCalibration();
-		_imageStackInput = _imagePlusInput.getImageStack();
-		_width = _imagePlusInput.getWidth();
-		_height = _imagePlusInput.getHeight();
-		_depth = _imagePlusInput.getStackSize();
-		_dimX = _cal.pixelWidth;
-		_dimY = _cal.pixelHeight;
-		_dimZ = _cal.pixelDepth;
-		_imageVolume = _width*_dimX*_dimY*_dimZ*_height*_width;
-		IJ.log(_dimX+" "+_dimY+" "+_dimZ+"  volume image :"+_imageVolume);
+
 	}
   
 	/**
@@ -73,71 +53,66 @@ public class MySegmentation
 	 * @return : return thresholded image.
 	 */
   
-	public ImagePlus computeSegmentation ()
+	public ImagePlus apply (ImagePlus imagePlusInput)
 	{
+		Calibration calibration = imagePlusInput.getCalibration();
+		final double dimX = calibration.pixelWidth;
+		final double dimY = calibration.pixelHeight;
+		final double dimZ = calibration.pixelDepth;
+		final double imageVolume = dimX*imagePlusInput.getWidth()*dimY*imagePlusInput.getHeight()*dimZ*imagePlusInput.getStackSize();
+		IJ.log(dimX+" "+dimY+" "+dimZ+"  volume image :"+imageVolume);
 		ImagePlus imagePlusOutput = new ImagePlus();
-		double sphericityMax = 0, sphericity = 0, volume;
-		int bornInfThreshold= computeBornInfThreshold();
-		int bornSupThreshold = computeBornSupThreshold();
-		IJ.log("borne inf: "+bornInfThreshold+" bornSupThreshold "+bornSupThreshold);
-		for (int i = bornInfThreshold ; i <= bornSupThreshold/2; ++i)
+		double sphericityMax = -1.0, sphericity, volume;
+		IJ.log("borne inf: "+computeMinMaxThreshold(imagePlusInput).get(0)+" bornSupThreshold "+computeMinMaxThreshold(imagePlusInput).get(1));
+		for (int t = computeMinMaxThreshold(imagePlusInput).get(0) ; t <= computeMinMaxThreshold(imagePlusInput).get(1); ++t)
 		{
-			//segmentation the threshold value = i
-			ImagePlus imagePlusBinTmp = generatesBinaryImage(i);
-			// labeling of  differents object if they exist
-			MyCounter3D myCounter3D = new MyCounter3D(imagePlusBinTmp);
-			imagePlusBinTmp = myCounter3D.getObjMap();
-			removeFalsePositive (imagePlusBinTmp);
-		  
+			ImagePlus imagePlusBinTmp = generateBinaryImage(imagePlusInput,t);
 			morphoCorrection (imagePlusBinTmp);
-		  
-			myCounter3D = new MyCounter3D(imagePlusBinTmp);
-			imagePlusBinTmp = myCounter3D.getObjMap();
+			imagePlusBinTmp = ConnectedComponents.computeLabels(imagePlusBinTmp, 26, 8);
 			removeFalsePositive (imagePlusBinTmp);
-		  
-			//comupte the sphericity
 			ShapeParameters3D sp3D = new ShapeParameters3D(imagePlusBinTmp, 255);
 			sphericity = sp3D.computeSphericity();
-			volume = sp3D.getVolume();
-		  
-			// test sphericity max, lenght of nucleus
-			if (sphericity > sphericityMax && volume > _vmin && volume < _vmax && TestRatioObjectVolumeImageVolume(volume))
+			volume = sp3D.getVolume()*dimX*dimY*dimZ;
+			if (sphericity > sphericityMax && volume >= _volumeMin && volume <= _volumeMax && testRelativeObjectVolume(volume,imageVolume))
 			{
-				_bestThreshold=i;
+				_bestThreshold=t;
 				sphericityMax = sphericity;
-				imagePlusOutput= imagePlusBinTmp.duplicate();			 
+				imagePlusOutput= imagePlusBinTmp.duplicate();			
 			}
 		}
-		IJ.log ("fin segmentation "+_imagePlusInput.getTitle()+" "+_bestThreshold);
+		IJ.log ("end segmentation "+imagePlusInput.getTitle()+" "+_bestThreshold);
+		imagePlusOutput.setCalibration(calibration);
 		return imagePlusOutput;
-	}//getBinaryMaxCompactness
+	}
 
+	
 	/**
-	 * Method which compute the threshold value of Otsu method
-	 * @return threshold value
+	 * 
+	 * @param imagePlusInput
+	 * @return
 	 */
-  
-	private int computeThreshold ()
+	private int computeThreshold (ImagePlus imagePlusInput)
 	{
 		AutoThresholder thresholder = new AutoThresholder();
-		ImageStatistics stats = new StackStatistics(_imagePlusInput);
+		ImageStatistics stats = new StackStatistics(imagePlusInput);
 		int tabHisto[] = stats.histogram;
 		return thresholder.getThreshold(Method.Otsu,tabHisto);
 	}// computeThreshold
 
+	
 	/**
-	 * Methode which compute the mean of voxel value > threshold value
+	 * 
+	 * @param imagePlusInput
 	 * @param threshold
-	 * @return mean of gray value
+	 * @return
 	 */
-
-	private double computeMean (int threshold)
+	private double computeMean (ImagePlus imagePlusInput,int threshold)
 	{
 		double sum = 0, ni_xi = 0;
-		Histogram hist = new Histogram (_imagePlusInput);
-		double label [] = hist.getLabel();
+		Histogram histogram = new Histogram (imagePlusInput);
+		double label [] = histogram.getLabel();
 		Arrays.sort(label);
-		HashMap<Double , Integer> hHisto = hist.getHisto();
+		HashMap<Double , Integer> hHisto = histogram.getHisto();
 		int i;
 		for (i = threshold; i < label.length; ++i)
 		{
@@ -145,89 +120,82 @@ public class MySegmentation
 			sum += hHisto.get(label[i]);
 		}
 		return ni_xi/sum;
-	}//computeMean
+	}
+
 
 	/**
-	 * Compute the standard Deviation  of voxel value > threshold value
-	 * @param threshold 
-	 * @return standard Deviation
+	 * 
+	 * @param imagePlusInput
+	 * @param threshold
+	 * @return
 	 */
-	
-	private double computeStandardDeviation (int threshold)
+	private double computeStandardDeviation (ImagePlus imagePlusInput, int threshold)
 	{
 		double sce = 0, sum = 0;
-		Histogram hist = new Histogram (_imagePlusInput);
-		double label [] = hist.getLabel();
+		Histogram histogram = new Histogram (imagePlusInput);
+		double label [] = histogram.getLabel();
 		Arrays.sort(label);
-		HashMap<Double , Integer> hHisto = hist.getHisto();
+		HashMap<Double , Integer> hHisto = histogram.getHisto();
 		int i;
     
-		double mean = computeMean(threshold);
+		double mean = computeMean(imagePlusInput,threshold);
 		for (i = threshold; i < label.length; ++i)
 		{
 			sum += hHisto.get(label[i]);
 			sce += hHisto.get(label[i]) * ((label[i] - mean) * (label[i] - mean));
 		}
-		return Math.sqrt((1 / (sum - 1)) * sce);
-	} //computeStandardDeviation
+		return Math.sqrt(sce / (sum - 1));
+	} 
 
+	
 	/**
-	 * Method which create binary image whit a threshold value and the image input.
-	 *  Voxel==255 if the value of voxel > threshold value. Else voxel == 0
-	 * @param threshold 
-	 * @return binary image
+	 * 
+	 * @param imagePlusInput
+	 * @param threshold
+	 * @return
 	 */
-
-	private ImagePlus generatesBinaryImage (int threshold)
+	private ImagePlus generateBinaryImage (ImagePlus imagePlusInput, int threshold)
 	{
 		int i, j, k;
-		ImagePlus imagePlusOutPut = _imagePlusInput.duplicate();
+		ImageStack imageStackInput = imagePlusInput.getStack();
+		ImagePlus imagePlusOutPut = imagePlusInput.duplicate();
 		ImageStack imageStackOutput = imagePlusOutPut.getStack();
-		for(k = 0; k < _depth; ++k)
-			for (i = 0; i < _width; ++i )
-				for (j = 0; j < _height; ++j )
+		for(k = 0; k < imagePlusInput.getStackSize(); ++k)
+			for (i = 0; i < imagePlusInput.getWidth(); ++i )
+				for (j = 0; j < imagePlusInput.getHeight(); ++j )
 				{
-					double voxelValue = _imageStackInput.getVoxel(i,j,k);
+					double voxelValue = imageStackInput.getVoxel(i,j,k);
 					if (voxelValue >= threshold) imageStackOutput.setVoxel(i,j,k,255);
 					else imageStackOutput.setVoxel(i,j,k,0);
 				}
 		return imagePlusOutPut;
-	} //generatesBinaryImage
-
-  
-	/**
-	 * Compute the value max of range of value voxel to serch the better threshold
-	 * value
-	 * @return upper bound
-	 */
-	private int computeBornSupThreshold()
-	{
-		int threshold = computeThreshold();
-		double ecartType = computeStandardDeviation(threshold);
-		return threshold + (int)(ecartType);
-	}// computeBornSupThreshold
+	}
 
 	/**
-	 * Compute the value min of range of value voxel to serch the better threshold
-	 * @return lower bound
+	 * 
+	 * @param imagePlusInput
+	 * @return
 	 */
-	private int computeBornInfThreshold()
+	private ArrayList<Integer> computeMinMaxThreshold(ImagePlus imagePlusInput)
 	{
-		int threshold = computeThreshold();
-		double ecartType = computeStandardDeviation(threshold);
-		if (0>threshold - (int)(ecartType)) return 1;
-		else return threshold - (int)(ecartType);
+		ArrayList<Integer> arrayListminMaxThreshold = new ArrayList<Integer>();
+		int threshold = computeThreshold (imagePlusInput);
+		double ecartType = computeStandardDeviation(imagePlusInput,threshold);
+		if (0 > threshold - (int)(ecartType)) arrayListminMaxThreshold.add(1);
+		else arrayListminMaxThreshold.add(threshold - (int)(ecartType));
+		arrayListminMaxThreshold.add(threshold + (int)(ecartType));
+		return arrayListminMaxThreshold;
+	
 	}//computeBornInfThreshold
 
 	/**
-	 * Use the class ArtefactTreatementNucleus to remove false positifof segmented image
-	 *  
+	 * 
 	 * @param imagePlusBinaireLabel
 	 */
 	private void removeFalsePositive(ImagePlus imagePlusBinaireLabel)
 	{
-		ArtefactTreatement artefactTreatementNucleus = new ArtefactTreatement(imagePlusBinaireLabel);//
-		artefactTreatementNucleus.deleteArtefactNoyau();
+		LabelSelection labelSelection = new LabelSelection(imagePlusBinaireLabel);
+		labelSelection.deleteArtefactNucleus();
 	}
 
 	/**
@@ -236,67 +204,64 @@ public class MySegmentation
 	 */
 	private void morphoCorrection (ImagePlus imagePlusBinary)
 	{
-		FillingHoles holesFilling = new FillingHoles(imagePlusBinary);
-		computeOpening(imagePlusBinary, 3);
-		imagePlusBinary = holesFilling.apply2D();
-		computeClosing(imagePlusBinary, 3);
-		imagePlusBinary = holesFilling.apply2D();
-		//imagePlusBinary = holesFilling.apply3D();
-		imagePlusBinary.setCalibration(_cal);
+		FillingHoles holesFilling = new FillingHoles();
+		computeOpening(imagePlusBinary);
+		computeClosing(imagePlusBinary);
+		imagePlusBinary = holesFilling.apply2D(imagePlusBinary);
 	}//morphoCorrection
 
-	/**
-	 * Realise a closing in the image to remove the false negative
-	 * @param imagePlusInput image to be process
-	 * @param radius radius of closing
-	 */
-	private void computeClosing (ImagePlus imagePlusInput, int radius)
-	{
-		ImageStack stackTemp = imagePlusInput.getImageStack();
-		Filter3Dmax filtermax = new Filter3Dmax(imagePlusInput, stackTemp, radius);
-		filtermax.filter();
-		imagePlusInput.setStack(stackTemp);
-		stackTemp= imagePlusInput.getImageStack();
-		Filter3Dmin filtermin = new Filter3Dmin(imagePlusInput, stackTemp, radius);
-		filtermin.filter();
-		imagePlusInput.setStack(stackTemp);
-	}//computeFermeture
 
 	/**
-	 * Realise a opening in the image to remove the false negative
-	 * @param imagePlusInput image to be process
-	 * @param radius radius of opening
+	 * 
+	 * @param imagePlusInput
 	 */
-	private void computeOpening (ImagePlus imagePlusInput, int radius)
+	private void computeClosing (ImagePlus imagePlusInput)
 	{
-		ImageStack imageStackInput = imagePlusInput.getImageStack();
-		Filter3Dmin filtermin = new Filter3Dmin(imagePlusInput, imageStackInput, radius);
-		filtermin.filter();
-		imagePlusInput.setStack(imageStackInput);
-		imageStackInput= imagePlusInput.getImageStack();
-		Filter3Dmax filtermax = new Filter3Dmax(imagePlusInput, imageStackInput, radius);
-		filtermax.filter();
-		imagePlusInput.setStack(imageStackInput);
-	}//computeOuverture
-  
+		ImageStack stackTemp = imagePlusInput.getImageStack();
+		stackTemp = Filters3D.filter(stackTemp, Filters3D.MAX, 1, 1, (float) 0.5);
+		stackTemp = Filters3D.filter(stackTemp, Filters3D.MIN, 1, 1, (float) 0.5);
+		imagePlusInput.setStack(stackTemp);
+	}
+
 	/**
-	 * getter of indiceMax
+	 * 
+	 * @param imagePlusInput
+	 */
+	private void computeOpening (ImagePlus imagePlusInput)
+	{
+		ImageStack stackTemp = imagePlusInput.getImageStack();
+		stackTemp = Filters3D.filter(stackTemp, Filters3D.MIN, 1, 1, (float) 0.5);
+		stackTemp = Filters3D.filter(stackTemp, Filters3D.MAX, 1, 1, (float) 0.5);
+		imagePlusInput.setStack(stackTemp);
+	}
+  
+
+	/**
+	 * 
 	 * @return
 	 */
-	public int getIndiceMax (){ return _bestThreshold;}
+	public int getBestThreshold (){ return _bestThreshold;}
 	
 	/**
 	 * 
 	 * @param objectVolume
 	 * @return
 	 */
-	private boolean TestRatioObjectVolumeImageVolume(double objectVolume)
+	private boolean testRelativeObjectVolume(double objectVolume,double imageVolume)
 	{
-		double ratio = (objectVolume/_imageVolume)*100;
+		final double ratio = (objectVolume/imageVolume)*100;
 		if (ratio >= 70) return false;
 		else return true;
 	}
 	
-	
-	
+	/**
+	 * 
+	 * @param volumeMin
+	 * @param volumeMax
+	 */
+	public void setVolumeRange(double volumeMin, double volumeMax)
+	{
+		_volumeMin = volumeMin;
+		_volumeMax = volumeMax;
+	}
 }

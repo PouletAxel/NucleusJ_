@@ -1,4 +1,4 @@
-package gred.nucleus.graphicInterface;
+package gred.nucleus.dialogs;
 
 import java.awt.Container;
 import java.awt.Cursor;
@@ -25,7 +25,7 @@ import javax.swing.JTextField;
  *
  */
 
-public class JFParameterFotSeveralObject extends JFrame
+public class NucleusPipelineBatchDialog extends JFrame
 {
 	/**
 	 * 
@@ -51,7 +51,7 @@ public class JFParameterFotSeveralObject extends JFrame
 	
 	public static void main(String[] args)  
     {
-		JFParameterFotSeveralObject fenetre = new JFParameterFotSeveralObject();
+		NucleusPipelineBatchDialog fenetre = new NucleusPipelineBatchDialog();
     	fenetre.setLocationRelativeTo(null);
     }
 	
@@ -61,7 +61,7 @@ public class JFParameterFotSeveralObject extends JFrame
      *
      */
     
-	public JFParameterFotSeveralObject ()
+	public NucleusPipelineBatchDialog ()
 	{
 		this.setTitle("Plop");
 		this.setSize(500, 500);
@@ -221,8 +221,8 @@ public class JFParameterFotSeveralObject extends JFrame
 	class StartListener implements ActionListener 
 	{
 	
-		JFParameterFotSeveralObject _jfpfso;	
-		public  StartListener (JFParameterFotSeveralObject jfpfso) {_jfpfso = jfpfso;}
+		NucleusPipelineBatchDialog _jfpfso;	
+		public  StartListener (NucleusPipelineBatchDialog jfpfso) {_jfpfso = jfpfso;}
 		/**
 		  * 
 		  */
@@ -247,8 +247,8 @@ public class JFParameterFotSeveralObject extends JFrame
 	
 	class QuitListener implements ActionListener 
 	{
-		JFParameterFotSeveralObject _jfpfso;	
-		public  QuitListener (JFParameterFotSeveralObject jfpfso) {_jfpfso = jfpfso;}
+		NucleusPipelineBatchDialog _jfpfso;	
+		public  QuitListener (NucleusPipelineBatchDialog jfpfso) {_jfpfso = jfpfso;}
 		public void actionPerformed(ActionEvent actionEvent) { _jfpfso.dispose(); }
 	}
 	

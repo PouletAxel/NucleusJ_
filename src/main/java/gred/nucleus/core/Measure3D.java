@@ -1,11 +1,14 @@
-package gred.nucleus.parameters;
+package gred.nucleus.core;
 
-import gred.nucleus.utilitaires.Histogram;
+import gred.nucleus.utils.Histogram;
+import gred.nucleus.utils.VoxelRecord;
 import ij.*;
 import ij.measure.*;
 
-
 import java.util.HashMap;
+
+import Jama.EigenvalueDecomposition;
+import Jama.Matrix;
 
 /**
  * Class NucleusMeasure : which compute differents parameters (shape, lenght) in
@@ -14,36 +17,17 @@ import java.util.HashMap;
  */
 
 
-public class GeometricParameters3D
+public class Measure3D
 {
-	/** binary image */
-	ImagePlus _inputImage;
-	/** height, width, depth of image in pixel*/
-	int _width, _height, _depth;
-	/** Voxel calibration in µm*/
-	double _dimX, _dimY, _dimZ;
-	/** imageStack of binary image */
-	ImageStack _imageStackBinary  = new ImageStack();
-	/** Object label */
-	double _dlabel;
-
 	/**
 	 * 
 	 * @param imagePlusInput
 	 * @param label
 	 */
-	public GeometricParameters3D (ImagePlus imagePlusInput, double label)
+	public Measure3D ()
 	{
-		_inputImage = imagePlusInput;
-		Calibration cal=_inputImage.getCalibration();
-		_imageStackBinary = _inputImage.getImageStack();
-		_width=_inputImage.getWidth();
-		_height=_inputImage.getHeight();
-		_depth=_inputImage.getStackSize();
-		_dimX = cal.pixelWidth;
-		_dimY = cal.pixelHeight;
-		_dimZ =cal.pixelDepth;
-		_dlabel = label; 
+
+
 	}
 
 	/**
@@ -55,31 +39,36 @@ public class GeometricParameters3D
 	 * @return surface
 	 */
 
-	public double computeSurfaceObject ()
+	public double computeSurfaceObject (ImagePlus imagePlusInput, double label)
 	{
 		int i,j,k,ii,jj,kk;
+		Calibration cal= imagePlusInput.getCalibration();
+		ImageStack imageStakInput = imagePlusInput.getStack();
+		double dimX = cal.pixelWidth;
+		double dimY = cal.pixelHeight;
+		double dimZ = cal.pixelDepth;
 		double surface = 0, voxelValue, neigVoxelValue;
-		for (k = 0; k < _depth; ++k)
-			for (i = 0; i < _width; ++i)
-				for (j = 0; j < _height; ++j)
+		for (k = 0; k < imagePlusInput.getStackSize(); ++k)
+			for (i = 0; i < imagePlusInput.getWidth(); ++i)
+				for (j = 0; j < imagePlusInput.getHeight(); ++j)
 				{
-					voxelValue = _imageStackBinary.getVoxel(i, j, k);
-					if (voxelValue >= _dlabel)
+					voxelValue = imageStakInput.getVoxel(i, j, k);
+					if (voxelValue == label)
 					{
 						for (kk = k-1; kk <= k+1; ++kk)
 						{
-							neigVoxelValue = _imageStackBinary.getVoxel(i, j, kk);
-							if (voxelValue != neigVoxelValue) { surface = surface + _dimX * _dimY; }
+							neigVoxelValue = imageStakInput.getVoxel(i, j, kk);
+							if (voxelValue != neigVoxelValue) { surface = surface + dimX * dimY; }
 						}
 						for (ii=i-1; ii<=i+1; ++ii)
 						{
-							neigVoxelValue =  _imageStackBinary.getVoxel(ii, j, k);
-							if (voxelValue != neigVoxelValue) { surface = surface + _dimX * _dimZ; }
+							neigVoxelValue =  imageStakInput.getVoxel(ii, j, k);
+							if (voxelValue != neigVoxelValue) { surface = surface + dimX * dimZ; }
 						}
 						for (jj = j-1; jj <= j+1; ++jj)
 						{
-							neigVoxelValue = _imageStackBinary.getVoxel(i, jj, k);
-							if (voxelValue != neigVoxelValue) { surface = surface + _dimY * _dimZ; }
+							neigVoxelValue = imageStakInput.getVoxel(i, jj, k);
+							if (voxelValue != neigVoxelValue) { surface = surface + dimY * dimZ; }
 						}
 					}
 				}
@@ -91,12 +80,16 @@ public class GeometricParameters3D
 	 *
 	 * @return volume
 	 */
-	public double computeVolumeObject ()
+	public double computeVolumeObject (ImagePlus imagePlusInput, double label)
 	{
+		Calibration cal= imagePlusInput.getCalibration();
+		double dimX = cal.pixelWidth;
+		double dimY = cal.pixelHeight;
+		double dimZ = cal.pixelDepth;
 		double volume = 0;
-		Histogram histogram = new Histogram (_inputImage);
+		Histogram histogram = new Histogram (imagePlusInput);
 		HashMap<Double , Integer> hHisto = histogram.getHisto();
-		volume =  hHisto.get(_dlabel) * _dimX * _dimY * _dimZ;
+		volume =  hHisto.get(label) *dimX *dimY *dimZ;
 		return volume;
 	}
     
@@ -106,12 +99,129 @@ public class GeometricParameters3D
 	 * @return equivalent spheric radius (µm)
 	 */
 	
-	public double equivalentSphericalRadius ()
+	public double equivalentSphericalRadius (ImagePlus imagePlusInput, double label)
 	{
 		double radius;
-		double volume = computeVolumeObject();
+		double volume = computeVolumeObject(imagePlusInput, label);
 		radius =  (3 * volume) / (4 * Math.PI);
 		radius = Math.pow(radius, 0.333333);
 		return radius;
 	}
+	
+
+	/**
+	 * Method which compute the sphericity :
+	 * 36Pi*Volume^2/Surface^3 = 1 if perfect sphere
+	 * @return sphericity
+	 */
+	
+	public double computeSphericity(double volume, double surface)
+	{
+
+		return ((36 * Math.PI * (volume*volume)) / (surface*surface*surface));
+	}
+  
+	/**
+	 * Method which compute the eigen value of the matrix (differences between the
+	 * coordinates of all points and the barycenter
+	 * Obtaining a symmetric matrix :
+	 * xx xy xz
+	 * xy yy yz
+	 * xz yz zz
+	 * Compute the eigen value with the pakage JAMA
+	 * @return table with the eigen values
+	 */
+	public double [] ComputeEigenValue3D (ImagePlus imagePlusInput, double label)
+	{
+		ImageStack imageStackInput = imagePlusInput.getImageStack();
+		VoxelRecord barycenter = computeBarycenter3D (true,imagePlusInput,label);
+		Calibration cal= imagePlusInput.getCalibration();
+		double dimX = cal.pixelWidth;
+		double dimY = cal.pixelHeight;
+		double dimZ = cal.pixelDepth;
+		double xx = 0, xy = 0, xz = 0, yy = 0, yz = 0, zz = 0;
+		int compteur = 0;
+		int i,j,k;
+		double voxelValue;
+		for (k = 0; k < imagePlusInput.getStackSize(); ++k)
+			for (i = 0; i < imagePlusInput.getWidth(); ++i)
+				for (j = 0; j < imagePlusInput.getHeight(); ++j)
+				{
+					voxelValue = imageStackInput.getVoxel(i,j,k);
+					if (voxelValue > 0)
+					{ 
+						xx+= ((dimX * (double) i)-barycenter.getI()) * ((dimX * (double) i)-barycenter.getI());
+						yy+= ((dimY * (double) j)-barycenter.getJ()) * ((dimY * (double) j)-barycenter.getJ());
+						zz+= ((dimZ * (double) k)-barycenter.getK()) * ((dimZ * (double) k)-barycenter.getK());
+						xy+= ((dimX * (double) i)-barycenter.getI()) * ((dimY * (double) j)-barycenter.getJ());
+						xz+= ((dimX * (double) i)-barycenter.getI()) * ((dimZ * (double) k)-barycenter.getK());
+						yz+= ((dimY * (double) j)-barycenter.getJ()) * ((dimZ * (double) k)-barycenter.getK());
+						compteur++;
+					}
+				}
+		double[][] vals = {{xx / compteur, xy / compteur, xz / compteur},
+                      {xy / compteur, yy / compteur, yz / compteur},
+                      {xz / compteur, yz / compteur, zz / compteur}};
+		Matrix matrice = new Matrix (vals);
+		EigenvalueDecomposition eigen =  matrice.eig();
+		return eigen.getRealEigenvalues();
+	}
+	
+	/**
+	 * Compute elongation => shape parameter :
+	 *
+	 * @return elongation
+	 */
+	
+	public double computeElongationObject (ImagePlus imagePlusInput, double label)
+	{
+		double eigen [] = ComputeEigenValue3D (imagePlusInput, label);
+		return Math.sqrt (eigen[2] / eigen[1]);
+	}
+  
+	/**
+	 * Compute elongation => shape parameter :
+	 * @return flatness
+	 */
+  
+	public double computeFlatnessObject (ImagePlus imagePlusInput, double label)
+	{
+		double eigen [] = ComputeEigenValue3D (imagePlusInput,label);
+		return Math.sqrt(eigen[1] / eigen[0]);
+	}  
+
+	/**
+	 * Method which determines the barycenter of nucleus
+	 * @param unit if true the coordinates of barycenter are in µm.
+	 * @return the barycenter
+	 */
+  	
+	public VoxelRecord computeBarycenter3D (boolean unit,ImagePlus imagePlusInput, double label)
+  	{
+		ImageStack imageStackInput = imagePlusInput.getImageStack();
+		Calibration cal= imagePlusInput.getCalibration();
+		double dimX = cal.pixelWidth;
+		double dimY = cal.pixelHeight;
+		double dimZ = cal.pixelDepth;
+		VoxelRecord barycenter = new VoxelRecord ();
+		int compteur = 0;
+		double voxelValue;
+		int i,j,k;
+		for (k = 0; k < imagePlusInput.getStackSize(); ++k)
+			for (i = 0; i < imagePlusInput.getWidth(); ++i)
+				for (j = 0; j < imagePlusInput.getHeight(); ++j)
+				{
+					voxelValue = imageStackInput.getVoxel(i,j,k);
+					if (voxelValue == label )
+					{
+						VoxelRecord voxelRecord = new VoxelRecord();
+						voxelRecord.setLocation((double)i,(double)j,(double)k);
+						barycenter.shiftCoordinates(voxelRecord);
+						compteur++;
+					}
+				}
+		barycenter.Multiplie(1 / (double)compteur);
+		if (unit) barycenter.Multiplie(dimX, dimY,dimZ);
+		return barycenter;
+  	}
 }

@@ -1,6 +1,7 @@
 package gred.nucleus.plugins;
-import gred.nucleus.parameters.*;
-import gred.nucleus.utilitaires.Histogram;
+import gred.nucleus.core.Measure3D;
+import gred.nucleus.core.ShapeParameters3D;
+import gred.nucleus.utils.Histogram;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
@@ -78,7 +79,7 @@ public class ComputeParemeter3D_ implements PlugIn
 			
 			for (int i = 0; i < temp.length; ++i)
 			{
-				GeometricParameters3D gp3d = new GeometricParameters3D (_imagePlus,temp[i]);
+				Measure3D gp3d = new Measure3D (_imagePlus,temp[i]);
 				ShapeParameters3D sp3d = new ShapeParameters3D (_imagePlus,temp[i]);
 				_volume = gp3d.computeVolumeObject();
 				_esr = gp3d.equivalentSphericalRadius();

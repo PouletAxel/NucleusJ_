@@ -1,4 +1,4 @@
-package gred.nucleus.utilitaires;
+package gred.nucleus.utils;
 
 
 /**
