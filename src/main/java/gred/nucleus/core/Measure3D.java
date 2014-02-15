@@ -21,14 +21,8 @@ public class Measure3D
 {
 	/**
 	 * 
-	 * @param imagePlusInput
-	 * @param label
 	 */
-	public Measure3D ()
-	{
-
-
-	}
+	public Measure3D () { }
 
 	/**
 	 * Scan of image and if the voxel belong to theobject of interest, looking,
@@ -36,7 +30,9 @@ public class Measure3D
 	 * Adding the surface of the face of the voxel frontier, which are in contact
 	 * with the background of the image, to the surface total.
 	 *
-	 * @return surface
+	 * @param imagePlusInput
+	 * @param label
+	 * @return
 	 */
 
 	public double computeSurfaceObject (ImagePlus imagePlusInput, double label)
@@ -76,9 +72,41 @@ public class Measure3D
 	}
 
 	/**
-	 * Method which compute the volume of nucleus
-	 *
-	 * @return volume
+	 * 
+	 * @param imagePlusInput
+	 * @return
+	 */
+	
+	public int getNbObject(ImagePlus imagePlusInput)
+	{  
+		Histogram histogram = new Histogram(imagePlusInput);
+		return histogram.getHisto().size();
+	}
+	
+	/**
+	 * Method which compute the volume of each segmented objects
+	 * in _imagePlus
+	 * @return Table of Object volume
+	 * 
+	 * @param imagePlusInput
+	 * @return
+	 */
+	public double[] computeVolumeofAllObjects (ImagePlus imagePlusInput)
+	{
+		Histogram histogram = new Histogram(imagePlusInput);
+		double tabLabel[] = histogram.getLabel();
+		double objectVolume[] = new double[tabLabel.length];
+		objectVolume[0] = 0;
+		for (int i = 0; i < tabLabel.length; ++i)
+			objectVolume[i] = computeVolumeObject(imagePlusInput, tabLabel[i]);
+		return objectVolume;
+	} 
+
+	/**
+	 * 
+	 * @param imagePlusInput
+	 * @param label
+	 * @return
 	 */
 	public double computeVolumeObject (ImagePlus imagePlusInput, double label)
 	{
@@ -96,7 +124,10 @@ public class Measure3D
 	/**
 	 * Method whiche compute the equivalent spheric radius of nucleus, corresponding
 	 * at the radius of sphere which has the same volume of the nucleus
-	 * @return equivalent spheric radius (µm)
+	 * 
+	 * @param imagePlusInput
+	 * @param label
+	 * @return
 	 */
 	
 	public double equivalentSphericalRadius (ImagePlus imagePlusInput, double label)
@@ -113,8 +144,11 @@ public class Measure3D
 	 * Method which compute the sphericity :
 	 * 36Pi*Volume^2/Surface^3 = 1 if perfect sphere
 	 * @return sphericity
+	 * 
+	 * @param volume
+	 * @param surface
+	 * @return
 	 */
-	
 	public double computeSphericity(double volume, double surface)
 	{
 
@@ -129,8 +163,12 @@ public class Measure3D
 	 * xy yy yz
 	 * xz yz zz
 	 * Compute the eigen value with the pakage JAMA
-	 * @return table with the eigen values
+	 * 
+	 * @param imagePlusInput
+	 * @param label
+	 * @return
 	 */
+	
 	public double [] ComputeEigenValue3D (ImagePlus imagePlusInput, double label)
 	{
 		ImageStack imageStackInput = imagePlusInput.getImageStack();
@@ -168,11 +206,10 @@ public class Measure3D
 	}
 	
 	/**
-	 * Compute elongation => shape parameter :
-	 *
-	 * @return elongation
+	 * @param imagePlusInput
+	 * @param label
+	 * @return
 	 */
-	
 	public double computeElongationObject (ImagePlus imagePlusInput, double label)
 	{
 		double eigen [] = ComputeEigenValue3D (imagePlusInput, label);
@@ -180,10 +217,10 @@ public class Measure3D
 	}
   
 	/**
-	 * Compute elongation => shape parameter :
-	 * @return flatness
+	 * @param imagePlusInput
+	 * @param label
+	 * @return
 	 */
-  
 	public double computeFlatnessObject (ImagePlus imagePlusInput, double label)
 	{
 		double eigen [] = ComputeEigenValue3D (imagePlusInput,label);
@@ -192,10 +229,12 @@ public class Measure3D
 
 	/**
 	 * Method which determines the barycenter of nucleus
+	 * 
 	 * @param unit if true the coordinates of barycenter are in µm.
-	 * @return the barycenter
+	 * @param imagePlusInput
+	 * @param label
+	 * @return
 	 */
-  	
 	public VoxelRecord computeBarycenter3D (boolean unit,ImagePlus imagePlusInput, double label)
   	{
 		ImageStack imageStackInput = imagePlusInput.getImageStack();
@@ -224,4 +263,86 @@ public class Measure3D
 		if (unit) barycenter.Multiplie(dimX, dimY,dimZ);
 		return barycenter;
   	}
+	
+	/**
+	 * Method which compute the barycenter of each objects and return the result
+	 * in a table of VoxelRecord
+	 * 
+	 * @param imagePlusInput
+	 * @return
+	 */
+	public VoxelRecord[] computeObjectBarycenter (ImagePlus imagePlusInput)
+	{
+		Histogram histogram = new Histogram(imagePlusInput);
+		double labelObject [] = histogram.getLabel();
+		VoxelRecord tabVoxelRecord[] = new VoxelRecord [labelObject.length];
+		tabVoxelRecord[0] = null;
+		for (int i = 0; i < labelObject.length; ++i)
+		{
+			VoxelRecord voxelRecord = computeBarycenter3D(true, imagePlusInput,labelObject[i] );
+			tabVoxelRecord[i] = voxelRecord;
+		}
+		return tabVoxelRecord;
+	}
+	
+
+	/**
+	 * Method wich compute the mean of the value in the table
+	 * @param tabInput Table of value
+	 * @return Mean of the table
+	 */
+
+  
+	public double computeMeanOfTable (double tabInput[])
+	{
+		int i;
+		double mean = 0;
+		for (i = 0; i < tabInput.length; ++i)  mean += tabInput[i];
+		mean = mean / (tabInput.length);
+		return mean;
+	}//computeMeanOfTable
+	
+	public double computeRhfIntensite (ImagePlus imagePlusInput, ImagePlus imagePlusBinary, ImagePlus imagePlusChromocenter )
+	  {
+	    double ccIntensity = 0, nucleusIntensity = 0;
+	    double voxelValueLabel, voxelValueDeconv, voxelValueBinaire;
+	    int i,j,k;
+	    
+	    ImageStack _imageStackSegmentationChromocenter =  imagePlusChromocenter.getStack();
+	    ImageStack imageStackBinaire = imagePlusBinary.getStack();
+	    ImageStack imageStackDeconv = imagePlusInput.getStack();
+	    for (k = 0; k < imagePlusInput.getNSlices(); ++k)
+	      for (i = 0; i < imagePlusInput.getWidth(); ++i )
+	        for (j = 0; j < imagePlusInput.getHeight(); ++j )
+	        {
+	          voxelValueBinaire = imageStackBinaire.getVoxel(i, j, k);
+	          voxelValueDeconv = imageStackDeconv.getVoxel(i, j, k);
+	          voxelValueLabel = _imageStackSegmentationChromocenter.getVoxel(i,j,k);
+	     
+	          if (voxelValueBinaire > 0)
+	          {
+	            if (voxelValueLabel > 0){ ccIntensity+=voxelValueDeconv;}
+	            nucleusIntensity += voxelValueDeconv;
+	          }
+	        }
+	    return ccIntensity / nucleusIntensity;
+	  }//computeRhfIntensite
+
+	  /**
+	   * Method which compute the RHF (total chromocenters volume / nucleus volume)
+	   * @return RHF
+	   *
+	   * @param imagePlusBinaryNucleus
+	   * @param imagePlusChomocentersLabeled
+	   * @return
+	   */
+	  public double computeRhfVolume (ImagePlus imagePlusBinaryNucleus, ImagePlus imagePlusChomocentersLabeled)
+	  {
+	    int i;
+	    double volumeCc = 0;
+	    double tabVolume[] = computeVolumeofAllObjects(imagePlusChomocentersLabeled);
+	    for (i = 0; i < tabVolume.length; ++i) volumeCc += tabVolume[i];
+	    double tabVolume2[] = computeVolumeofAllObjects(imagePlusBinaryNucleus);
+	    return volumeCc / tabVolume2[0];
+	  } 
 }

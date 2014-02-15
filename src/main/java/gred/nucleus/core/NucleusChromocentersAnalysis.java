@@ -57,21 +57,21 @@ public class NucleusChromocentersAnalysis
 	        {
 			   IJ.log("ImageTitle Volume ESR NbCc VCcMean DistanceRadialeMean Flatness Elongation Sphericity IntensityRHF VolumeRHF");
 			   IJ.log(_imagePlusBinaryNucleus.getTitle()+" "+gp3d.computeVolumeObject()+" "+gp3d.equivalentSphericalRadius()+" "
-			   +_poso.nbObject()+" "+_poso.computeMeanOfTable(volume)+" "+_poso.computeMeanOfTable(dr)+" "+sp3d.computeFlatnessObject()
+			   +_poso.getNbObject()+" "+_poso.computeMeanOfTable(volume)+" "+_poso.computeMeanOfTable(dr)+" "+sp3d.computeFlatnessObject()
 			   +" "+sp3d.computeElongationObject()+" "+sp3d.computeSphericity()+" "+rhf.computeRhfIntensite()+" "+rhf.computeRhfVolume());
 	        }
 	        else if (rhfChoice.equals("Volume"))
 	        {
 	        	 IJ.log("ImageTitle Volume ESR NbCc VCcMean DistanceRadialeMean Flatness Elongation Sphericity VolumeRHF");
 	        	 IJ.log(_imagePlusBinaryNucleus.getTitle()+" "+gp3d.computeVolumeObject()+" "+gp3d.equivalentSphericalRadius()+" "
-			   +_poso.nbObject()+" "+_poso.computeMeanOfTable(volume)+" "+_poso.computeMeanOfTable(dr)+" "+sp3d.computeFlatnessObject()
+			   +_poso.getNbObject()+" "+_poso.computeMeanOfTable(volume)+" "+_poso.computeMeanOfTable(dr)+" "+sp3d.computeFlatnessObject()
 			   +" "+sp3d.computeElongationObject()+" "+sp3d.computeSphericity()+" "+rhf.computeRhfVolume());
 	        }
 			  else  
 			  {
 				  IJ.log("ImageTitle Volume ESR NbCc VCcMean DistanceRadialeMean Flatness Elongation Sphericity IntensityRHF ");
 				  IJ.log(_imagePlusBinaryNucleus.getTitle()+" "+gp3d.computeVolumeObject()+" "+gp3d.equivalentSphericalRadius()+" "
-						  +_poso.nbObject()+" "+_poso.computeMeanOfTable(volume)+" "+_poso.computeMeanOfTable(dr)+" "+sp3d.computeFlatnessObject()
+						  +_poso.getNbObject()+" "+_poso.computeMeanOfTable(volume)+" "+_poso.computeMeanOfTable(dr)+" "+sp3d.computeFlatnessObject()
 						  +" "+sp3d.computeElongationObject()+" "+sp3d.computeSphericity()+" "+rhf.computeRhfIntensite());
 			  }
 	   }
@@ -102,19 +102,19 @@ public class NucleusChromocentersAnalysis
 			   if (rhfChoice.equals("Volume and intensity"))
 		        {
 				   output.write(_imagePlusBinaryNucleus.getTitle()+"\t"+gp3d.computeVolumeObject()+"\t"+gp3d.equivalentSphericalRadius()+"\t"
-						   +_poso.nbObject()+"\t"+_poso.computeMeanOfTable(volume)+"\t"+_poso.computeMeanOfTable(dr)+"\t"+sp3d.computeFlatnessObject()
+						   +_poso.getNbObject()+"\t"+_poso.computeMeanOfTable(volume)+"\t"+_poso.computeMeanOfTable(dr)+"\t"+sp3d.computeFlatnessObject()
 						   +"\t"+sp3d.computeElongationObject()+"\t"+sp3d.computeSphericity()+"\t"+rhf.computeRhfIntensite()+"\t"+rhf.computeRhfVolume()+"\t"+sp2D.getAspectRatio()+"\t"+sp2D.getCirculairty()+"\n");
 		        }
 			   else if (rhfChoice.equals("Volume"))
 		        {
 				   output.write(_imagePlusBinaryNucleus.getTitle()+"\t"+gp3d.computeVolumeObject()+"\t"+gp3d.equivalentSphericalRadius()+"\t"
-						   +_poso.nbObject()+"\t"+_poso.computeMeanOfTable(volume)+"\t"+_poso.computeMeanOfTable(dr)+"\t"+sp3d.computeFlatnessObject()
+						   +_poso.getNbObject()+"\t"+_poso.computeMeanOfTable(volume)+"\t"+_poso.computeMeanOfTable(dr)+"\t"+sp3d.computeFlatnessObject()
 						   +"\t"+sp3d.computeElongationObject()+"\t"+sp3d.computeSphericity()+"\t"+rhf.computeRhfVolume()+"\t"+sp2D.getAspectRatio()+"\t"+sp2D.getCirculairty()+"\n");
 		        }
 			   else  
 				  {
 				   output.write(_imagePlusBinaryNucleus.getTitle()+"\t"+gp3d.computeVolumeObject()+"\t"+gp3d.equivalentSphericalRadius()+"\t"
-							  +_poso.nbObject()+"\t"+_poso.computeMeanOfTable(volume)+"\t"+_poso.computeMeanOfTable(dr)+"\t"+sp3d.computeFlatnessObject()
+							  +_poso.getNbObject()+"\t"+_poso.computeMeanOfTable(volume)+"\t"+_poso.computeMeanOfTable(dr)+"\t"+sp3d.computeFlatnessObject()
 							  +"\t"+sp3d.computeElongationObject()+"\t"+sp3d.computeSphericity()+"\t"+rhf.computeRhfIntensite()+"\t"+sp2D.getAspectRatio()+"\t"+sp2D.getCirculairty()+"\n");
 				  }
 		   }
@@ -128,21 +128,21 @@ public class NucleusChromocentersAnalysis
 
 				   output.write("ImageTitle\tVolume\tESR\tNbCc\tVCcMean\tDistanceRadialeMean\tFlatness\tElongation\tSphericity\tIntensityRHF\tVolumeRHF\tAspectRatio\tCircularity\n"
 						   +_imagePlusBinaryNucleus.getTitle()+"\t"+gp3d.computeVolumeObject()+"\t"+gp3d.equivalentSphericalRadius()+"\t"
-						   +_poso.nbObject()+"\t"+_poso.computeMeanOfTable(volume)+"\t"+_poso.computeMeanOfTable(dr)+"\t"+sp3d.computeFlatnessObject()
+						   +_poso.getNbObject()+"\t"+_poso.computeMeanOfTable(volume)+"\t"+_poso.computeMeanOfTable(dr)+"\t"+sp3d.computeFlatnessObject()
 						   +"\t"+sp3d.computeElongationObject()+"\t"+sp3d.computeSphericity()+"\t"+rhf.computeRhfIntensite()+"\t"+rhf.computeRhfVolume()+"\t"+sp2D.getAspectRatio()+"\t"+sp2D.getCirculairty()+"\n"); 
 		        }
 			   else if (rhfChoice.equals("Volume"))
 		        {
 				   output.write("ImageTitle\tVolume\tESR\tNbCc\tVCcMean\tDistanceRadialeMean\tFlatness\tElongation\tSphericity\tVolumeRHF\n"
 						   +_imagePlusBinaryNucleus.getTitle()+"\t"+gp3d.computeVolumeObject()+"\t"+gp3d.equivalentSphericalRadius()+"\t"
-						   +_poso.nbObject()+"\t"+_poso.computeMeanOfTable(volume)+"\t"+_poso.computeMeanOfTable(dr)+"\t"+sp3d.computeFlatnessObject()
+						   +_poso.getNbObject()+"\t"+_poso.computeMeanOfTable(volume)+"\t"+_poso.computeMeanOfTable(dr)+"\t"+sp3d.computeFlatnessObject()
 						   +"\t"+sp3d.computeElongationObject()+"\t"+sp3d.computeSphericity()+"\t"+rhf.computeRhfVolume()+"\t"+sp2D.getAspectRatio()+"\t"+sp2D.getCirculairty()+"\n");
 		        }
 			   else  
 				  {
 				   output.write("ImageTitle\tVolume\tESR\tNbCc\tVCcMean\tDistanceRadialeMean\tFlatness\tElongation\tSphericity\tIntensityRHF\n"
 						   		+_imagePlusBinaryNucleus.getTitle()+"\t"+gp3d.computeVolumeObject()+"\t"+gp3d.equivalentSphericalRadius()+"\t"
-						   		+_poso.nbObject()+"\t"+_poso.computeMeanOfTable(volume)+"\t"+_poso.computeMeanOfTable(dr)+"\t"+sp3d.computeFlatnessObject()
+						   		+_poso.getNbObject()+"\t"+_poso.computeMeanOfTable(volume)+"\t"+_poso.computeMeanOfTable(dr)+"\t"+sp3d.computeFlatnessObject()
 						   		+"\t"+sp3d.computeElongationObject()+"\t"+sp3d.computeSphericity()+"\t"+rhf.computeRhfIntensite()+"\t"+sp2D.getAspectRatio()+"\t"+sp2D.getCirculairty()+"\n");
 				  }
 		   } 
