@@ -2,6 +2,7 @@ package gred.nucleus.core;
 
 import gred.nucleus.utils.Distance_Map;
 import gred.nucleus.utils.Histogram;
+import gred.nucleus.utils.VoxelRecord;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.Calibration;
@@ -17,24 +18,6 @@ import ij.plugin.Resizer;
  */
 public class RadialDistance
 {
-	ImagePlus _imagePlusSegmentedChromocenter;
-	/** Voxel calibration (µm)*/
-	@SuppressWarnings("unused")
-	private double _dimX, _dimY, _dimZ;
-	/** Height, width, depth of image in pixel*/
-	private int _height, _width,_depth;
-	/** Scale factor of  _dimZ to get cubic voxels*/
-	private double _rescaleZFactor;
-	/** ImageStack of _imagePlusSegmentationChromocenter*/
-	ImageStack _imageStackSegmentationChromocenter;
-	/** Binary image of the nucleus*/
-	ImagePlus _imagePlusBinaryNucleus;
-	/** title of _imageStackSegmentationChromocenter*/
-	final String _title;
-	/** Parameters of chromocenters*/
-	public ParametersOfSeveralObject _poso;
-	/** */
-	Histogram _hist;
   
   /**
    * Constructor
@@ -42,22 +25,9 @@ public class RadialDistance
    * @param imagePlusInput Image to be process
    */
 
-	public RadialDistance(ImagePlus imagePlusInput, ImagePlus imagePlusBianry)
+	public RadialDistance()
 	{
-		_imagePlusSegmentedChromocenter = imagePlusInput;
-		_poso = new ParametersOfSeveralObject(imagePlusInput);
-		_hist = new Histogram(imagePlusInput);
-		_title = _imagePlusSegmentedChromocenter.getTitle();
-		Calibration cal = _imagePlusSegmentedChromocenter.getCalibration();
-		_dimX = cal.pixelWidth;
-		_dimY = cal.pixelHeight;
-		_dimZ = cal.pixelDepth;
-		_imageStackSegmentationChromocenter = _imagePlusSegmentedChromocenter.getStack();
-		_height = _imagePlusSegmentedChromocenter.getHeight();
-		_width = _imagePlusSegmentedChromocenter.getWidth();
-		_depth = _imagePlusSegmentedChromocenter.getNSlices();
-		_rescaleZFactor = _dimZ/_dimX;
-		_imagePlusBinaryNucleus = imagePlusBianry;
+		
 	}// fin constructeur
 
    
@@ -66,10 +36,15 @@ public class RadialDistance
 	 * Rescale the voxel to abtain cubic voxel
 	 * @return distance map
 	 */
-	public ImagePlus computeDistanceMap ()
+	public ImagePlus computeDistanceMap (ImagePlus imagePlusBinary)
 	{
 		Resizer resizer = new Resizer();
-		ImagePlus imagePlusRescale = resizer.zScale(_imagePlusBinaryNucleus,(int)(_depth*_rescaleZFactor), 0);
+		Calibration cal = imagePlusBinary.getCalibration();
+		double dimX = cal.pixelWidth;
+		double dimZ = cal.pixelDepth;
+		double rescaleZFactor = dimZ/dimX;
+		
+		ImagePlus imagePlusRescale = resizer.zScale(imagePlusBinary,(int)(imagePlusBinary.getNSlices()*rescaleZFactor), 0);
 		Distance_Map distanceMap = new Distance_Map();
 		distanceMap.aplly(imagePlusRescale);
 		return imagePlusRescale;
@@ -80,31 +55,63 @@ public class RadialDistance
 	 * nuclear envelope
 	 * @return Table of radial distance for each chromocenter
 	 */
-	public double[] computeBorderToBorderDistances ()
+	public double[] computeBorderToBorderDistances (ImagePlus imagePlusChromocenter, ImagePlus imagePlusBinary)
 	{
+		Histogram histogram = new Histogram(imagePlusChromocenter);
+		double tabLabel[] = histogram.getLabel();
 		Resizer resizer = new Resizer();
-		ImagePlus imagePlusTmp = _imagePlusSegmentedChromocenter.duplicate();
-		imagePlusTmp = resizer.zScale(imagePlusTmp,(int)(_depth*_rescaleZFactor), 0);
-		ImageStack imageStackTmp = imagePlusTmp.getStack();
-		ImagePlus imagePlusDistanceMap =  computeDistanceMap();
+		Calibration cal = imagePlusBinary.getCalibration();
+		double dimX = cal.pixelWidth;
+		double dimZ = cal.pixelDepth;
+		double rescaleZFactor = dimZ/dimX;
+		imagePlusChromocenter = resizer.zScale(imagePlusChromocenter,(int)(imagePlusBinary.getNSlices()*rescaleZFactor), 0);
+		ImageStack imageStackChromocenter = imagePlusChromocenter.getStack();
+		ImagePlus imagePlusDistanceMap =  computeDistanceMap(imagePlusBinary);
 		ImageStack imageStackDistanceMap = imagePlusDistanceMap.getStack();
 		int i, j, k, l;
 		double voxelValueMin, voxelValue;
-		double tabLabel[] = _hist.getLabel();
+	
 		double distanceRadial [] = new double [tabLabel.length];
 		for (l = 0; l < tabLabel.length; ++l)
 		{
 			voxelValueMin = Double.MAX_VALUE;
-			for (k = 0; k < imagePlusTmp.getNSlices(); ++k)
-				for (i = 0; i < _width; ++i)
-					for (j = 0; j < _height; ++j)
+			for (k = 0; k < imagePlusChromocenter.getNSlices(); ++k)
+				for (i = 0; i < imagePlusChromocenter.getWidth(); ++i)
+					for (j = 0; j < imagePlusChromocenter.getHeight(); ++j)
 					{
 						voxelValue = imageStackDistanceMap.getVoxel(i, j, k);
-						if (voxelValue < voxelValueMin && tabLabel[l] == imageStackTmp.getVoxel(i, j, k))
+						if (voxelValue < voxelValueMin && tabLabel[l] == imageStackChromocenter.getVoxel(i, j, k))
 							voxelValueMin = voxelValue;
 					}
-			distanceRadial[l] = voxelValueMin*_dimX;
+			distanceRadial[l] = voxelValueMin*dimX;
 		}
 		return   distanceRadial;
 	} //determinationRadialDistanceNuclearEnveloppeEdgeObject
+	
+	  /**
+	   * Determine the radial distance of all chromocenter in the image of nucleus. We realise
+	   * the distance map on the bianary nucleus. This method measure the radial distance
+	   * between the barycenter of chromocenter and the nuclear envelope.
+	   * @return Table of radial distance in µm (barycenter => nuclear envelope)
+	   */
+
+	  public double[] computeBarycenterToBorderDistances (ImagePlus imagePlusBinary,ImagePlus imagePlusChromocenter)
+	  {
+	    int i;
+		Calibration cal = imagePlusBinary.getCalibration();
+		double dimX = cal.pixelWidth;
+	    ImagePlus imagePlusDistanceMap =  computeDistanceMap(imagePlusBinary);
+	    ImageStack imageStackDistanceMap = imagePlusDistanceMap.getStack();
+	    Measure3D measure3D = new Measure3D();
+	    VoxelRecord tabVoxelRecord[] = measure3D.computeObjectBarycenter(imagePlusChromocenter);
+	    double radialDistance[] = new double[tabVoxelRecord.length];
+	    double distance;
+	    for (i = 0; i < tabVoxelRecord.length; ++i)
+	    {
+	      VoxelRecord voxelRecord = tabVoxelRecord[i];
+	      distance = imageStackDistanceMap.getVoxel((int)voxelRecord._i,(int)voxelRecord._j,(int)voxelRecord._k);
+	      radialDistance[i] = dimX * distance;
+	    }
+	    return radialDistance;
+	  } //determinationRadialDistanceForEachBarycenterObject
 } //fin classe

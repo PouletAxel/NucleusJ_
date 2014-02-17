@@ -70,9 +70,10 @@ public class NucleusSegmentation
 			morphoCorrection (imagePlusBinTmp);
 			imagePlusBinTmp = ConnectedComponents.computeLabels(imagePlusBinTmp, 26, 8);
 			removeFalsePositive (imagePlusBinTmp);
-			ShapeParameters3D sp3D = new ShapeParameters3D(imagePlusBinTmp, 255);
-			sphericity = sp3D.computeSphericity();
-			volume = sp3D.getVolume()*dimX*dimY*dimZ;
+			imagePlusBinTmp.setCalibration(calibration);
+			Measure3D measure3D = new Measure3D();
+			volume = measure3D.computeVolumeObject(imagePlusBinTmp,255);
+			sphericity = measure3D.computeSphericity(volume,measure3D.computeSurfaceObject(imagePlusBinTmp, 255));
 			if (sphericity > sphericityMax && volume >= _volumeMin && volume <= _volumeMax && testRelativeObjectVolume(volume,imageVolume))
 			{
 				_bestThreshold=t;

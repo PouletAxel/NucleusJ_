@@ -1,6 +1,6 @@
 package gred.nucleus.plugins;
 
-import gred.nucleus.core.SapheParameters2D;
+import gred.nucleus.core.Measure2D;
 import gred.nucleus.utils.Histogram;
 import ij.IJ;
 import ij.ImagePlus;
@@ -70,7 +70,7 @@ public class ComputeParameters2D_ implements PlugIn
 	  HashMap<Double , Integer> hHisto = hist.getHisto();
 	  if (hHisto.size() == 1 )
 	  {
-		  SapheParameters2D gp2d = new SapheParameters2D (_imagePlus);
+		  Measure2D gp2d = new Measure2D (_imagePlus);
 		  _AR = gp2d.getAspectRatio();
 		  _circ = gp2d.getCirculairty();
 		  File fileResu = new File (_outFile);

@@ -12,14 +12,8 @@ import ij.measure.*;
  * @author gred
  */
 
-public class SapheParameters2D
+public class Measure2D
 {
-	/** Input image */
-    ImagePlus _imagePlus;
-    /** number of pixel in width height and depth. DepthMax is the stack with the greatest area */
-    int _width, _height, _depth, _depthMax;
-    /** Length of the voxel in x and y*/
-    double _dimX,_dimY;
     /** Object to stock the two parameters computed*/
     ResultsTable _rt;
     
@@ -27,45 +21,46 @@ public class SapheParameters2D
      *  Constructor
      * @param imagePlus
      */
-    public SapheParameters2D (ImagePlus imagePlus)
+    public Measure2D ()
     {
-        Calibration calibration= imagePlus.getCalibration();
-        _imagePlus = imagePlus;
-        _width=_imagePlus.getWidth();
-        _height=_imagePlus.getHeight();
-        _dimX = calibration.pixelWidth;
-        _dimY = calibration.pixelHeight;
-        _depth=_imagePlus.getStackSize();
-        StackConverter stackConverter = new StackConverter( _imagePlus );
-        if (_imagePlus.getType() != ImagePlus.GRAY8)	stackConverter.convertToGray8();
-        _rt = computePrameters(searchMaxArea());  
+
     }
     
+    public void run (ImagePlus imagePlus)
+    {
+    	 StackConverter stackConverter = new StackConverter( imagePlus );
+         if (imagePlus.getType() != ImagePlus.GRAY8)	stackConverter.convertToGray8();
+         _rt = computePrameters(imagePlus,searchMaxArea(imagePlus));  
+    }
     /**
      * Compute the area on each stack of the image and select the stack with the greatest area
      * @return
      */
-    private int searchMaxArea()
+    private int searchMaxArea(ImagePlus imagePlus)
     {
-        ImageStack imageStack = _imagePlus.getStack();
+    	Calibration calibration= imagePlus.getCalibration();
+    	int stackMaxArea = -1;
+    	double dimX = calibration.pixelWidth;
+    	double dimY = calibration.pixelHeight;
+        ImageStack imageStack = imagePlus.getStack();
         double areaMax = 0, area = 0;
-        for (int k = 0; k < _depth; ++k)
+        for (int k = 0; k < imagePlus.getNSlices(); ++k)
         {
             int nbVoxel = 0;
-            for (int i = 1; i < _width; ++i)
+            for (int i = 1; i < imagePlus.getWidth(); ++i)
             {
-                for (int j = 1;  j < _height; ++j)
+                for (int j = 1;  j < imagePlus.getHeight(); ++j)
                 	if (imageStack.getVoxel(i, j, k)>0)
                 		++nbVoxel ;
             }
-            area = _dimX*_dimY*nbVoxel;
+            area = dimX*dimY*nbVoxel;
             if (area > areaMax)
             {
                 areaMax = area ;
-                _depthMax = k;
+                stackMaxArea = k;
             }
         }
-        return _depthMax;
+        return stackMaxArea;
     }
 
     /**
@@ -73,16 +68,19 @@ public class SapheParameters2D
      * @param stackMaxArea
      * @return
      */
-    private ResultsTable computePrameters(int stackMaxArea)
+    private ResultsTable computePrameters(ImagePlus imagePlus, int stackMaxArea)
     {
     	ImagePlus imagePlusTmp = new ImagePlus();
-    	ImageStack imageStack = _imagePlus.getStack();
-        ImageStack imageStackTmp = new ImageStack(_width, _height);
-        imageStackTmp.addSlice(imageStack.getProcessor(_depthMax));
+    	ImageStack imageStack = imagePlus.getStack();
+        ImageStack imageStackTmp = new ImageStack(imagePlus.getWidth(),imagePlus.getHeight());
+        imageStackTmp.addSlice(imageStack.getProcessor(stackMaxArea));
         imagePlusTmp.setStack(imageStackTmp);
+        Calibration calibrationImagePlus= imagePlus.getCalibration();
+    	double dimX = calibrationImagePlus.pixelWidth;
+    	double dimY = calibrationImagePlus.pixelHeight;
         Calibration calibration = new Calibration();
-        calibration.pixelHeight = _dimY;
-        calibration.pixelWidth = _dimX;
+        calibration.pixelHeight = dimY;
+        calibration.pixelWidth = dimX;
         imagePlusTmp.setCalibration(calibration);
         ResultsTable rt = new ResultsTable(); 
         ParticleAnalyzer analyser = new ParticleAnalyzer

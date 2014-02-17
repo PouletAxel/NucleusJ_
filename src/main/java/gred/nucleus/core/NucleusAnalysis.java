@@ -7,7 +7,6 @@ import java.io.IOException;
 
 import ij.IJ;
 import ij.ImagePlus;
-import ij.ImageStack;
 
 
 /**
@@ -15,19 +14,12 @@ import ij.ImageStack;
  * @author gred
  *
  */
+
 public class NucleusAnalysis
 {
 	 @SuppressWarnings("unused")
 	private static class IOEception {  public IOEception() { } }
 
-	  /** binary image */
-	  ImagePlus _imagePlusBinary;
-	  /** height, width, depth of image in pixel*/
-	  int _width, _height, _depth;
-	  /** Voxel calibration in µm*/
-	  double _dimX, _dimY, _dimZ;
-	  /** imageStack of binary image */
-	  ImageStack _imageStackBinary  = new ImageStack();
 
 	  /**
 	   * Constructor
@@ -35,38 +27,41 @@ public class NucleusAnalysis
 	   * @param imagePlusInput binary image
 	   */
 
-	  public NucleusAnalysis (ImagePlus imagePlusInput)	  {	    _imagePlusBinary = imagePlusInput;  }
+	  public NucleusAnalysis ()	  {}
 
 	 /**
 	  * Method which compute diffrents parameters of shape (sphericity, flataness and
 	  * elongation) and parameters of lenght (volume and equivalent spherique radius)
 	  * Take in input the path of results files output.
 	  *
-	  * @param pathFile path of output filesortis
+	  * @param pathFile path of output 
 	  * @throws IOException
 	  */
 
-	  public void nucleusParameter3D (String pathFile) throws IOException
+	  public void nucleusParameter3D (String pathFile, ImagePlus imagePlusInput) throws IOException
 	  {
-		  Measure3D gp3d = new Measure3D (_imagePlusBinary,255);
-		  ShapeParameters3D sp3d = new ShapeParameters3D (_imagePlusBinary,255); 
+		  Measure3D measure3D = new Measure3D ();
 		  File fileResu = new File (pathFile);
 		  boolean exist = fileResu.exists();
 		  BufferedWriter output;
+		  double volume = measure3D.computeVolumeObject(imagePlusInput,255);
+		  double surfacicArea = measure3D.computeSurfaceObject(imagePlusInput,255);
 		  if (exist)
 		  {
 			  FileWriter fw = new FileWriter(fileResu, true);
 		      output = new BufferedWriter(fw);
-		      output.write(_imagePlusBinary.getTitle()+"\t"+gp3d.computeVolumeObject()+"\t"+sp3d.computeFlatnessObject()+"\t"+
-		    		  sp3d.computeElongationObject()+"\t"+sp3d.computeSphericity()+"\t"+gp3d.equivalentSphericalRadius()+"\n");
+		      output.write(imagePlusInput.getTitle()+"\t"+measure3D.computeVolumeObject(imagePlusInput,255)+"\t"+measure3D.computeFlatnessObject(imagePlusInput,255)
+		    		  +"\t"+ measure3D.computeElongationObject(imagePlusInput,255)+"\t"+measure3D.computeSphericity(volume, surfacicArea)
+		    		  +"\t"+measure3D.equivalentSphericalRadius(imagePlusInput,255)+"\t"+surfacicArea+"\n");
 		  }
 		  else
 		  {
 			  FileWriter fw = new FileWriter(fileResu, true);
 		      output = new BufferedWriter(fw);
-		      output.write("NucleusFileName\tVolume\tFlatness\tElongation\tSphericity\tEsr\n"+
-		    		  _imagePlusBinary.getTitle()+"\t"+gp3d.computeVolumeObject()+"\t"+sp3d.computeFlatnessObject()+"\t"+
-		    		  sp3d.computeElongationObject()+"\t"+sp3d.computeSphericity()+"\t"+gp3d.equivalentSphericalRadius()+"\n");
+		      output.write("NucleusFileName\tVolume\tFlatness\tElongation\tSphericity\tEsr\tSurfacicArea\t\n"+
+		    		  imagePlusInput.getTitle()+"\t"+measure3D.computeVolumeObject(imagePlusInput,255)+"\t"+measure3D.computeFlatnessObject(imagePlusInput,255)+"\t"+
+		    		  measure3D.computeElongationObject(imagePlusInput,255)+"\t"+measure3D.computeSphericity(volume, surfacicArea)
+		    		  +"\t"+measure3D.equivalentSphericalRadius(imagePlusInput,255)+"\t"+surfacicArea+"\n");
 		  } 
 		  output.flush();
 		  output.close();   
@@ -75,16 +70,17 @@ public class NucleusAnalysis
 	  /**
 	   * 
 	   */
-	  public void nucleusParameter3D ()
+	  public void nucleusParameter3D (ImagePlus imagePlusInput)
 	  {
-		  Measure3D gp3d = new Measure3D (_imagePlusBinary,255);
-		  ShapeParameters3D sp3d = new ShapeParameters3D (_imagePlusBinary,255);
-		 
+		  Measure3D measure3D = new Measure3D ();
+		  double volume = measure3D.computeVolumeObject(imagePlusInput,255);
+		  double surfacicArea = measure3D.computeSurfaceObject(imagePlusInput,255);
 		  
 		  IJ.log("3D parameters");
-		  IJ.log("ImageTitle Volume Flatness Elongation Sphericity Esr");
-		  IJ.log(_imagePlusBinary.getTitle()+" "+gp3d.computeVolumeObject()+" "+sp3d.computeFlatnessObject()+" "+sp3d.computeElongationObject()
-				  +" "+sp3d.computeSphericity()+" "+gp3d.equivalentSphericalRadius());
+		  IJ.log("NucleusFileName Volume Flatness Elongation Sphericity Esr SurfacicArea");
+		  IJ.log(imagePlusInput.getTitle()+"\t"+measure3D.computeVolumeObject(imagePlusInput,255)+"\t"+measure3D.computeFlatnessObject(imagePlusInput,255)
+	    		  +"\t"+ measure3D.computeElongationObject(imagePlusInput,255)+"\t"+measure3D.computeSphericity(volume, surfacicArea)
+	    		  +"\t"+measure3D.equivalentSphericalRadius(imagePlusInput,255)+"\t"+surfacicArea+"\n");
 	  }
 
 	  /**
@@ -92,9 +88,10 @@ public class NucleusAnalysis
 	   * @param pathFile
 	   * @throws IOException
 	   */
-	  public void nucleusParameter2D (String pathFile) throws IOException
+	  public void nucleusParameter2D (String pathFile,ImagePlus imagePlusInput) throws IOException
 	  {
-		  SapheParameters2D sp2d = new SapheParameters2D (_imagePlusBinary);
+		  Measure2D measure2D = new Measure2D ();
+		  measure2D.run(imagePlusInput);
 		  File fileResu = new File (pathFile);
 		  boolean exist = fileResu.exists();
 		  BufferedWriter output;
@@ -102,27 +99,30 @@ public class NucleusAnalysis
 		  {
 			  FileWriter fw = new FileWriter(fileResu, true);
 		      output = new BufferedWriter(fw);
-		      output.write(_imagePlusBinary.getTitle()+"\t"+sp2d.getAspectRatio()+"\t"+sp2d.getCirculairty()+"\n");
+		      output.write(imagePlusInput.getTitle()+"\t"+measure2D.getAspectRatio()+"\t"+measure2D.getCirculairty()+"\n");
 		  }
 		  else
 		  {
 			  FileWriter fw = new FileWriter(fileResu, true);
 		      output = new BufferedWriter(fw);
 		      output.write("ImageTitle\tAspectRatio\tCircularity\n"+
-		    		  _imagePlusBinary.getTitle()+"\t"+sp2d.getAspectRatio()+"\t"+sp2d.getCirculairty()+"\n");
+		    		  imagePlusInput.getTitle()+"\t"+measure2D.getAspectRatio()+"\t"+measure2D.getCirculairty()+"\n");
 		  } 
 		  output.flush();
 		  output.close();   
 	  }
 	  
+
 	  /**
 	   * 
+	   * @param imagePlusInput
 	   */
-	  public void nucleusParameter2D ()
+	  public void nucleusParameter2D (ImagePlus imagePlusInput)
 	  {
-		  SapheParameters2D sp2d = new SapheParameters2D (_imagePlusBinary);
+		  Measure2D measure2D = new Measure2D ();
+		  measure2D.run(imagePlusInput);
 		  IJ.log("2D parameters");
 		  IJ.log("ImageTitle AspectRatio Circularity");
-		  IJ.log(_imagePlusBinary.getTitle()+" "+sp2d.getAspectRatio()+" "+sp2d.getCirculairty());
+		  IJ.log(imagePlusInput.getTitle()+" "+measure2D.getAspectRatio()+" "+measure2D.getCirculairty());
 	  }
 }

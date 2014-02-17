@@ -1,12 +1,10 @@
 package gred.nucleus.plugins;
 import gred.nucleus.core.Measure3D;
-import gred.nucleus.core.ShapeParameters3D;
 import gred.nucleus.utils.Histogram;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
 import ij.plugin.PlugIn;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -22,24 +20,10 @@ import java.util.logging.Logger;
 public class ComputeParemeter3D_ implements PlugIn
 {
 	/** image to process*/
-	ImagePlus _imagePlus;
+	private ImagePlus _imagePlus;
 	/** */
-	String _outFile;
-	/** */
-	boolean _oneObject = true;
-	/** */
-	double _flatness;
-	/** */
-	double _elongation;
-	/** */
-	double _volume;
-	/** */
-	double _sphericity;
-	/** */
-	double _esr;
-	/** */
-	double _surfacicArea;  
- 
+	private String _outFile;
+
 	@Override
 	public void run(String arg)
 	{
@@ -79,14 +63,13 @@ public class ComputeParemeter3D_ implements PlugIn
 			
 			for (int i = 0; i < temp.length; ++i)
 			{
-				Measure3D gp3d = new Measure3D (_imagePlus,temp[i]);
-				ShapeParameters3D sp3d = new ShapeParameters3D (_imagePlus,temp[i]);
-				_volume = gp3d.computeVolumeObject();
-				_esr = gp3d.equivalentSphericalRadius();
-				_surfacicArea = gp3d.computeSurfaceObject();
-				_elongation = sp3d.computeElongationObject();
-				_flatness = sp3d.computeFlatnessObject();
-				_sphericity = sp3d.computeSphericity();
+				Measure3D measure3D = new Measure3D ();
+				double volume = measure3D.computeVolumeObject(_imagePlus,temp[i]);
+				double esr = measure3D.equivalentSphericalRadius(_imagePlus,temp[i] );
+				double surfacicArea = measure3D.computeSurfaceObject(_imagePlus,temp[i]);
+				double elongation = measure3D.computeElongationObject(_imagePlus,temp[i]);
+				double flatness = measure3D.computeFlatnessObject(_imagePlus,temp[i]);
+				double sphericity = measure3D.computeSphericity(volume,temp[i]);
 				File fileResu = new File (_outFile);
 				boolean exist = fileResu.exists();
 				BufferedWriter output;
@@ -94,16 +77,16 @@ public class ComputeParemeter3D_ implements PlugIn
 				{
 					FileWriter fw = new FileWriter(fileResu, true);
 					output = new BufferedWriter(fw);
-					if (temp.length == 1) output.write(_imagePlus.getTitle()+"\t"+_volume+"\t"+_sphericity+"\t"+_flatness+"\t"+_elongation+"\n");
-					else output.write(_imagePlus.getTitle()+""+i+"\t"+_volume+"\t"+_sphericity+"\t"+_flatness+"\t"+_elongation+"\n");
+					if (temp.length == 1) output.write(_imagePlus.getTitle()+"\t"+volume+"\t"+sphericity+"\t"+flatness+"\t"+"\t"+surfacicArea+"\t"+esr+"\n");
+					else output.write(_imagePlus.getTitle()+""+i+"\t"+volume+"\t"+sphericity+"\t"+flatness+"\t"+"\t"+surfacicArea+"\t"+esr+"\n");
  				}
 				else
 				{
 					FileWriter fw = new FileWriter(fileResu, true);
 					output = new BufferedWriter(fw);
-					output.write("ImageTitle\tVolume\tsphericity\tflatness\telongation\n");
-					if (temp.length == 1) output.write(_imagePlus.getTitle()+"\t"+_volume+"\t"+_sphericity+"\t"+_flatness+"\t"+_elongation+"\n");
-					else output.write(_imagePlus.getTitle()+""+i+"\t"+_volume+"\t"+_sphericity+"\t"+_flatness+"\t"+_elongation+"\n");
+					output.write("ImageTitle\tVolume\tsphericity\tflatness\telongation\tSurfacic Area\tESR\n");
+					if (temp.length == 1) output.write(_imagePlus.getTitle()+"\t"+volume+"\t"+sphericity+"\t"+flatness+"\t"+elongation+"\t"+surfacicArea+"\t"+esr+"\n");
+					else output.write(_imagePlus.getTitle()+""+i+"\t"+volume+"\t"+sphericity+"\t"+flatness+"\t"+elongation+"\t"+surfacicArea+"\t"+esr+"\n");
 				} 
 				output.flush();
 				output.close();   

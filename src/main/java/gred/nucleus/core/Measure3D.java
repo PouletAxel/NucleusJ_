@@ -284,24 +284,13 @@ public class Measure3D
 		}
 		return tabVoxelRecord;
 	}
-	
-
 	/**
-	 * Method wich compute the mean of the value in the table
-	 * @param tabInput Table of value
-	 * @return Mean of the table
+	 * 
+	 * @param imagePlusInput
+	 * @param imagePlusBinary
+	 * @param imagePlusChromocenter
+	 * @return
 	 */
-
-  
-	public double computeMeanOfTable (double tabInput[])
-	{
-		int i;
-		double mean = 0;
-		for (i = 0; i < tabInput.length; ++i)  mean += tabInput[i];
-		mean = mean / (tabInput.length);
-		return mean;
-	}//computeMeanOfTable
-	
 	public double computeRhfIntensite (ImagePlus imagePlusInput, ImagePlus imagePlusBinary, ImagePlus imagePlusChromocenter )
 	  {
 	    double ccIntensity = 0, nucleusIntensity = 0;
