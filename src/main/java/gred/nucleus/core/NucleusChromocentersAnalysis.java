@@ -13,10 +13,6 @@ import ij.measure.Calibration;
 
 public class NucleusChromocentersAnalysis
 {
-	 
-
-	 
-
 	  /**
 	   * Constructor
 	   * Recuperation of data and of images to determine the differents parameters

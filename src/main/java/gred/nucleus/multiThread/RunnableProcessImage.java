@@ -46,16 +46,16 @@ public class RunnableProcessImage extends Thread implements Runnable
 			ImagePlus contrast = arrayList.get(1);
 			contrast.setTitle(_imagePlus.getTitle());
 			saveFile (contrast,_workDir+File.separator+"Contrast");
-			NucleusAnalysis na = new NucleusAnalysis(binaire);
+			NucleusAnalysis nucleusAnalysis = new NucleusAnalysis();
 			try
 			{
 				if (_isanalysis2D3D)
 				{
-					na.nucleusParameter3D(_workDir+File.separator+"3DNucleiParameters.tab");
-					na.nucleusParameter2D(_workDir+File.separator+"2DNucleiParameters.tab");
+					nucleusAnalysis.nucleusParameter3D(_workDir+File.separator+"3DNucleiParameters.tab",binaire);
+					nucleusAnalysis.nucleusParameter2D(_workDir+File.separator+"2DNucleiParameters.tab",binaire);
 				}
-				else if(_isanalysis3D)  na.nucleusParameter3D(_workDir+File.separator+"3DNucleiParameters.tab");
-				else na.nucleusParameter2D(_workDir+File.separator+"2DNucleiParameters.tab");
+				else if(_isanalysis3D)  nucleusAnalysis.nucleusParameter3D(_workDir+File.separator+"3DNucleiParameters.tab",binaire);
+				else nucleusAnalysis.nucleusParameter2D(_workDir+File.separator+"2DNucleiParameters.tab",binaire);
 			}
 			catch (IOException e) {	e.printStackTrace();	}
 		}

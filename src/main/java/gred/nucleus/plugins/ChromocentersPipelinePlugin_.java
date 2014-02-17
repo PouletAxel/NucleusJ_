@@ -48,9 +48,9 @@ public class ChromocentersPipelinePlugin_   implements PlugIn
      	gd.addRadioButtonGroup("Type of OutPut ", new String[]{"Nucleus and chromocenter parameters","Chromocenter parameters","Nucleus parameters"}, 3, 1, "Nucleus and chromocenter parameters");
 		gd.showDialog();
         if (gd.wasCanceled())   return;
-        ImagePlus ipRawImage =  WindowManager.getImage(wList[gd.getNextChoiceIndex()]);
-        ImagePlus ipCcSeg =  WindowManager.getImage(wList[gd.getNextChoiceIndex()]);
-        ImagePlus ipNucSeg =  WindowManager.getImage(wList[gd.getNextChoiceIndex()]);
+        ImagePlus imagePlusRaw =  WindowManager.getImage(wList[gd.getNextChoiceIndex()]);
+        ImagePlus imagePlusChromocenter =  WindowManager.getImage(wList[gd.getNextChoiceIndex()]);
+        ImagePlus imagePlusBinary =  WindowManager.getImage(wList[gd.getNextChoiceIndex()]);
         x = gd.getNextNumber();
         y = gd.getNextNumber();
         z = gd.getNextNumber();
@@ -62,26 +62,26 @@ public class ChromocentersPipelinePlugin_   implements PlugIn
         cal.pixelWidth = x;
         cal.pixelHeight = y;
         cal.setUnit(unit);
-        ipRawImage.setCalibration(cal);
-        ipCcSeg.setCalibration(cal);
-        ipNucSeg.setCalibration(cal);
+        imagePlusRaw.setCalibration(cal);
+        imagePlusChromocenter.setCalibration(cal);
+        imagePlusBinary.setCalibration(cal);
         
         if (choiceOutput.equals("Nucleus and chromocenter parameters"))
         {
-        	 ChromocenterAnalysis ca = new ChromocenterAnalysis(ipCcSeg,ipNucSeg);
-             ca.computeParametersChromocenter();
-             NucleusChromocentersAnalysis naacc = new NucleusChromocentersAnalysis(ipRawImage,ipCcSeg,ipNucSeg); 
-             naacc.computeParameters(choiceRhf);
+        	 ChromocenterAnalysis chromocenterAnalysis = new ChromocenterAnalysis();
+             chromocenterAnalysis.computeParametersChromocenter(imagePlusBinary,imagePlusChromocenter);
+             NucleusChromocentersAnalysis ucleusChromocentersAnalysis = new NucleusChromocentersAnalysis(); 
+             ucleusChromocentersAnalysis.computeParameters(choiceRhf, imagePlusRaw, imagePlusBinary, imagePlusChromocenter);
         }
         else if (choiceOutput.equals("Chromocenter parameters"))
         {
-        	ChromocenterAnalysis ca = new ChromocenterAnalysis(ipCcSeg,ipNucSeg);
-            ca.computeParametersChromocenter();
+        	ChromocenterAnalysis chromocenterAnalysis = new ChromocenterAnalysis();
+            chromocenterAnalysis.computeParametersChromocenter(imagePlusBinary,imagePlusChromocenter);
         }
         else
         {
-        	NucleusChromocentersAnalysis naacc = new NucleusChromocentersAnalysis(ipRawImage,ipCcSeg,ipNucSeg); 
-            naacc.computeParameters(choiceRhf);
+            NucleusChromocentersAnalysis ucleusChromocentersAnalysis = new NucleusChromocentersAnalysis(); 
+            ucleusChromocentersAnalysis.computeParameters(choiceRhf, imagePlusRaw, imagePlusBinary, imagePlusChromocenter);
         }
 	}
 }

@@ -22,104 +22,94 @@ import gred.nucleus.utils.ListerFichier;
  */
 public class ChromocentersPipelineBatchPlugin_ implements PlugIn
 {
-	/** Voxel calibration in µm*/
-	double _dimX, _dimY, _dimZ;
-	/** Voxel unit*/
-	String _unit, _workDirectory;
-	/**	 */
-	double _segMin, _segMax;
-	/** */
-	String[] _tFile;
-	/** */
-	private ListerFichier _lF;
-	
+		
 	/**
 	 * 
 	 */
 	public void run(String arg)
 	{
-		ChromocentersPipelineBatchDialog jfpfso = new ChromocentersPipelineBatchDialog();
+		ChromocentersPipelineBatchDialog chromocentersPipelineBatchDialog = new ChromocentersPipelineBatchDialog();
 	
-		while( jfpfso.isShowing())
+		while( chromocentersPipelineBatchDialog.isShowing())
 		{
 			try {Thread.sleep(1);}
 			catch (InterruptedException e) {e.printStackTrace();}
 	    }	
-		if (jfpfso.isStart())
+		if (chromocentersPipelineBatchDialog.isStart())
 		{
-			_lF = new ListerFichier (jfpfso.getDirRawData());
-			_lF.run();
-			if (_lF.isDirectoryOrFIleExist(".+RawDataNucleus.+") && _lF.isDirectoryOrFIleExist(".+SegmentedDataNucleus.+")&& _lF.isDirectoryOrFIleExist(".+SegmentedDataCc.+"))
+			ListerFichier listerFichier = new ListerFichier (chromocentersPipelineBatchDialog.getDirRawData());
+			listerFichier.run();
+			if (listerFichier.isDirectoryOrFIleExist(".+RawDataNucleus.+") && listerFichier.isDirectoryOrFIleExist(".+SegmentedDataNucleus.+")&& listerFichier.isDirectoryOrFIleExist(".+SegmentedDataCc.+"))
 			{
-				_dimX =jfpfso.getx();
-				_dimY = jfpfso.gety();
-				_dimZ = jfpfso.getz();
-				_unit = jfpfso.getUnit();
+				double dimX =chromocentersPipelineBatchDialog.getx();
+				double dimY = chromocentersPipelineBatchDialog.gety();
+				double dimZ = chromocentersPipelineBatchDialog.getz();
+				String unit = chromocentersPipelineBatchDialog.getUnit();
 				
 				String choiceRhf;
-				if (jfpfso.isRHFVolumeAndIntensity())	choiceRhf = "Volume and intensity";
-				else if (jfpfso.isRhfVolume())	choiceRhf = "Volume";
+				if (chromocentersPipelineBatchDialog.isRHFVolumeAndIntensity())	choiceRhf = "Volume and intensity";
+				else if (chromocentersPipelineBatchDialog.isRhfVolume())	choiceRhf = "Volume";
 				else choiceRhf = "Intensity";
 				
-				ArrayList<String> imageCc = _lF.fileSearchList(".+SegmentedDataCc.+");
-				_workDirectory = jfpfso.getWorkDirectory();
-				String nameFileCcNuc = _workDirectory+File.separator+"NucAndCcParameters.tab";
-				String nameFileCc = _workDirectory+File.separator+"CcParameters.tab";
+				ArrayList<String> imageCc = listerFichier.fileSearchList(".+SegmentedDataCc.+");
+				String workDirectory = chromocentersPipelineBatchDialog.getWorkDirectory();
+				String nameFileCcNuc = workDirectory+File.separator+"NucAndCcParameters.tab";
+				String nameFileCc = workDirectory+File.separator+"CcParameters.tab";
 				for (int i = 0; i < imageCc.size(); ++i)
 				{
 					IJ.log("image"+(i+1)+" / "+(imageCc.size())+"   "+imageCc.get(i));
-					String plopi = imageCc.get(i);
-					String nucRaw = plopi.replaceAll("SegmentedDataCc", "RawDataNucleus");
-					String nucBinary= plopi.replaceAll("SegmentedDataCc", "SegmentedDataNucleus");
-					IJ.log(nucRaw);
-					IJ.log(nucBinary);
+					String pathImageChromocenter = imageCc.get(i);
+					String pathNucleusRaw = pathImageChromocenter.replaceAll("SegmentedDataCc", "RawDataNucleus");
+					String pathNucleusBinary= pathImageChromocenter.replaceAll("SegmentedDataCc", "SegmentedDataNucleus");
+					IJ.log(pathNucleusRaw);
+					IJ.log(pathNucleusBinary);
 				
-					if (_lF.isDirectoryOrFIleExist(nucRaw) && _lF.isDirectoryOrFIleExist(nucBinary))
+					if (listerFichier.isDirectoryOrFIleExist(pathNucleusRaw) && listerFichier.isDirectoryOrFIleExist(pathNucleusBinary))
 					{
-						ImagePlus ipCc = IJ.openImage(imageCc.get(i));
-						ImagePlus ipNucBin = IJ.openImage(nucBinary);
-						ImagePlus ipRawNuc = IJ.openImage(nucRaw);
+						ImagePlus imagePlusChromocenter = IJ.openImage(imageCc.get(i));
+						ImagePlus imagePlusBinary = IJ.openImage(pathNucleusBinary);
+						ImagePlus imagePlusRaw = IJ.openImage(pathNucleusRaw);
 						Calibration cal = new Calibration();
-						cal.pixelDepth = _dimZ;
-						cal.pixelWidth = _dimX;
-						cal.pixelHeight = _dimY;
-						cal.setUnit(_unit);
-						ipCc.setCalibration(cal);
-						ipNucBin.setCalibration(cal);
-						ipRawNuc.setCalibration(cal);
+						cal.pixelDepth = dimZ;
+						cal.pixelWidth = dimX;
+						cal.pixelHeight = dimY;
+						cal.setUnit(unit);
+						imagePlusChromocenter.setCalibration(cal);
+						imagePlusBinary.setCalibration(cal);
+						imagePlusRaw.setCalibration(cal);
 						
 						try
 						{
-							if (jfpfso.isNucAndCcAnalysis())
+							if (chromocentersPipelineBatchDialog.isNucAndCcAnalysis())
 							{
-								ChromocenterAnalysis ca = new ChromocenterAnalysis(ipCc,ipNucBin);
-								IJ.log("ca compute");
-								ca.computeParametersChromocenter(nameFileCc);
-								NucleusChromocentersAnalysis naacc = new NucleusChromocentersAnalysis(ipRawNuc,ipCc,ipNucBin); 
-								IJ.log("naac compute");
-								naacc.computeParameters(nameFileCcNuc,choiceRhf);
+								ChromocenterAnalysis chromocenterAnalysis = new ChromocenterAnalysis();
+								chromocenterAnalysis.computeParametersChromocenter(nameFileCc,imagePlusBinary,imagePlusChromocenter);
+								IJ.log("chromocenter analysis is computing ...");
+								NucleusChromocentersAnalysis nucleusChromocenterAnalysis = new NucleusChromocentersAnalysis(); 
+								IJ.log("nucleusChromocenterAnalysis is computing...");
+								nucleusChromocenterAnalysis.computeParameters(nameFileCcNuc,choiceRhf, imagePlusRaw, imagePlusBinary, imagePlusChromocenter);
 							}
-							else if (jfpfso.isCcAnalysis())
+							else if (chromocentersPipelineBatchDialog.isCcAnalysis())
 							{
-								ChromocenterAnalysis ca = new ChromocenterAnalysis(ipCc,ipNucBin);
-								ca.computeParametersChromocenter(nameFileCc);
+								ChromocenterAnalysis chromocenterAnalysis = new ChromocenterAnalysis();
+								chromocenterAnalysis.computeParametersChromocenter(nameFileCc,imagePlusBinary,imagePlusChromocenter);
 							}
 							else
 							{
-								NucleusChromocentersAnalysis naacc = new NucleusChromocentersAnalysis(ipRawNuc,ipCc,ipNucBin); 
-								naacc.computeParameters(nameFileCcNuc,choiceRhf);
+								NucleusChromocentersAnalysis nucleusChromocenterAnalysis = new NucleusChromocentersAnalysis(); 
+								nucleusChromocenterAnalysis.computeParameters(nameFileCcNuc,choiceRhf, imagePlusRaw, imagePlusBinary, imagePlusChromocenter);
 							}
 						}
 						catch (IOException e) {	e.printStackTrace(); }
 					}
 					else
 					{
-						IJ.log("Image name problem :  the image "+plopi+" is not find in the directory SegmentedDataNucleusor or RawDataNucleus, see nameProblem.txt in "+_workDirectory);
+						IJ.log("Image name problem :  the image "+pathImageChromocenter+" is not find in the directory SegmentedDataNucleusor or RawDataNucleus, see nameProblem.txt in "+workDirectory);
 						BufferedWriter output;
 					    try
 					    {
-					    	 output = new BufferedWriter(new FileWriter(_workDirectory+File.separator+"nameProblem.txt", true));
-					    	 output.write(plopi+"\n");
+					    	 output = new BufferedWriter(new FileWriter(workDirectory+File.separator+"nameProblem.txt", true));
+					    	 output.write(pathImageChromocenter+"\n");
 					    	 output.flush();
 					    	 output.close();  
 					    }

@@ -24,13 +24,7 @@ public class ComputeParameters2D_ implements PlugIn
   ImagePlus _imagePlus;
   /** output file to stock the computed parameters*/
   String _outFile;
-  /** Boolean to test if the image contains only one object*/
-  boolean _oneObject = true;
-  /** Aspect ratio variable*/
-  double _AR;
-  /** circularity variable*/
-  double _circ;
- 
+
 
   /**
    * Plugin charge a image on input on imagej and compute the
@@ -66,13 +60,14 @@ public class ComputeParameters2D_ implements PlugIn
 
   public void computeParameters() throws IOException
   {
-	  Histogram hist = new Histogram(_imagePlus);
-	  HashMap<Double , Integer> hHisto = hist.getHisto();
+	  Histogram histogram = new Histogram(_imagePlus);
+	  HashMap<Double , Integer> hHisto = histogram.getHisto();
 	  if (hHisto.size() == 1 )
 	  {
-		  Measure2D gp2d = new Measure2D (_imagePlus);
-		  _AR = gp2d.getAspectRatio();
-		  _circ = gp2d.getCirculairty();
+		  Measure2D measure2D = new Measure2D ();
+		  measure2D.run(_imagePlus);
+		  double aspectRatio = measure2D.getAspectRatio();
+		  double circularity = measure2D.getCirculairty();
 		  File fileResu = new File (_outFile);
 		  boolean exist = fileResu.exists();
 		  BufferedWriter output;
@@ -80,13 +75,13 @@ public class ComputeParameters2D_ implements PlugIn
 		  {
 			  FileWriter fw = new FileWriter(fileResu, true);
 			  output = new BufferedWriter(fw);
-			  output.write(_imagePlus.getTitle()+"\t"+_AR+"\t"+_circ+"\n");
+			  output.write(_imagePlus.getTitle()+"\t"+aspectRatio+"\t"+circularity+"\n");
 		  }
 		  else
 		  {
 			  FileWriter fw = new FileWriter(fileResu, true);
 			  output = new BufferedWriter(fw);
-			  output.write("NucleusFileName\tAspectRatio\tCircularity\n"+_imagePlus.getTitle()+"\t"+_AR+"\t"+_circ+"\n");
+			  output.write("NucleusFileName\tAspectRatio\tCircularity\n"+_imagePlus.getTitle()+"\t"+aspectRatio+"\t"+circularity+"\n");
 		  } 
 				output.flush();
 				output.close();   
@@ -94,4 +89,3 @@ public class ComputeParameters2D_ implements PlugIn
 		else {IJ.showMessage("there are no object in your image!!!!!!!!!!!!!!!");}
   }  
 }
-

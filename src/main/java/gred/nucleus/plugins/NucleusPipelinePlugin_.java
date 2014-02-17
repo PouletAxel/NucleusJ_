@@ -41,21 +41,21 @@ public class NucleusPipelinePlugin_ implements PlugIn
 			return;
 		}
 		if (IJ.versionLessThan("1.32c"))   return;
-		NucleusPipelineDialog dialog = new NucleusPipelineDialog();
-		while( dialog.isShowing())
+		NucleusPipelineDialog nucleusPipelineDialog = new NucleusPipelineDialog();
+		while( nucleusPipelineDialog.isShowing())
 		{
 	    	 try {Thread.sleep(1);}
 	    	 catch (InterruptedException e) {e.printStackTrace();}
 	    }
 	   
-		if (dialog.isStart())
+		if (nucleusPipelineDialog.isStart())
 		{
-			double dimX =dialog.getx();
-			double dimY = dialog.gety();
-			double dimZ = dialog.getz();
-			String unit = dialog.getUnit();
-			double vmin = dialog.getMinSeg();
-			double vmax = dialog.getMaxSeg();
+			double dimX =nucleusPipelineDialog.getx();
+			double dimY = nucleusPipelineDialog.gety();
+			double dimZ = nucleusPipelineDialog.getz();
+			String unit = nucleusPipelineDialog.getUnit();
+			double vmin = nucleusPipelineDialog.getMinSeg();
+			double vmax = nucleusPipelineDialog.getMaxSeg();
 			Calibration cal = new Calibration();
 			cal.pixelDepth = dimZ;
 			cal.pixelWidth = dimX;
@@ -74,14 +74,14 @@ public class NucleusPipelinePlugin_ implements PlugIn
 				ImagePlus contrast = arrayList.get(1);
 				contrast.setTitle("Contrast_"+_imagePlus.getTitle());
 				contrast.show();
-				NucleusAnalysis na = new NucleusAnalysis(binaire);
-				if (dialog.isTheBoth())
+				NucleusAnalysis nucleusAnalysis = new NucleusAnalysis();
+				if (nucleusPipelineDialog.isTheBoth())
 				{
-					na.nucleusParameter3D();
-					na.nucleusParameter2D();
+					nucleusAnalysis.nucleusParameter3D(binaire);
+					nucleusAnalysis.nucleusParameter2D(binaire);
 				}
-				else if(dialog.is3D())  na.nucleusParameter3D();
-				else na.nucleusParameter2D();
+				else if(nucleusPipelineDialog.is3D())  nucleusAnalysis.nucleusParameter3D(binaire);
+				else nucleusAnalysis.nucleusParameter2D(binaire);
 			}
 		}
 	}
