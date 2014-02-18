@@ -14,10 +14,6 @@ import ij.process.*;
  */
 public class ChromocentersSegmentation
 {
-	/** Image deconvolved*/
-	ImagePlus _imagePlusDeconv;
-	/** Image results of watershed*/
-	ImagePlus _imagePlusWatershed;
 
 	/**
 	 *Contructor
@@ -25,23 +21,17 @@ public class ChromocentersSegmentation
 	 * @param imagePlusWatershed Image results of the watershed
 	 */
 
-	public ChromocentersSegmentation (ImagePlus imagePlusDeconv, ImagePlus imagePlusWatershed)
-	{
-		_imagePlusDeconv = imagePlusDeconv;
-		_imagePlusWatershed = imagePlusWatershed ;
-		imagePlusWatershed.setTitle("plopi");
-		imagePlusWatershed.show();
-	}
+	public ChromocentersSegmentation (){	}
 
 	/**
 	 * Run the compute and the creation of the image contrast, of the image deconvolved
 	 * @return Image contrast
 	 */
 
-	public ImagePlus applyContrast()
+	public ImagePlus applyContrast(ImagePlus imagePlusInput, ImagePlus imagePlusWatershed)
 	{
-		double contrast [] = computeContrast ();
-		ImagePlus imagePlusOutput = computeImage (_imagePlusWatershed, contrast);
+		double contrast [] = computeContrast (imagePlusInput,imagePlusWatershed);
+		ImagePlus imagePlusOutput = computeImage (imagePlusWatershed, contrast);
 		return imagePlusOutput;
 	}
 
@@ -51,17 +41,17 @@ public class ChromocentersSegmentation
 	 * @return Region adjacency graph (RAG)
 	 */
 
-	public double [][] getRag ()
+	public double [][] getRag (ImagePlus imagePlusWatershed)
 	{
 		int i, j, k, ii, jj, kk, voxelValue, neigVoxelValue;
-		ImageStatistics stats = new StackStatistics(_imagePlusWatershed);
-		double rag[][] = new double [(int)stats.histMax + 1] [(int)stats.histMax + 1];
-		Calibration calibration=_imagePlusWatershed.getCalibration();
+		ImageStatistics statistics = new StackStatistics(imagePlusWatershed);
+		double rag[][] = new double [(int)statistics.histMax + 1] [(int)statistics.histMax + 1];
+		Calibration calibration = imagePlusWatershed.getCalibration();
 		double volumeVoxel = calibration.pixelWidth * calibration.pixelHeight * calibration.pixelDepth;
-		ImageStack imageStackWatershed = _imagePlusWatershed.getStack();
-		for (k = 0; k < _imagePlusWatershed.getNSlices(); ++k)
-			for (i = 0; i < _imagePlusWatershed.getWidth(); ++i)
-				for (j = 0; j < _imagePlusWatershed.getHeight(); ++j)
+		ImageStack imageStackWatershed = imagePlusWatershed.getStack();
+		for (k = 0; k < imagePlusWatershed.getNSlices(); ++k)
+			for (i = 0; i < imagePlusWatershed.getWidth(); ++i)
+				for (j = 0; j < imagePlusWatershed.getHeight(); ++j)
 				{
 					voxelValue = (int)imageStackWatershed.getVoxel(i,j,k);
 					for (kk = k - 1; kk <= k + 1; kk += 2)
@@ -92,10 +82,10 @@ public class ChromocentersSegmentation
 	 */
 
 	
-	public double [] computeContrast ()
+	public double [] computeContrast (ImagePlus imagePlusInput,ImagePlus imagePlusWatershed)
 	{
-		double rag[][] = getRag();
-		double mean[] = computeMeanIntensity ();
+		double rag[][] = getRag(imagePlusWatershed);
+		double mean[] = computeMeanIntensity (imagePlusInput,imagePlusWatershed);
 		double tabContrast[]= new double [rag.length+1];
 		double neigbVolumeTotal;
 		int i,j;
@@ -122,11 +112,11 @@ public class ChromocentersSegmentation
 	 * @return new value of region
 	 */
 
-	public double [] topHat ()
+	public double [] topHat (ImagePlus imagePlusInput,ImagePlus imagePlusWatershed)
 	{
-		double tabIntensite[] = computeMeanIntensity ();
-		double rag[][] = getRag();
-		double tabOuverture[] =  ouverture(rag);
+		double tabIntensite[] = computeMeanIntensity (imagePlusInput,imagePlusWatershed);
+		double rag[][] = getRag(imagePlusWatershed);
+		double tabOuverture[] =  ouverture(rag,imagePlusInput,imagePlusWatershed);
 		double tabContrast[] = new double [rag.length+1];
 		for(int i = 1; i < rag.length; ++i)
 			tabContrast[i] = tabIntensite[i] - tabOuverture[i];
@@ -180,9 +170,9 @@ public class ChromocentersSegmentation
    	* @return new value of region
    	*/
 
-	public double [] fermeture( double rag [][])
+	public double [] fermeture( double rag [][],ImagePlus imagePlusInput,ImagePlus imagePlusWatershed)
 	{
-		double tabIntensite[] = computeMeanIntensity ();
+		double tabIntensite[] = computeMeanIntensity (imagePlusInput,imagePlusWatershed);
 		double max [] = FilterMaxRag (tabIntensite, rag);
 		return FilterMinRag (max, rag);
 	}
@@ -193,9 +183,9 @@ public class ChromocentersSegmentation
 	 * @return new value of region
 	 */
 	
-	public double [] ouverture (double rag [][])
+	public double [] ouverture (double rag [][],ImagePlus imagePlusInput,ImagePlus imagePlusWatershed)
 	{
-		double tabIntensite [] = computeMeanIntensity ();
+		double tabIntensite [] = computeMeanIntensity (imagePlusInput,imagePlusWatershed);
 		double min []  = FilterMinRag (tabIntensite, rag);
 		return FilterMaxRag (min, rag);
 	}
@@ -204,24 +194,24 @@ public class ChromocentersSegmentation
 	 * Compute the mean of value voxel for each region
 	 * @return Table of the mean intensity for each region
 	 */
-	public double [] computeMeanIntensity ()
+	public double [] computeMeanIntensity (ImagePlus imagePlusInput,ImagePlus imagePlusWatershed)
 	{
-		ImageStatistics stats = new StackStatistics(_imagePlusWatershed);
-		ImageStack imageStackWatershed = _imagePlusWatershed.getStack();
-		ImageStack imageStackDeconv = _imagePlusDeconv.getStack();
+		ImageStatistics stats = new StackStatistics(imagePlusWatershed);
+		ImageStack imageStackWatershed = imagePlusWatershed.getStack();
+		ImageStack imageStackInput = imagePlusInput.getStack();
 		double tabIntensiteTotal[] = new double [(int)stats.histMax + 1];
 		double tabIntensiteMoy[] = new double [(int)stats.histMax + 1];
 		int tabNbVoxelInEachRegion[] = new int [(int)stats.histMax + 1];
 		int i, j, k, voxelValue;
 
-		for (k = 0; k < _imagePlusWatershed.getNSlices(); ++k)
-			for (i = 0; i < _imagePlusWatershed.getWidth(); ++i)
-				for (j = 0; j < _imagePlusWatershed.getHeight(); ++j)
+		for (k = 0; k < imagePlusWatershed.getNSlices(); ++k)
+			for (i = 0; i < imagePlusWatershed.getWidth(); ++i)
+				for (j = 0; j < imagePlusWatershed.getHeight(); ++j)
 				{
 					voxelValue = (int) imageStackWatershed.getVoxel(i,j,k);
 					if (voxelValue > 0)
 					{
-						tabIntensiteTotal [voxelValue] += imageStackDeconv.getVoxel(i,j,k);
+						tabIntensiteTotal [voxelValue] += imageStackInput.getVoxel(i,j,k);
 						++tabNbVoxelInEachRegion [voxelValue];
 					}
 				}
@@ -237,11 +227,11 @@ public class ChromocentersSegmentation
 	 * @param tab table of a new value
 	 * @return a new image
 	 */
-	public ImagePlus computeImage (ImagePlus imagePlusLabellise, double tab [])
+	public ImagePlus computeImage (ImagePlus imagePlusContrast, double tab [])
 	{
 		int i, j, k;
 		double voxelValue;
-		ImagePlus imagePlusOutput = imagePlusLabellise.duplicate();
+		ImagePlus imagePlusOutput = imagePlusContrast.duplicate();
 		ImageStack imageStackOutput = imagePlusOutput.getStack();
 		for (k = 0; k < imagePlusOutput.getNSlices(); ++k)
 			for (i = 0; i < imagePlusOutput.getWidth(); ++i)

@@ -55,7 +55,7 @@ public class RadialDistance
 	 * nuclear envelope
 	 * @return Table of radial distance for each chromocenter
 	 */
-	public double[] computeBorderToBorderDistances (ImagePlus imagePlusChromocenter, ImagePlus imagePlusBinary)
+	public double[] computeBorderToBorderDistances (ImagePlus imagePlusBinary,ImagePlus imagePlusChromocenter)
 	{
 		Histogram histogram = new Histogram ();
 		histogram.run(imagePlusChromocenter);

@@ -141,8 +141,8 @@ public class NucleusPipeline
 	    ImagePlus ImagePlusLabels = ConnectedComponents.computeLabels(extrema, 26, 32);
 	    WatershedTransform3D  watershedTransform = new WatershedTransform3D(imagePlusGradient,ImagePlusLabels,imagePlusBinary);
 		imagePlusGradient = watershedTransform.apply();
-		ChromocentersSegmentation segmentationTools = new ChromocentersSegmentation(imagePlusInput,imagePlusGradient);
-    	return segmentationTools.applyContrast();
+		ChromocentersSegmentation segmentationTools = new ChromocentersSegmentation();
+    	return segmentationTools.applyContrast(imagePlusInput,imagePlusGradient);
 	}
 	
 	/**
