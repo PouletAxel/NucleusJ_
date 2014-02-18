@@ -9,7 +9,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,12 +54,11 @@ public class ComputeParemeter3D_ implements PlugIn
 	 */
 	public void computeParameters() throws IOException	
 	{
-		Histogram hist = new Histogram(_imagePlus);
-		HashMap<Double , Integer> hHisto = hist.getHisto();
-		if (hHisto.size() >= 1 )
+		Histogram histogram = new Histogram ();
+		histogram.run(_imagePlus);
+		if (histogram.getNbLabels() >= 1 )
 		{
-			double [] temp = hist.getLabel();
-			
+			double [] temp = histogram.getLabels();
 			for (int i = 0; i < temp.length; ++i)
 			{
 				Measure3D measure3D = new Measure3D ();

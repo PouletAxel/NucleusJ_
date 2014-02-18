@@ -57,8 +57,9 @@ public class RadialDistance
 	 */
 	public double[] computeBorderToBorderDistances (ImagePlus imagePlusChromocenter, ImagePlus imagePlusBinary)
 	{
-		Histogram histogram = new Histogram(imagePlusChromocenter);
-		double tabLabel[] = histogram.getLabel();
+		Histogram histogram = new Histogram ();
+		histogram.run(imagePlusChromocenter);
+		double tabLabel[] = histogram.getLabels();
 		Resizer resizer = new Resizer();
 		Calibration cal = imagePlusBinary.getCalibration();
 		double dimX = cal.pixelWidth;

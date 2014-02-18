@@ -6,7 +6,6 @@ import ij.plugin.filter.*;
 
 import java.util.ArrayList;
 
-import gred.nucleus.utils.*;
 
 /**
  * Class to detect the region minima from a 3D image gradient

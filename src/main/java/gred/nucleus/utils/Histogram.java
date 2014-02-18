@@ -15,77 +15,84 @@ import java.util.HashMap;
  */
 public class Histogram
 {
-	/**Input Image*/
-    private static ImagePlus _imagePlus;
-    /**Image Stack of the input image*/
-    private ImageStack _imageStack;
-    /** height, width, depth of image in voxel*/
-    private int _width, _height, _depth;
-    /** HashMap which stock the diffents value voxel and the number of voxel for each value present on the image*/
-    HashMap<Double , Integer> _hHisto = new HashMap <Double , Integer>() ;
-    /** All the value present on the image */
+	/** HashMap which stock the diffents value voxel and the number of voxel for each value present on the image*/
+	private  HashMap<Double , Integer> _hHistogram = new HashMap <Double , Integer>() ;
+	/** All the value present on the image */
     private double [] _label;
-    private double _maxValue;
+    /** */
+    private double _labelMax = -1;
     
     /**
-     * Constructor
-     * @param imagePlus
+     * 
      */
-    public Histogram (ImagePlus imagePlus)
-    {
-        _imagePlus = imagePlus;
-        _imageStack = _imagePlus.getStack();
-        _width = _imageStack.getWidth();
-        _height= _imageStack.getHeight();
-        _depth = _imageStack.getSize();
-        getLabel();
-    }
+    public Histogram () {    }
    
+    /**
+     * 
+     * @param imagePlusInput
+     */
+    public void run(ImagePlus imagePlusInput)
+    {
+    	Object[] temp = computeHistogram(imagePlusInput).keySet().toArray();
+    	_label = new double[temp.length];
+    	for (int i = 0; i < temp.length; ++i)   _label[i] = Double.parseDouble(temp[i].toString());
+    	Arrays.sort(_label);
+    	_labelMax = _label[_label.length-1];
+    	IJ.log("_labelMax "+_labelMax);
+    }
     
     /**
      * this method return a Histogram of the image input in hashMap form
      * 
      * @return 
      */
-    public HashMap<Double , Integer> getHisto()
+    private HashMap<Double , Integer> computeHistogram(ImagePlus imagePlusInput)
     {
-    	
-        double voxelValue;
-        for (int k = 0; k < _depth; ++k)
-            for (int i = 0; i < _width; ++i )
-                for (int j = 0; j < _height;++j )
+    	double voxelValue;
+        ImageStack imageStackInput = imagePlusInput.getImageStack();
+        for (int k = 0; k < imagePlusInput.getNSlices(); ++k)
+        	for (int i = 0; i < imagePlusInput.getWidth(); ++i )
+                for (int j = 0; j < imagePlusInput.getHeight();++j )
                 {
-                    voxelValue = _imageStack.getVoxel(i,j,k);
+                    voxelValue = imageStackInput.getVoxel(i,j,k);
                     if (voxelValue > 0 )
                     {
-                        if (_hHisto.containsKey(voxelValue))
+                        if (_hHistogram.containsKey(voxelValue))
                         {
-                            int a = _hHisto.get(voxelValue);
-                            ++a;
-                            _hHisto.put(voxelValue, a);
+                            int nbVoxel = _hHistogram.get(voxelValue);
+                            ++nbVoxel;
+                            _hHistogram.put(voxelValue, nbVoxel);
                         }
-                        else _hHisto.put(voxelValue, 1);
+                        else _hHistogram.put(voxelValue, 1);
                     }
                 }
-        return _hHisto;
+        return _hHistogram;
     }
     
     /**
      * this method return a double table which contain the all the value voxel present on the input image 
      * @return
      */
-    public double [] getLabel ()
-    {
-    	Object[] temp = getHisto().keySet().toArray();
-    	_label = new double[temp.length];
-    	for (int i = 0; i < temp.length; ++i)   _label[i] = Double.parseDouble(temp[i].toString());
-    	Arrays.sort(_label);
-    	_maxValue = _label[_label.length-1];
-    	return _label;
-    }//getLabelObject
+    public double [] getLabels ()    { 	return _label; }
     
-    public double getMaxValue()
+    /**
+     * 
+     * @return
+     */
+    public HashMap<Double , Integer> getHistogram() { 	return _hHistogram; }
+    /**
+     * 
+     * @return
+     */
+    public double getLabelMax()
     {
-    	return _maxValue;
+    	return _labelMax;
     }
+    
+    public int getNbLabels()
+    {
+    	return _hHistogram.size();
+    }
+    
+    
 }

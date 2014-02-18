@@ -9,50 +9,26 @@ import java.util.HashMap;
  *
  */
 
-public class ListerFichier
+public class FileList
 {
 	/**
 	 * Liste les fichiers du dossier et de ses sous dossier appartenant au dossier passe en entree
 	 * @param _repertoire repertoire passer en entree
 	 * @return liste des fichiers appartenant au repertoire
 	 */
-    
-	 File _directoryToScan ; 
-    public  File[] _tFile;
-     String _repertoire;
+	 File[] _tFile;
+
      /**
       * 
       * @param repertoire
       */
-     public ListerFichier(String repertoire)
-     {
-    	 _repertoire = repertoire;
-    	 _directoryToScan = new File (repertoire);
-    	 _tFile = _directoryToScan.listFiles();
-     }
+     public FileList() {   }
      /**
       * 
       */
-	public void run (){ 	repertoryFileList(); }
+	public File[]  run (String repertoire){ 	return repertoryFileList( repertoire); }
 	
 
-	/**
-	 * 
-	 */
-	public void repertoryFileList()
-    {    
-        for( int i = 0; i < _tFile.length; ++i)
-        {
-        	if (_tFile[i].isDirectory())
-            {
-                File[] tempAvElement = recupFileAv(i,_tFile);
-                File[] tempApElement = recupFileAp(i,_tFile);
-                File[] fichiersTemp = this.repertoryFileList(_tFile[i].toString());
-                if (fichiersTemp.length != 0)
-                  	_tFile= this.redim(tempAvElement, tempApElement, fichiersTemp, i);
-            }
-        } 
-    }
 	
 	/**
 	 * 
@@ -194,9 +170,9 @@ public class ListerFichier
      * 
      * @return
      */
-    public String[] getDirectoryfils ()
+    public String[] getDirectoryfils (String repertoire)
     {
-    	String [] ref = _repertoire.split("\\"+File.separator);
+    	String [] ref = repertoire.split("\\"+File.separator);
     	String [] t = new String [0];
     	ArrayList <String> al = new ArrayList <String>();
     	HashMap<String, Integer> dir = new HashMap<String, Integer>();

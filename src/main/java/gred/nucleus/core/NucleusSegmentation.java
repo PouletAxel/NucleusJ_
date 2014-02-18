@@ -1,11 +1,8 @@
 package gred.nucleus.core;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-
+import java.util.Map.Entry;
 import gred.nucleus.utils.FillingHoles;
 import gred.nucleus.utils.Histogram;
-import gred.nucleus.utils.LabelSelection;
 import ij.*;
 import ij.plugin.Filters3D;
 import ij.process.*;
@@ -34,10 +31,7 @@ public class NucleusSegmentation
 	 * @param imagePlusInput Image to be segmente
 	 */
 
-	public NucleusSegmentation ()
-	{
-
-	}
+	public NucleusSegmentation (){	}
   
 	/**
 	 * Compute the first threshold of input image with the method of Otsu
@@ -69,7 +63,7 @@ public class NucleusSegmentation
 			ImagePlus imagePlusBinTmp = generateBinaryImage(imagePlusInput,t);
 			morphoCorrection (imagePlusBinTmp);
 			imagePlusBinTmp = ConnectedComponents.computeLabels(imagePlusBinTmp, 26, 8);
-			removeFalsePositive (imagePlusBinTmp);
+			deleteArtefactNucleus(imagePlusBinTmp);
 			imagePlusBinTmp.setCalibration(calibration);
 			Measure3D measure3D = new Measure3D();
 			volume = measure3D.computeVolumeObject(imagePlusBinTmp,255);
@@ -110,15 +104,14 @@ public class NucleusSegmentation
 	private double computeMean (ImagePlus imagePlusInput,int threshold)
 	{
 		double sum = 0, ni_xi = 0;
-		Histogram histogram = new Histogram (imagePlusInput);
-		double label [] = histogram.getLabel();
-		Arrays.sort(label);
-		HashMap<Double , Integer> hHisto = histogram.getHisto();
-		int i;
-		for (i = threshold; i < label.length; ++i)
+		Histogram histogram = new Histogram ();
+		histogram.run(imagePlusInput);
+		for(Entry<Double, Integer> entry : histogram.getHistogram().entrySet())
 		{
-			ni_xi = ni_xi+ label[i]*hHisto.get(label[i]);
-			sum += hHisto.get(label[i]);
+		   double label = entry.getKey();
+		   int nbVoxel = entry.getValue();
+		   ni_xi = ni_xi+ label*nbVoxel;
+			sum += nbVoxel;
 		}
 		return ni_xi/sum;
 	}
@@ -133,17 +126,15 @@ public class NucleusSegmentation
 	private double computeStandardDeviation (ImagePlus imagePlusInput, int threshold)
 	{
 		double sce = 0, sum = 0;
-		Histogram histogram = new Histogram (imagePlusInput);
-		double label [] = histogram.getLabel();
-		Arrays.sort(label);
-		HashMap<Double , Integer> hHisto = histogram.getHisto();
-		int i;
-    
+		Histogram histogram = new Histogram ();
+		histogram.run(imagePlusInput);
 		double mean = computeMean(imagePlusInput,threshold);
-		for (i = threshold; i < label.length; ++i)
+		for(Entry<Double, Integer> entry : histogram.getHistogram().entrySet())
 		{
-			sum += hHisto.get(label[i]);
-			sce += hHisto.get(label[i]) * ((label[i] - mean) * (label[i] - mean));
+		   double label = entry.getKey();
+		   int nbVoxel = entry.getValue();
+		   sum += nbVoxel;
+		   sce += nbVoxel * ((label - mean) * (label - mean));
 		}
 		return Math.sqrt(sce / (sum - 1));
 	} 
@@ -189,15 +180,6 @@ public class NucleusSegmentation
 	
 	}//computeBornInfThreshold
 
-	/**
-	 * 
-	 * @param imagePlusBinaireLabel
-	 */
-	private void removeFalsePositive(ImagePlus imagePlusBinaireLabel)
-	{
-		LabelSelection labelSelection = new LabelSelection(imagePlusBinaireLabel);
-		labelSelection.deleteArtefactNucleus();
-	}
 
 	/**
 	 * compute openning et  use the HolesFilling
@@ -265,4 +247,51 @@ public class NucleusSegmentation
 		_volumeMin = volumeMin;
 		_volumeMax = volumeMax;
 	}
+	
+
+	  /**
+	   * Preserve the larger object and remove the other objects
+	   *
+	   * @param imagePluslab Image labeled
+	   */
+
+	  public void deleteArtefactNucleus (ImagePlus imagePlusInput)
+	  {
+	    int i,j,k;
+	    double voxel;
+	    double mode = getLabelOfLargestObject(imagePlusInput);
+	    ImageStack imageStackInput = imagePlusInput.getStack();
+	    for(k = 0; k < imagePlusInput.getNSlices(); ++k)
+	      for (i = 0; i < imagePlusInput.getWidth(); ++i)
+	        for (j = 0; j < imagePlusInput.getHeight(); ++j)
+	        {
+	          voxel = imageStackInput.getVoxel(i,j,k);
+	          if (voxel == mode) imageStackInput.setVoxel(i,j,k,255);
+	          else imageStackInput.setVoxel(i,j,k,0);
+	     }
+	   }//deleteArtefactNoyau
+
+	  /**
+	   * Browse each object of image and return the label of the larger object
+	   * @param imagePluslab Image labeled
+	   * @return Label of the larger object
+	   */
+
+	  public double getLabelOfLargestObject(ImagePlus imagePlusInput)
+	  {
+		Histogram histogram = new Histogram();
+		histogram.run(imagePlusInput);
+	    double indiceNbVoxelMax = 0, nbVoxelMax = -1;
+	    for(Entry<Double, Integer> entry : histogram.getHistogram().entrySet())
+	    {
+	    	double label = entry.getKey();
+	        int nbVoxel = entry.getValue();
+	        if (nbVoxel > nbVoxelMax)
+	        {
+	        	nbVoxelMax = nbVoxel;
+	        	indiceNbVoxelMax = label;
+	        }
+	    }
+	    return indiceNbVoxelMax;
+	  }//getLabelOfLargestObject
 }

@@ -3,7 +3,7 @@ import java.io.File;
 
 import gred.nucleus.dialogs.NucleusPipelineBatchDialog;
 import gred.nucleus.multiThread.*;
-import gred.nucleus.utils.ListerFichier;
+import gred.nucleus.utils.FileList;
 import ij.plugin.PlugIn;
 
 
@@ -15,38 +15,37 @@ import ij.plugin.PlugIn;
  */
 public class NucleusPipelineBatchPlugin_ implements PlugIn
 {
-	NucleusPipelineBatchDialog _jfpfso = new NucleusPipelineBatchDialog();
+	NucleusPipelineBatchDialog _nucleusPipelineBatchDialog = new NucleusPipelineBatchDialog();
 	
 	/**
 	 * 
 	 */
 	public void run(String arg)
 	{
-		while( _jfpfso.isShowing())
+		while( _nucleusPipelineBatchDialog.isShowing())
 		{
 			try {Thread.sleep(1);}
 			catch (InterruptedException e) {e.printStackTrace();}
 	    }	
-		if (_jfpfso.isStart())
+		if (_nucleusPipelineBatchDialog.isStart())
 		{
-			ListerFichier lF = new ListerFichier (_jfpfso.getDirRawData());
-			lF.run();
-			File[] rawImage = lF._tFile;
-			ProcessImage plop = new ProcessImage(this, rawImage);
-			try {	plop.go(); } 
+			FileList fileList = new FileList ();
+			File[] rawImage = fileList.run(_nucleusPipelineBatchDialog.getDirRawData());
+			ProcessImage processImage = new ProcessImage(this, rawImage);
+			try {	processImage.go(); } 
 			catch (InterruptedException e) { e.printStackTrace(); }
 			
 		}
 	}
 	
-	public double getPixelDepth(){return _jfpfso.getz();}
-	public double getPixelWidth(){return _jfpfso.getx();}
-	public double getPixelHeight(){return _jfpfso.gety();}
-	public String getUnit(){return _jfpfso.getUnit();}
-	public double getSegMinValue(){return _jfpfso.getMinSeg();}
-	public double getSegMaxValue(){return _jfpfso.getMaxSeg();}
-	public String getWorkDir() {return _jfpfso.getWorkDirectory();}
-	public boolean is2D3DAnalysis(){return _jfpfso.isTheBoth();}
-	public boolean is3DAnalysis(){return _jfpfso.is3D();}
+	public double getPixelDepth(){return _nucleusPipelineBatchDialog.getz();}
+	public double getPixelWidth(){return _nucleusPipelineBatchDialog.getx();}
+	public double getPixelHeight(){return _nucleusPipelineBatchDialog.gety();}
+	public String getUnit(){return _nucleusPipelineBatchDialog.getUnit();}
+	public double getSegMinValue(){return _nucleusPipelineBatchDialog.getMinSeg();}
+	public double getSegMaxValue(){return _nucleusPipelineBatchDialog.getMaxSeg();}
+	public String getWorkDir() {return _nucleusPipelineBatchDialog.getWorkDirectory();}
+	public boolean is2D3DAnalysis(){return _nucleusPipelineBatchDialog.isTheBoth();}
+	public boolean is3DAnalysis(){return _nucleusPipelineBatchDialog.is3D();}
 
 }

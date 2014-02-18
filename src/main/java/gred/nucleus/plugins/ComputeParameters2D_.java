@@ -60,9 +60,11 @@ public class ComputeParameters2D_ implements PlugIn
 
   public void computeParameters() throws IOException
   {
-	  Histogram histogram = new Histogram(_imagePlus);
-	  HashMap<Double , Integer> hHisto = histogram.getHisto();
-	  if (hHisto.size() == 1 )
+	 
+	  Histogram histogram = new Histogram ();
+	  histogram.run(_imagePlus);
+	  HashMap<Double , Integer> hHistogram = histogram.getHistogram();
+	  if (hHistogram.size() == 1 )
 	  {
 		  Measure2D measure2D = new Measure2D ();
 		  measure2D.run(_imagePlus);

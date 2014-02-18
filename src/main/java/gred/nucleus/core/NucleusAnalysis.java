@@ -78,9 +78,9 @@ public class NucleusAnalysis
 		  
 		  IJ.log("3D parameters");
 		  IJ.log("NucleusFileName Volume Flatness Elongation Sphericity Esr SurfacicArea");
-		  IJ.log(imagePlusInput.getTitle()+"\t"+measure3D.computeVolumeObject(imagePlusInput,255)+"\t"+measure3D.computeFlatnessObject(imagePlusInput,255)
-	    		  +"\t"+ measure3D.computeElongationObject(imagePlusInput,255)+"\t"+measure3D.computeSphericity(volume, surfacicArea)
-	    		  +"\t"+measure3D.equivalentSphericalRadius(imagePlusInput,255)+"\t"+surfacicArea+"\n");
+		  IJ.log(imagePlusInput.getTitle()+" "+measure3D.computeVolumeObject(imagePlusInput,255)+" "+measure3D.computeFlatnessObject(imagePlusInput,255)
+	    		  +" "+ measure3D.computeElongationObject(imagePlusInput,255)+" "+measure3D.computeSphericity(volume, surfacicArea)
+	    		  +" "+measure3D.equivalentSphericalRadius(imagePlusInput,255)+" "+surfacicArea+"\n");
 	  }
 
 	  /**

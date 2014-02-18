@@ -43,7 +43,7 @@ public class NucleusChromocentersAnalysis
 		   double volume = measure3D.computeVolumeObject(imagePlusBinary,255);
 		   double surfacicArea = measure3D.computeSurfaceObject(imagePlusBinary,255);
 		   double vCcMean = computeMeanOfTable(volumesObjects);
-		   int nbCc = measure3D.getNbObject(imagePlusChromocenter);
+		   int nbCc = measure3D.getNumberOfObject(imagePlusChromocenter);
 		   if (rhfChoice.equals("Volume and intensity"))
 		   {
 			   IJ.log("ImageTitle Volume ESR SurfacicArea NbCc VCcMean VCcTotal DistanceBorderToBorderMean DistanceBarycenterToBorderMean Flatness Elongation Sphericity IntensityRHF VolumeRHF VoxelVolume");
@@ -95,7 +95,7 @@ public class NucleusChromocentersAnalysis
 		   double volume = measure3D.computeVolumeObject(imagePlusBinary,255);
 		   double surfacicArea = measure3D.computeSurfaceObject(imagePlusBinary,255);
 		   double vCcMean = computeMeanOfTable(volumesObjects);
-		   int nbCc = measure3D.getNbObject(imagePlusChromocenter);
+		   int nbCc = measure3D.getNumberOfObject(imagePlusChromocenter);
 		   File fileResu = new File (pathFile);
 		   boolean exist = fileResu.exists();
 		   BufferedWriter output;	
