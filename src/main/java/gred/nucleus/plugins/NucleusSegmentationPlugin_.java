@@ -45,7 +45,7 @@ public class NucleusSegmentationPlugin_ implements PlugIn
 			ImagePlus imagePlusOut= _imagePlus;
 			NucleusSegmentation nucleusSegmentation = new NucleusSegmentation();
 			nucleusSegmentation.setVolumeRange(nucleusSegDialog.getMinSeg(), nucleusSegDialog.getMaxSeg());
-			imagePlusOut = nucleusSegmentation.apply(imagePlusOut);
+			imagePlusOut = nucleusSegmentation.applySegmentation(imagePlusOut);
 			if(nucleusSegmentation.getBestThreshold()==0)
 				IJ.showMessageWithCancel("Segmentation error", "No object is detected between "+nucleusSegDialog.getMinSeg()
 					+"and"+nucleusSegDialog.getMaxSeg()+" "+cal.getUnit());

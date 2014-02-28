@@ -1,13 +1,11 @@
 package gred.nucleus.multiThread;
-
 import gred.nucleus.core.NucleusAnalysis;
-import gred.nucleus.core.NucleusPipeline;
+import gred.nucleus.core.NucleusSegmentation;
 import ij.ImagePlus;
 import ij.io.FileSaver;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+
 
 
 
@@ -34,33 +32,25 @@ public class RunnableProcessImage extends Thread implements Runnable
 	{
 		ProcessImage._nbLance++;
 		ProcessImage._continuer = true;
-		NucleusPipeline nucleusPipeline = new NucleusPipeline();
-		nucleusPipeline.setLogErrorSegmentationFile(_workDir+File.separator+"logErrorSeg.txt");
-		nucleusPipeline.setVMinAndMax(_vmin, _vmax);
-		ArrayList<ImagePlus> arrayList = nucleusPipeline.run(_imagePlus);
-		if (nucleusPipeline.getIndiceMax() > 0)
+		NucleusSegmentation nucleusSegmentation = new NucleusSegmentation();
+		nucleusSegmentation.setLogErrorSegmentationFile(_workDir+File.separator+"logErrorSeg.txt");
+		nucleusSegmentation.setVolumeRange(_vmin, _vmax);
+		ImagePlus impagePlusSegmented = nucleusSegmentation.run(_imagePlus);
+		saveFile (impagePlusSegmented,_workDir+File.separator+"SegmentedDataNucleus");
+		NucleusAnalysis nucleusAnalysis = new NucleusAnalysis();
+		try
 		{
-			ImagePlus binaire = arrayList.get(0);
-			binaire.setTitle(_imagePlus.getTitle());
-			saveFile (binaire,_workDir+File.separator+"SegmentedDataNucleus");
-			ImagePlus contrast = arrayList.get(1);
-			contrast.setTitle(_imagePlus.getTitle());
-			saveFile (contrast,_workDir+File.separator+"Contrast");
-			NucleusAnalysis nucleusAnalysis = new NucleusAnalysis();
-			try
+			if (_isanalysis2D3D)
 			{
-				if (_isanalysis2D3D)
-				{
-					nucleusAnalysis.nucleusParameter3D(_workDir+File.separator+"3DNucleiParameters.tab",binaire);
-					nucleusAnalysis.nucleusParameter2D(_workDir+File.separator+"2DNucleiParameters.tab",binaire);
-				}
-				else if(_isanalysis3D)  nucleusAnalysis.nucleusParameter3D(_workDir+File.separator+"3DNucleiParameters.tab",binaire);
-				else nucleusAnalysis.nucleusParameter2D(_workDir+File.separator+"2DNucleiParameters.tab",binaire);
+				nucleusAnalysis.nucleusParameter3D(_workDir+File.separator+"3DNucleiParameters.tab",impagePlusSegmented);
+				nucleusAnalysis.nucleusParameter2D(_workDir+File.separator+"2DNucleiParameters.tab",impagePlusSegmented);
 			}
-			catch (IOException e) {	e.printStackTrace();	}
+			else if(_isanalysis3D)  nucleusAnalysis.nucleusParameter3D(_workDir+File.separator+"3DNucleiParameters.tab",impagePlusSegmented);
+			else nucleusAnalysis.nucleusParameter2D(_workDir+File.separator+"2DNucleiParameters.tab",impagePlusSegmented);
 		}
+		catch (IOException e) {	e.printStackTrace();	}
 		ProcessImage._nbLance--;
-	}
+}
 	
 	 /**
 	   *

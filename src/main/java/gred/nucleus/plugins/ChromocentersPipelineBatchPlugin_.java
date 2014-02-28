@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 import gred.nucleus.core.ChromocenterAnalysis;
 import gred.nucleus.core.NucleusChromocentersAnalysis;
-import gred.nucleus.dialogs.ChromocentersPipelineBatchDialog;
+import gred.nucleus.dialogs.ChromocentersAnalysisPipelineBatchDialog;
 import gred.nucleus.utils.FileList;
 
 /**
@@ -28,7 +28,7 @@ public class ChromocentersPipelineBatchPlugin_ implements PlugIn
 	 */
 	public void run(String arg)
 	{
-		ChromocentersPipelineBatchDialog chromocentersPipelineBatchDialog = new ChromocentersPipelineBatchDialog();
+		ChromocentersAnalysisPipelineBatchDialog chromocentersPipelineBatchDialog = new ChromocentersAnalysisPipelineBatchDialog();
 	
 		while( chromocentersPipelineBatchDialog.isShowing())
 		{

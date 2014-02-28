@@ -1,4 +1,8 @@
 package gred.nucleus.core;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 import gred.nucleus.utils.FillingHoles;
@@ -24,7 +28,8 @@ public class NucleusSegmentation
 	private int _bestThreshold = 0;
 	/** Segmentation parameters*/
 	private double _volumeMin, _volumeMax;
-
+	/** */
+	private String _logErrorSeg = "";
   
 	/**
 	 * Constructor
@@ -32,7 +37,47 @@ public class NucleusSegmentation
 	 */
 
 	public NucleusSegmentation (){	}
-  
+
+	/**
+	 * Method which run the process in input image. This image will be segmented, and
+	 * the binary image will be save in a directory. Then we realise the image gradient
+	 * and the image contrast of the input image.
+	 * The image contrast is saved in other directory. It is from this image contrast
+	 * that a manual thresholding is necessary to segment chromocentre.
+	 * @param arg
+	 */
+	
+	public ImagePlus run (ImagePlus imagePlusInput)
+	{
+		IJ.log("Begin segmentation "+imagePlusInput.getTitle());
+		ImagePlus imagePlusBinary = applySegmentation (imagePlusInput);
+		IJ.log("End segmentation "+imagePlusInput.getTitle());
+		
+		if (_bestThreshold > 0)
+		{
+			if (_logErrorSeg.length()==0)
+			{
+				IJ.showMessage("Error Segmentation", "Bad parameter for the segmentation, any object is detected between "
+    				  +_volumeMin+" and "+ _volumeMax+" "+ imagePlusInput.getCalibration().getUnit()+"^3");
+			}
+			else
+			{
+				File fileResu = new File (_logErrorSeg);
+				BufferedWriter output;
+				FileWriter fw;
+				try
+				{
+					fw = new FileWriter(fileResu, true);
+					output = new BufferedWriter(fw);
+					output.write(imagePlusInput.getTitle()+"\n");
+					output.flush();
+					output.close();
+				}
+				catch (IOException e) { e.printStackTrace(); } 
+			}
+		}
+		return imagePlusBinary;
+	}
 	/**
 	 * Compute the first threshold of input image with the method of Otsu
 	 * From this initial value we will seek the better segmentaion possible:
@@ -47,7 +92,7 @@ public class NucleusSegmentation
 	 * @return : return thresholded image.
 	 */
   
-	public ImagePlus apply (ImagePlus imagePlusInput)
+	public ImagePlus applySegmentation (ImagePlus imagePlusInput)
 	{
 		Calibration calibration = imagePlusInput.getCalibration();
 		final double dimX = calibration.pixelWidth;
@@ -294,4 +339,13 @@ public class NucleusSegmentation
 	    }
 	    return indiceNbVoxelMax;
 	  }//getLabelOfLargestObject
+	 
+	  /**
+	   * 
+	   * @param logErrorSeg
+	   */
+		public void setLogErrorSegmentationFile (String logErrorSeg)
+		{
+			_logErrorSeg = logErrorSeg;
+		}
 }

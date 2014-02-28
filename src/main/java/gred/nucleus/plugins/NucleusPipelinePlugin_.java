@@ -1,8 +1,6 @@
 package gred.nucleus.plugins;
 
 
-import java.util.ArrayList;
-
 import gred.nucleus.core.*;
 import gred.nucleus.dialogs.NucleusPipelineDialog;
 import ij.IJ;
@@ -54,8 +52,8 @@ public class NucleusPipelinePlugin_ implements PlugIn
 			double dimY = nucleusPipelineDialog.gety();
 			double dimZ = nucleusPipelineDialog.getz();
 			String unit = nucleusPipelineDialog.getUnit();
-			double vmin = nucleusPipelineDialog.getMinSeg();
-			double vmax = nucleusPipelineDialog.getMaxSeg();
+			double volumeMin = nucleusPipelineDialog.getMinSeg();
+			double volumeMax = nucleusPipelineDialog.getMaxSeg();
 			Calibration cal = new Calibration();
 			cal.pixelDepth = dimZ;
 			cal.pixelWidth = dimX;
@@ -63,25 +61,20 @@ public class NucleusPipelinePlugin_ implements PlugIn
 			cal.setUnit(unit);
 			_imagePlus.setCalibration(cal);
 			IJ.log("Begin image processing "+_imagePlus.getTitle());
-			NucleusPipeline nucleusPipeline = new NucleusPipeline();
-			nucleusPipeline.setVMinAndMax(vmin, vmax);
-			ArrayList<ImagePlus> arrayList = nucleusPipeline.run(_imagePlus);
-			if (nucleusPipeline.getIndiceMax() > 0)
+			NucleusSegmentation nucleusSegmentation = new NucleusSegmentation();
+			nucleusSegmentation.setVolumeRange(volumeMin, volumeMax);
+			ImagePlus imagePlusSegmented = nucleusSegmentation.run(_imagePlus);
+			if (nucleusSegmentation.getBestThreshold() > 0)
 			{
-				ImagePlus binaire = arrayList.get(0);
-				binaire.setTitle("Binary_"+_imagePlus.getTitle());
-				binaire.show();
-				ImagePlus contrast = arrayList.get(1);
-				contrast.setTitle("Contrast_"+_imagePlus.getTitle());
-				contrast.show();
+				imagePlusSegmented.show();
 				NucleusAnalysis nucleusAnalysis = new NucleusAnalysis();
 				if (nucleusPipelineDialog.isTheBoth())
 				{
-					nucleusAnalysis.nucleusParameter3D(binaire);
-					nucleusAnalysis.nucleusParameter2D(binaire);
+					nucleusAnalysis.nucleusParameter3D(imagePlusSegmented);
+					nucleusAnalysis.nucleusParameter2D(imagePlusSegmented);
 				}
-				else if(nucleusPipelineDialog.is3D())  nucleusAnalysis.nucleusParameter3D(binaire);
-				else nucleusAnalysis.nucleusParameter2D(binaire);
+				else if(nucleusPipelineDialog.is3D())  nucleusAnalysis.nucleusParameter3D(imagePlusSegmented);
+				else nucleusAnalysis.nucleusParameter2D(imagePlusSegmented);
 			}
 		}
 	}

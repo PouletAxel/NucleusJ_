@@ -26,7 +26,7 @@ import javax.swing.JTextPane;
  *
  */
 
-public class ChromocentersPipelineBatchDialog extends JFrame
+public class ChromocentersAnalysisPipelineBatchDialog extends JFrame
 {
 	/**
 	 * 
@@ -56,7 +56,7 @@ public class ChromocentersPipelineBatchDialog extends JFrame
 	
 	public static void main(String[] args)  
     {
-		ChromocentersPipelineBatchDialog fenetre = new ChromocentersPipelineBatchDialog();
+		ChromocentersAnalysisPipelineBatchDialog fenetre = new ChromocentersAnalysisPipelineBatchDialog();
     	fenetre.setLocationRelativeTo(null);
     }
 	
@@ -66,7 +66,7 @@ public class ChromocentersPipelineBatchDialog extends JFrame
      *
      */
     
-	public ChromocentersPipelineBatchDialog ()
+	public ChromocentersAnalysisPipelineBatchDialog ()
 	{
 		this.setTitle("Plop");
 		this.setSize(500, 600);
@@ -234,8 +234,8 @@ public class ChromocentersPipelineBatchDialog extends JFrame
 	class StartListener implements ActionListener 
 	{
 	
-		ChromocentersPipelineBatchDialog _jfpfso;	
-		public  StartListener (ChromocentersPipelineBatchDialog jfpfso) {_jfpfso = jfpfso;}
+		ChromocentersAnalysisPipelineBatchDialog _jfpfso;	
+		public  StartListener (ChromocentersAnalysisPipelineBatchDialog jfpfso) {_jfpfso = jfpfso;}
 		/**
 		  * 
 		  */
@@ -260,8 +260,8 @@ public class ChromocentersPipelineBatchDialog extends JFrame
 	
 	class QuitListener implements ActionListener 
 	{
-		ChromocentersPipelineBatchDialog _jfpfso;	
-		public  QuitListener (ChromocentersPipelineBatchDialog jfpfso) {_jfpfso = jfpfso;}
+		ChromocentersAnalysisPipelineBatchDialog _jfpfso;	
+		public  QuitListener (ChromocentersAnalysisPipelineBatchDialog jfpfso) {_jfpfso = jfpfso;}
 		public void actionPerformed(ActionEvent actionEvent) { _jfpfso.dispose(); }
 	}
 	

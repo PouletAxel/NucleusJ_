@@ -1,8 +1,12 @@
 package gred.nucleus.core;
 
+import gred.nucleus.myGradient.MyGradient;
+import gred.nucleus.utils.RegionalExtremaFilter;
 import ij.measure.*;
 import ij.*;
 import ij.process.*;
+import inra.ijpb.binary.ConnectedComponents;
+import inra.ijpb.watershed.Watershed;
 
 
 /**
@@ -23,13 +27,21 @@ public class ChromocentersSegmentation
 
 	public ChromocentersSegmentation (){	}
 
+
 	/**
 	 * Run the compute and the creation of the image contrast, of the image deconvolved
 	 * @return Image contrast
 	 */
 
-	public ImagePlus applyContrast(ImagePlus imagePlusInput, ImagePlus imagePlusWatershed)
+	public ImagePlus applyChromocentersSegmentation(ImagePlus imagePlusInput,ImagePlus imagePlusBinary)
 	{
+		MyGradient myGradient = new MyGradient (imagePlusInput,imagePlusBinary);
+		ImagePlus imagePlusGradient = myGradient.run();
+		RegionalExtremaFilter regionalExtremaFilter = new RegionalExtremaFilter();
+	    regionalExtremaFilter.setMask(imagePlusBinary);
+	    ImagePlus extrema = regionalExtremaFilter.applyWithMask( imagePlusGradient);
+	    ImagePlus ImagePlusLabels = ConnectedComponents.computeLabels(extrema, 26, 32);
+	    ImagePlus imagePlusWatershed = Watershed.computeWatershed(imagePlusInput,ImagePlusLabels,imagePlusBinary, 26,true);
 		double contrast [] = computeContrast (imagePlusInput,imagePlusWatershed);
 		ImagePlus imagePlusOutput = computeImage (imagePlusWatershed, contrast);
 		return imagePlusOutput;
