@@ -6,7 +6,7 @@ import ij.measure.*;
 import ij.*;
 import ij.process.*;
 import inra.ijpb.binary.ConnectedComponents;
-import inra.ijpb.watershed.Watershed;
+import inra.ijpb.watershed.Watershed;;;
 
 
 /**
@@ -16,7 +16,7 @@ import inra.ijpb.watershed.Watershed;
  * @author Poulet Axel
 
  */
-public class ChromocentersSegmentation
+public class ChromocenterSegmentation
 {
 
 	/**
@@ -25,7 +25,7 @@ public class ChromocentersSegmentation
 	 * @param imagePlusWatershed Image results of the watershed
 	 */
 
-	public ChromocentersSegmentation (){	}
+	public ChromocenterSegmentation (){	}
 
 
 	/**

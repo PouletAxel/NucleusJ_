@@ -11,7 +11,7 @@ import java.lang.management.OperatingSystemMXBean;
 import java.util.ArrayList;
 
 
-public class ProcessImage
+public class ProcessImageSegmentaion
 {
 	static int _nbLance = 0;
 	static boolean _continuer;
@@ -22,18 +22,18 @@ public class ProcessImage
 	private double _vmin, _vmax;
 	private boolean _2D3DAnalysis, _3DAnalysis;
 	
-	public ProcessImage(NucleusPipelineBatchPlugin_ sna, File[] inputFile)
+	public ProcessImageSegmentaion(NucleusPipelineBatchPlugin_ nucleusPipelineBatchPlugin, File[] inputFile)
 	{
 		_rawImage = inputFile;
-		_vmin = sna.getSegMinValue();
-		_vmax = sna.getSegMaxValue();
-		_workDir = sna.getWorkDir();
-		_cal.pixelDepth = sna.getPixelDepth();
-		_cal.pixelWidth = sna.getPixelWidth();
-		_cal.pixelHeight = sna.getPixelHeight();
-		_cal.setUnit(sna.getUnit());
-		_2D3DAnalysis = sna.is2D3DAnalysis();
-		_3DAnalysis = sna.is3DAnalysis();
+		_vmin = nucleusPipelineBatchPlugin.getSegMinValue();
+		_vmax = nucleusPipelineBatchPlugin.getSegMaxValue();
+		_workDir = nucleusPipelineBatchPlugin.getWorkDir();
+		_cal.pixelDepth = nucleusPipelineBatchPlugin.getPixelDepth();
+		_cal.pixelWidth = nucleusPipelineBatchPlugin.getPixelWidth();
+		_cal.pixelHeight = nucleusPipelineBatchPlugin.getPixelHeight();
+		_cal.setUnit(nucleusPipelineBatchPlugin.getUnit());
+		_2D3DAnalysis = nucleusPipelineBatchPlugin.is2D3DAnalysis();
+		_3DAnalysis = nucleusPipelineBatchPlugin.is3DAnalysis();
 		
 	}
 
@@ -55,7 +55,7 @@ public class ProcessImage
 			IJ.log("image"+(i+1)+" / "+_rawImage.length);
 			ImagePlus imagePlus = IJ.openImage(_rawImage[i].toString());
 			imagePlus.setCalibration(_cal);
-			imageThread.add(new RunnableProcessImage(imagePlus,_vmin,_vmax,_workDir,_2D3DAnalysis,_3DAnalysis));
+			imageThread.add(new RunnableImageSegmentation(imagePlus,_vmin,_vmax,_workDir,_2D3DAnalysis,_3DAnalysis));
 			imageThread.get(j).start();
 			while (_continuer == false)
 				Thread.sleep(10);

@@ -9,7 +9,7 @@ import java.io.IOException;
 
 
 
-public class RunnableProcessImage extends Thread implements Runnable
+public class RunnableImageSegmentation extends Thread implements Runnable
 {
 
 	String _workDir;
@@ -17,7 +17,7 @@ public class RunnableProcessImage extends Thread implements Runnable
 	double _vmin, _vmax;
 	boolean _isanalysis3D, _isanalysis2D3D;
 
-	public RunnableProcessImage (ImagePlus imagePlusInput, double vmin, double vmax, String workDir,boolean analysis3D2D
+	public RunnableImageSegmentation (ImagePlus imagePlusInput, double vmin, double vmax, String workDir,boolean analysis3D2D
 			,boolean analysis3D)
 	{
 		_imagePlus = imagePlusInput;
@@ -30,8 +30,8 @@ public class RunnableProcessImage extends Thread implements Runnable
 	
 	public void run()
 	{
-		ProcessImage._nbLance++;
-		ProcessImage._continuer = true;
+		ProcessImageSegmentaion._nbLance++;
+		ProcessImageSegmentaion._continuer = true;
 		NucleusSegmentation nucleusSegmentation = new NucleusSegmentation();
 		nucleusSegmentation.setLogErrorSegmentationFile(_workDir+File.separator+"logErrorSeg.txt");
 		nucleusSegmentation.setVolumeRange(_vmin, _vmax);
@@ -49,7 +49,7 @@ public class RunnableProcessImage extends Thread implements Runnable
 			else nucleusAnalysis.nucleusParameter2D(_workDir+File.separator+"2DNucleiParameters.tab",impagePlusSegmented);
 		}
 		catch (IOException e) {	e.printStackTrace();	}
-		ProcessImage._nbLance--;
+		ProcessImageSegmentaion._nbLance--;
 }
 	
 	 /**

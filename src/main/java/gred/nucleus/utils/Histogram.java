@@ -38,7 +38,6 @@ public class Histogram
     	for (int i = 0; i < temp.length; ++i)   _label[i] = Double.parseDouble(temp[i].toString());
     	Arrays.sort(_label);
     	_labelMax = _label[_label.length-1];
-    	IJ.log("_labelMax "+_labelMax);
     }
     
     /**

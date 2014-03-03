@@ -31,7 +31,7 @@ public class NucleusPipelineBatchPlugin_ implements PlugIn
 		{
 			FileList fileList = new FileList ();
 			File[] rawImage = fileList.run(_nucleusPipelineBatchDialog.getDirRawData());
-			ProcessImage processImage = new ProcessImage(this, rawImage);
+			ProcessImageSegmentaion processImage = new ProcessImageSegmentaion(this, rawImage);
 			try {	processImage.go(); } 
 			catch (InterruptedException e) { e.printStackTrace(); }
 			

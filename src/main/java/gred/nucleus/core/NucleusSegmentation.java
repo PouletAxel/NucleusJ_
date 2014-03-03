@@ -105,8 +105,10 @@ public class NucleusSegmentation
 		IJ.log("borne inf: "+computeMinMaxThreshold(imagePlusInput).get(0)+" bornSupThreshold "+computeMinMaxThreshold(imagePlusInput).get(1));
 		for (int t = computeMinMaxThreshold(imagePlusInput).get(0) ; t <= computeMinMaxThreshold(imagePlusInput).get(1); ++t)
 		{
+			IJ.log("theshold"+t);
 			ImagePlus imagePlusBinTmp = generateBinaryImage(imagePlusInput,t);
 			morphoCorrection (imagePlusBinTmp);
+			IJ.log("theshold"+t+" fin mophorrection");
 			imagePlusBinTmp = ConnectedComponents.computeLabels(imagePlusBinTmp, 26, 8);
 			deleteArtefactNucleus(imagePlusBinTmp);
 			imagePlusBinTmp.setCalibration(calibration);
@@ -233,9 +235,13 @@ public class NucleusSegmentation
 	private void morphoCorrection (ImagePlus imagePlusBinary)
 	{
 		FillingHoles holesFilling = new FillingHoles();
+		IJ.log("prout");
 		computeOpening(imagePlusBinary);
+		IJ.log("proutprout");
 		computeClosing(imagePlusBinary);
+		IJ.log("proutproutprout");
 		imagePlusBinary = holesFilling.apply2D(imagePlusBinary);
+		IJ.log("proutproutproutprout");
 	}//morphoCorrection
 
 
