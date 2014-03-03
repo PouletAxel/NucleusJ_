@@ -118,23 +118,18 @@ public class FillingHoles
    ImageStack imageStackOutput = new ImageStack(width,height);
    for (z = 1; z <= depth; ++z)
    {
-    ImageProcessor imageProcessor = imageStack.getProcessor(z);
-    for (x = 0; x < width; ++x)
-      for (y = 0; y < height; ++y)
-      {
-    	  voxelValue = imageProcessor.getPixel(x, y);
-        if (voxelValue > 0)      imageProcessor.putPixelValue(x, y, 0);
-        else        imageProcessor.putPixelValue(x, y, 255);
-      }
+	   ImageProcessor imageProcessor = imageStack.getProcessor(z);
+	   for (x = 0; x < width; ++x)
+		   for (y = 0; y < height; ++y)
+		   {
+			   voxelValue = imageProcessor.getPixel(x, y);
+			   if (voxelValue > 0)      imageProcessor.putPixelValue(x, y, 0);
+			   else        imageProcessor.putPixelValue(x, y, 255);
+		   }
     
-      ImagePlus imagePlusTmp = new ImagePlus();
-      ImageStack imageStackTmp = new ImageStack(width, height);
-      imageStackTmp.addSlice(imageProcessor);
-      imagePlusTmp.setStack(imageStackTmp);
-      imagePlusTmp = ConnectedComponents.computeLabels(imagePlusTmp, 26, 32);
+      
+	  imageProcessor = ConnectedComponents.computeLabels(imageProcessor, 26, 32);
       int label;
-      imageStackTmp = imagePlusTmp.getStack();
-      imageProcessor = imageStackTmp.getProcessor(1);
       boolean edgeFlags [] = new boolean [(int)imageProcessor.getMax()+1];
       for (int a = 0; a < edgeFlags.length; ++a)  edgeFlags[a] = false;
 

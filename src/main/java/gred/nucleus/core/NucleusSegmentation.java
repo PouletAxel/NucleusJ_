@@ -53,7 +53,7 @@ public class NucleusSegmentation
 		ImagePlus imagePlusBinary = applySegmentation (imagePlusInput);
 		IJ.log("End segmentation "+imagePlusInput.getTitle());
 		
-		if (_bestThreshold > 0)
+		if (_bestThreshold == 0)
 		{
 			if (_logErrorSeg.length()==0)
 			{
@@ -102,24 +102,23 @@ public class NucleusSegmentation
 		IJ.log(dimX+" "+dimY+" "+dimZ+"  volume image :"+imageVolume);
 		ImagePlus imagePlusOutput = new ImagePlus();
 		double sphericityMax = -1.0, sphericity, volume;
-		IJ.log("borne inf: "+computeMinMaxThreshold(imagePlusInput).get(0)+" bornSupThreshold "+computeMinMaxThreshold(imagePlusInput).get(1));
-		for (int t = computeMinMaxThreshold(imagePlusInput).get(0) ; t <= computeMinMaxThreshold(imagePlusInput).get(1); ++t)
+		ArrayList<Integer> al = computeMinMaxThreshold(imagePlusInput);		
+		IJ.log("borne inf: "+al.get(0)+" bornSupThreshold "+al.get(1));
+		for (int t = al.get(0) ; t <= al.get(1); ++t)
 		{
-			IJ.log("theshold"+t);
-			ImagePlus imagePlusBinTmp = generateBinaryImage(imagePlusInput,t);
-			morphoCorrection (imagePlusBinTmp);
-			IJ.log("theshold"+t+" fin mophorrection");
-			imagePlusBinTmp = ConnectedComponents.computeLabels(imagePlusBinTmp, 26, 8);
-			deleteArtefactNucleus(imagePlusBinTmp);
-			imagePlusBinTmp.setCalibration(calibration);
+			ImagePlus imagePlusSegmentedNucleusTemp = generateBinaryImage(imagePlusInput,t);
+			morphoCorrection (imagePlusSegmentedNucleusTemp);
+			imagePlusSegmentedNucleusTemp = ConnectedComponents.computeLabels(imagePlusSegmentedNucleusTemp, 26, 8);
+			deleteArtefactNucleus(imagePlusSegmentedNucleusTemp);
+			imagePlusSegmentedNucleusTemp.setCalibration(calibration);
 			Measure3D measure3D = new Measure3D();
-			volume = measure3D.computeVolumeObject(imagePlusBinTmp,255);
-			sphericity = measure3D.computeSphericity(volume,measure3D.computeSurfaceObject(imagePlusBinTmp, 255));
+			volume = measure3D.computeVolumeObject(imagePlusSegmentedNucleusTemp,255);
+			sphericity = measure3D.computeSphericity(volume,measure3D.computeSurfaceObject(imagePlusSegmentedNucleusTemp, 255));
 			if (sphericity > sphericityMax && volume >= _volumeMin && volume <= _volumeMax && testRelativeObjectVolume(volume,imageVolume))
 			{
 				_bestThreshold=t;
 				sphericityMax = sphericity;
-				imagePlusOutput= imagePlusBinTmp.duplicate();			
+				imagePlusOutput= imagePlusSegmentedNucleusTemp.duplicate();			
 			}
 		}
 		IJ.log ("end segmentation "+imagePlusInput.getTitle()+" "+_bestThreshold);
@@ -235,13 +234,9 @@ public class NucleusSegmentation
 	private void morphoCorrection (ImagePlus imagePlusBinary)
 	{
 		FillingHoles holesFilling = new FillingHoles();
-		IJ.log("prout");
 		computeOpening(imagePlusBinary);
-		IJ.log("proutprout");
 		computeClosing(imagePlusBinary);
-		IJ.log("proutproutprout");
 		imagePlusBinary = holesFilling.apply2D(imagePlusBinary);
-		IJ.log("proutproutproutprout");
 	}//morphoCorrection
 
 
