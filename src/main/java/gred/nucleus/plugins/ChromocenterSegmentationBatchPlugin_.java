@@ -24,15 +24,16 @@ public class ChromocenterSegmentationBatchPlugin_ implements PlugIn
 		}	
 		if (_chromocenterSegmentationPipelineBatchDialog.isStart())
 		{
-			FileList FileList = new FileList ();
-			FileList.run(_chromocenterSegmentationPipelineBatchDialog.getDirRawData());
-			if (FileList.isDirectoryOrFIleExist(".+RawDataNucleus.+") && FileList.isDirectoryOrFIleExist(".+SegmentedDataNucleus.+"))
+			FileList fileList = new FileList ();
+			File[] tableFile =fileList.run(_chromocenterSegmentationPipelineBatchDialog.getDirRawData());
+			if (fileList.isDirectoryOrFileExist(".+RawDataNucleus.+",tableFile) &&
+					fileList.isDirectoryOrFileExist(".+SegmentedDataNucleus.+",tableFile))
 			{
 				double dimX =_chromocenterSegmentationPipelineBatchDialog.getx();
 				double dimY = _chromocenterSegmentationPipelineBatchDialog.gety();
 				double dimZ = _chromocenterSegmentationPipelineBatchDialog.getz();
 				String unit = _chromocenterSegmentationPipelineBatchDialog.getUnit();
-				ArrayList<String> imageSegmenetedDataNucleusList = FileList.fileSearchList(".+SegmentedDataNucleus.+");
+				ArrayList<String> imageSegmenetedDataNucleusList = fileList.fileSearchList(".+SegmentedDataNucleus.+",tableFile);
 				String workDirectory = _chromocenterSegmentationPipelineBatchDialog.getWorkDirectory();
 				for (int i = 0; i < imageSegmenetedDataNucleusList.size(); ++i)
 				{
@@ -40,7 +41,7 @@ public class ChromocenterSegmentationBatchPlugin_ implements PlugIn
 					String pathImageSegmentedNucleus = imageSegmenetedDataNucleusList.get(i);
 					String pathNucleusRaw = pathImageSegmentedNucleus.replaceAll("SegmentedDataNucleus", "RawDataNucleus");
 					IJ.log(pathNucleusRaw);
-					if (FileList.isDirectoryOrFIleExist(pathNucleusRaw))
+					if (fileList.isDirectoryOrFileExist(pathNucleusRaw,tableFile))
 					{
 						ImagePlus imagePlusSegmentedNucleus = IJ.openImage(pathImageSegmentedNucleus);
 						ImagePlus imagePlusRaw = IJ.openImage(pathNucleusRaw);

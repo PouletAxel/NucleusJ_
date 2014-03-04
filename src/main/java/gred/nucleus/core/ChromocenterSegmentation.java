@@ -41,7 +41,7 @@ public class ChromocenterSegmentation
 	    regionalExtremaFilter.setMask(imagePlusBinary);
 	    ImagePlus extrema = regionalExtremaFilter.applyWithMask( imagePlusGradient);
 	    ImagePlus ImagePlusLabels = ConnectedComponents.computeLabels(extrema, 26, 32);
-	    ImagePlus imagePlusWatershed = Watershed.computeWatershed(imagePlusInput,ImagePlusLabels,imagePlusBinary, 26,true);
+	    ImagePlus imagePlusWatershed = Watershed.computeWatershed(imagePlusGradient,ImagePlusLabels,imagePlusBinary, 26,true,false);
 		double contrast [] = computeContrast (imagePlusInput,imagePlusWatershed);
 		ImagePlus imagePlusOutput = computeImage (imagePlusWatershed, contrast);
 		return imagePlusOutput;
@@ -55,6 +55,7 @@ public class ChromocenterSegmentation
 
 	public double [][] getRag (ImagePlus imagePlusWatershed)
 	{
+		imagePlusWatershed.show();
 		int i, j, k, ii, jj, kk, voxelValue, neigVoxelValue;
 		ImageStatistics statistics = new StackStatistics(imagePlusWatershed);
 		double rag[][] = new double [(int)statistics.histMax + 1] [(int)statistics.histMax + 1];

@@ -36,6 +36,7 @@ public class RunnableImageSegmentation extends Thread implements Runnable
 		nucleusSegmentation.setLogErrorSegmentationFile(_workDir+File.separator+"logErrorSeg.txt");
 		nucleusSegmentation.setVolumeRange(_vmin, _vmax);
 		ImagePlus impagePlusSegmented = nucleusSegmentation.run(_imagePlus);
+		impagePlusSegmented.setTitle(_imagePlus.getTitle());
 		saveFile (impagePlusSegmented,_workDir+File.separator+"SegmentedDataNucleus");
 		NucleusAnalysis nucleusAnalysis = new NucleusAnalysis();
 		try

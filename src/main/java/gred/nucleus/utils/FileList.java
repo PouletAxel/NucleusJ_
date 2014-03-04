@@ -1,4 +1,6 @@
 package gred.nucleus.utils;
+import ij.IJ;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,12 +13,7 @@ import java.util.HashMap;
 
 public class FileList
 {
-	/**
-	 * Liste les fichiers du dossier et de ses sous dossier appartenant au dossier passe en entree
-	 * @param _repertoire repertoire passer en entree
-	 * @return liste des fichiers appartenant au repertoire
-	 */
-	 File[] _tFile;
+	
 
      /**
       * 
@@ -122,12 +119,12 @@ public class FileList
     * @param filePathway
     * @return
     */
-   	public boolean isInDirectory (String filePathway)
+   	public boolean isInDirectory (String filePathway, File[] tableFile)
    {
    		boolean testFile = false;
-       	for(int i = 0; i < _tFile.length; ++i)
+       	for(int i = 0; i < tableFile.length; ++i)
 		{
-    		if(_tFile[i].toString().equals(filePathway)) {	testFile = true; break;}
+    		if(tableFile[i].toString().equals(filePathway)) {	testFile = true; break;}
     	}
        	return testFile;
     }
@@ -137,14 +134,14 @@ public class FileList
      * @param regex
      * @return
      */
-    public String fileSearch (String regex)
+    public String fileSearch (String regex,File[] tableFile)
     {
     	String file = null;
-    	for(int i = 0; i < _tFile.length; ++i)
+    	for(int i = 0; i < tableFile.length; ++i)
 		{
-    		if(_tFile[i].toString().matches((regex)))
+    		if(tableFile[i].toString().matches((regex)))
    			{
-   				file =_tFile[i].toString();
+   				file =tableFile[i].toString();
    				break;
    			}
 		}
@@ -156,12 +153,13 @@ public class FileList
      * @param regex
      * @return
      */
- 	public boolean isDirectoryOrFIleExist (String regex)
+ 	public boolean isDirectoryOrFileExist (String regex, File[] tableFile)
     {
     	boolean testFile = false;
-        for(int i = 0; i < _tFile.length; ++i)
+    	IJ.log("taille "+ tableFile.length);
+        for(int i = 0; i < tableFile.length; ++i)
  		{
-        	if(_tFile[i].toString().matches((regex)))	{	testFile = true; break;}
+        	if(tableFile[i].toString().matches((regex)))	{	testFile = true; break;}
      	}
         	return testFile;
      }
@@ -170,15 +168,15 @@ public class FileList
      * 
      * @return
      */
-    public String[] getDirectoryfils (String repertoire)
+    public String[] getDirectoryFiles (String repertoire, File[] tableFile)
     {
     	String [] ref = repertoire.split("\\"+File.separator);
     	String [] t = new String [0];
     	ArrayList <String> al = new ArrayList <String>();
     	HashMap<String, Integer> dir = new HashMap<String, Integer>();
-    	for(int i = 0; i < _tFile.length; ++i)
+    	for(int i = 0; i < tableFile.length; ++i)
 		{
-    		String [] temp = _tFile[i].toString().split ("\\"+File.separator);
+    		String [] temp = tableFile[i].toString().split ("\\"+File.separator);
     		if (temp.length > ref.length+1)
             {
     			if (!dir.containsKey(temp[ref.length]))
@@ -203,12 +201,12 @@ public class FileList
      * @return
      */
     
-	public ArrayList<String> fileSearchList(String regex)
+	public ArrayList<String> fileSearchList(String regex, File[] tableFile)
 	{
 		ArrayList<String> file = new ArrayList<String>();
-       	for(int i = 0; i < _tFile.length; ++i)
+       	for(int i = 0; i < tableFile.length; ++i)
 		{
-    		if(_tFile[i].toString().matches((regex))) file.add(_tFile[i].toString());
+    		if(tableFile[i].toString().matches((regex))) file.add(tableFile[i].toString());
    	
     	}
     	return file;

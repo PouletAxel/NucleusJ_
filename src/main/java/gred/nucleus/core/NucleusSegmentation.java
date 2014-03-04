@@ -137,6 +137,7 @@ public class NucleusSegmentation
 		AutoThresholder thresholder = new AutoThresholder();
 		ImageStatistics stats = new StackStatistics(imagePlusInput);
 		int tabHisto[] = stats.histogram;
+		IJ.log("Otsu Seuil "+thresholder.getThreshold(Method.Otsu,tabHisto));
 		return thresholder.getThreshold(Method.Otsu,tabHisto);
 	}// computeThreshold
 
@@ -219,9 +220,12 @@ public class NucleusSegmentation
 		ArrayList<Integer> arrayListminMaxThreshold = new ArrayList<Integer>();
 		int threshold = computeThreshold (imagePlusInput);
 		double ecartType = computeStandardDeviation(imagePlusInput,threshold);
-		if (0 > threshold - (int)(ecartType)) arrayListminMaxThreshold.add(1);
-		else arrayListminMaxThreshold.add(threshold - (int)(ecartType));
-		arrayListminMaxThreshold.add(threshold + (int)(ecartType));
+		double min = threshold - ecartType*2;
+		double max = threshold + ecartType;
+		IJ.log("min "+min+" max "+max  );
+		if ( min < 0) arrayListminMaxThreshold.add(1);
+		else arrayListminMaxThreshold.add((int)min);
+		arrayListminMaxThreshold.add((int)max);
 		return arrayListminMaxThreshold;
 	
 	}//computeBornInfThreshold
@@ -237,6 +241,7 @@ public class NucleusSegmentation
 		computeOpening(imagePlusBinary);
 		computeClosing(imagePlusBinary);
 		imagePlusBinary = holesFilling.apply2D(imagePlusBinary);
+		//imagePlusBinary = holesFilling.apply3D(imagePlusBinary);
 	}//morphoCorrection
 
 
@@ -247,8 +252,8 @@ public class NucleusSegmentation
 	private void computeClosing (ImagePlus imagePlusInput)
 	{
 		ImageStack stackTemp = imagePlusInput.getImageStack();
-		stackTemp = Filters3D.filter(stackTemp, Filters3D.MAX, 1, 1, (float) 0.5);
-		stackTemp = Filters3D.filter(stackTemp, Filters3D.MIN, 1, 1, (float) 0.5);
+		stackTemp = Filters3D.filter(stackTemp, Filters3D.MAX,1,1,(float)0.5);
+		stackTemp = Filters3D.filter(stackTemp, Filters3D.MIN,1,1,(float)0.5);
 		imagePlusInput.setStack(stackTemp);
 	}
 
@@ -259,8 +264,8 @@ public class NucleusSegmentation
 	private void computeOpening (ImagePlus imagePlusInput)
 	{
 		ImageStack stackTemp = imagePlusInput.getImageStack();
-		stackTemp = Filters3D.filter(stackTemp, Filters3D.MIN, 1, 1, (float) 0.5);
-		stackTemp = Filters3D.filter(stackTemp, Filters3D.MAX, 1, 1, (float) 0.5);
+		stackTemp = Filters3D.filter(stackTemp, Filters3D.MIN,1,1,(float)0.5);
+		stackTemp = Filters3D.filter(stackTemp, Filters3D.MAX,1,1,(float)0.5);
 		imagePlusInput.setStack(stackTemp);
 	}
   

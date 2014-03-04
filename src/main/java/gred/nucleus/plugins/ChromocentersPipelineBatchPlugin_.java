@@ -37,9 +37,10 @@ public class ChromocentersPipelineBatchPlugin_ implements PlugIn
 	    }	
 		if (chromocentersPipelineBatchDialog.isStart())
 		{
-			FileList FileList = new FileList ();
-			FileList.run(chromocentersPipelineBatchDialog.getDirRawData());
-			if (FileList.isDirectoryOrFIleExist(".+RawDataNucleus.+") && FileList.isDirectoryOrFIleExist(".+SegmentedDataNucleus.+")&& FileList.isDirectoryOrFIleExist(".+SegmentedDataCc.+"))
+			FileList fileList = new FileList ();
+			File[] tableFile = fileList.run(chromocentersPipelineBatchDialog.getDirRawData());
+			if (fileList.isDirectoryOrFileExist(".+RawDataNucleus.+",tableFile) && fileList.isDirectoryOrFileExist(".+SegmentedDataNucleus.+",tableFile)
+					&& fileList.isDirectoryOrFileExist(".+SegmentedDataCc.+",tableFile))
 			{
 				double dimX =chromocentersPipelineBatchDialog.getx();
 				double dimY = chromocentersPipelineBatchDialog.gety();
@@ -51,7 +52,7 @@ public class ChromocentersPipelineBatchPlugin_ implements PlugIn
 				else if (chromocentersPipelineBatchDialog.isRhfVolume())	choiceRhf = "Volume";
 				else choiceRhf = "Intensity";
 				
-				ArrayList<String> imageChromocenterList = FileList.fileSearchList(".+SegmentedDataCc.+");
+				ArrayList<String> imageChromocenterList = fileList.fileSearchList(".+SegmentedDataCc.+",tableFile);
 				String workDirectory = chromocentersPipelineBatchDialog.getWorkDirectory();
 				String nameFileChromocenterAndNucleus = workDirectory+File.separator+"NucAndCcParameters.tab";
 				String nameFileChromocenter = workDirectory+File.separator+"CcParameters.tab";
@@ -64,7 +65,7 @@ public class ChromocentersPipelineBatchPlugin_ implements PlugIn
 					IJ.log(pathNucleusRaw);
 					IJ.log(pathNucleusBinary);
 				
-					if (FileList.isDirectoryOrFIleExist(pathNucleusRaw) && FileList.isDirectoryOrFIleExist(pathNucleusBinary))
+					if (fileList.isDirectoryOrFileExist(pathNucleusRaw,tableFile) && fileList.isDirectoryOrFileExist(pathNucleusBinary,tableFile))
 					{
 						ImagePlus imagePlusChromocenter = IJ.openImage(imageChromocenterList.get(i));
 						ImagePlus imagePlusBinary = IJ.openImage(pathNucleusBinary);

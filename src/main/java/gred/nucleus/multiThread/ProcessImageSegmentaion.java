@@ -45,7 +45,7 @@ public class ProcessImageSegmentaion
 		OperatingSystemMXBean bean = ManagementFactory.getOperatingSystemMXBean();
 		int nbProc = bean.getAvailableProcessors();
 		IJ.log("nb processeur "+nbProc);
-		//if (nbProc!=1) nbProc = nbProc/2; 
+		if (nbProc!=1) nbProc = nbProc/2; 
 		IJ.log("nb processeur utilisé "+nbProc);
 		for (int i = 0; i <_rawImage.length; ++i)
 		{
@@ -59,7 +59,7 @@ public class ProcessImageSegmentaion
 			imageThread.get(j).start();
 			while (_continuer == false)
 				Thread.sleep(10);
-			while (_nbLance >= nbProc)
+			while (_nbLance >= 6)
 				Thread.sleep(10);
 			++j;
 		}
