@@ -54,6 +54,7 @@ public class ChromocenterSegmentationBatchPlugin_ implements PlugIn
 						imagePlusRaw.setCalibration(cal);
 						ChromocenterSegmentation chromocenterSegmentation = new ChromocenterSegmentation();
 						ImagePlus imagePlusConstraste = chromocenterSegmentation.applyChromocentersSegmentation(imagePlusRaw, imagePlusSegmentedNucleus);
+						imagePlusConstraste.setTitle(imagePlusRaw.getTitle());
 						saveFile (imagePlusConstraste,workDirectory+File.separator+"ConstrastDataNucleus");
 					}
 					else	{	IJ.showMessage("There are no the three subdirectories or the subDirectories is empty"); }

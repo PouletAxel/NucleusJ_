@@ -39,7 +39,7 @@ public class NucleusChromocentersAnalysis
 		   RadialDistance radialDistance = new RadialDistance ();
 		   double borderToBorderDistanceTable [] = radialDistance.computeBorderToBorderDistances(imagePlusChromocenter,imagePlusBinary);
 		   double barycenterToBorderDistanceTable [] = radialDistance.computeBarycenterToBorderDistances (imagePlusBinary,imagePlusChromocenter);
-		   IJ.log("3D PARAMETERS");
+		   IJ.log("3D PARAMETERS "+ barycenterToBorderDistanceTable.length+" "+borderToBorderDistanceTable.length);
 		   double volume = measure3D.computeVolumeObject(imagePlusBinary,255);
 		   double surfacicArea = measure3D.computeSurfaceObject(imagePlusBinary,255);
 		   double vCcMean = computeMeanOfTable(volumesObjects);
@@ -47,8 +47,7 @@ public class NucleusChromocentersAnalysis
 		   if (rhfChoice.equals("Volume and intensity"))
 		   {
 			   IJ.log("ImageTitle Volume ESR SurfacicArea NbCc VCcMean VCcTotal DistanceBorderToBorderMean DistanceBarycenterToBorderMean Flatness Elongation Sphericity IntensityRHF VolumeRHF VoxelVolume");
-			   IJ.log(imagePlusBinary.getTitle()+" "+volume+" "+measure3D.equivalentSphericalRadius(imagePlusRaw,255)+" "+surfacicArea
-			  +" " +nbCc+" "+ vCcMean+" "+vCcMean*nbCc+" "+computeMeanOfTable(borderToBorderDistanceTable)
+			   IJ.log(imagePlusBinary.getTitle()+" "+volume+" "+measure3D.equivalentSphericalRadius(imagePlusRaw,255)+" "+surfacicArea  +" " +nbCc+" "+ vCcMean+" "+vCcMean*nbCc+" "+computeMeanOfTable(borderToBorderDistanceTable)
 			  +" "+computeMeanOfTable(barycenterToBorderDistanceTable)+" "+measure3D.computeFlatnessObject(imagePlusRaw,255)+" "+measure3D.computeElongationObject(imagePlusRaw,255)+
 			  " "+measure3D.computeSphericity(volume,surfacicArea)+" "+measure3D.computeRhfIntensite(imagePlusRaw,imagePlusBinary, imagePlusChromocenter)
 			  +" "+measure3D.computeRhfVolume(imagePlusBinary, imagePlusChromocenter)+" "+voxelVolume);

@@ -55,7 +55,6 @@ public class ChromocenterSegmentation
 
 	public double [][] getRag (ImagePlus imagePlusWatershed)
 	{
-		imagePlusWatershed.show();
 		int i, j, k, ii, jj, kk, voxelValue, neigVoxelValue;
 		ImageStatistics statistics = new StackStatistics(imagePlusWatershed);
 		double rag[][] = new double [(int)statistics.histMax + 1] [(int)statistics.histMax + 1];
