@@ -72,7 +72,7 @@ public class Measure3D
 		return surface;
 	}
 
-	
+
 	/**
 	 * Method which compute the volume of each segmented objects
 	 * in _imagePlus
@@ -128,7 +128,7 @@ public class Measure3D
 	 * @param label
 	 * @return
 	 */
-	
+
 	public double equivalentSphericalRadius (ImagePlus imagePlusInput, double label)
 	{
 		double radius;
@@ -137,7 +137,7 @@ public class Measure3D
 		radius = Math.pow(radius, 0.333333);
 		return radius;
 	}
-	
+
 
 	/**
 	 * Method which compute the sphericity :
@@ -167,7 +167,7 @@ public class Measure3D
 	 * @param label
 	 * @return
 	 */
-	
+
 	public double [] ComputeEigenValue3D (ImagePlus imagePlusInput, double label)
 	{
 		ImageStack imageStackInput = imagePlusInput.getImageStack();
@@ -203,7 +203,7 @@ public class Measure3D
 		EigenvalueDecomposition eigen =  matrice.eig();
 		return eigen.getRealEigenvalues();
 	}
-	
+
 	/**
 	 * @param imagePlusInput
 	 * @param label
@@ -270,7 +270,7 @@ public class Measure3D
 	 * @param imagePlusInput
 	 * @return
 	 */
-	public VoxelRecord[] computeObjectBarycenter (ImagePlus imagePlusInput)
+	public VoxelRecord[] computeObjectBarycenter (ImagePlus imagePlusInput, boolean unit)
 	{
 		Histogram histogram = new Histogram();
 		histogram.run(imagePlusInput);
@@ -279,7 +279,7 @@ public class Measure3D
 		tabVoxelRecord[i] = null;
 		for(Entry<Double, Integer> entry : histogram.getHistogram().entrySet())
 	    {
-	        VoxelRecord voxelRecord = computeBarycenter3D(true, imagePlusInput,entry.getKey() );
+	        VoxelRecord voxelRecord = computeBarycenter3D(unit, imagePlusInput,entry.getKey() );
 			tabVoxelRecord[i] = voxelRecord;
 			++i;
 		}

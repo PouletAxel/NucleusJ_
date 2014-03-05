@@ -31,11 +31,9 @@ public class ChromocenterAnalysis
 		  IJ.log("CHROMOCENTER PARAMETERS");
 		  double tBorderToBorderDistanceTable [] = radialDistance.computeBorderToBorderDistances(imagePlusBinary,imagePlusChromocenter);
 		  double tBarycenterToBorderDistanceTable [] = radialDistance.computeBarycenterToBorderDistances (imagePlusBinary,imagePlusChromocenter);
+		  IJ.log("Titre Volume BorderToBorderDistance BarycenterToBorderDistanceTable");
 		  for (int i = 0; i < tBorderToBorderDistanceTable.length;++i )
-		  {
-			  IJ.log("Titre Volume BorderToBorderDistance BarycenterToBorderDistanceTable");
 			  IJ.log(imagePlusChromocenter.getTitle()+"_"+i+" "+tVolume[i]+" "+tBorderToBorderDistanceTable[i]+" "+tBarycenterToBorderDistanceTable[i]);
-		  }
 	   }
 	   
 	   /**
@@ -52,24 +50,23 @@ public class ChromocenterAnalysis
 		    double tBorderToBorderDistanceTable [] = radialDistance.computeBorderToBorderDistances(imagePlusBinary,imagePlusChromocenter);
 			double tBarycenterToBorderDistanceTable [] = radialDistance.computeBarycenterToBorderDistances (imagePlusBinary,imagePlusChromocenter);
 		    File fileResu = new File (pathFile);
-		    FileWriter fw = new FileWriter(fileResu, true);
+		    
 		    boolean exist = fileResu.exists();
 		    BufferedWriter output;	
-		    output = new BufferedWriter(fw);
-		    if (exist == false) 
+		    if (exist) 
 		    {
-		    	output.write("Titre\tVolume\tBorderToBorderDistance\tBarycenterToBorderDistanceTable\n");
+		    	FileWriter fw = new FileWriter(fileResu, true);
+		    	output = new BufferedWriter(fw);
 		    	for (int i = 0; i < tBorderToBorderDistanceTable.length;++i )
-		    	{
 		    		output.write(imagePlusChromocenter.getTitle()+"_"+i+"\t"+tVolume[i]+"\t"+tBorderToBorderDistanceTable[i]+"\t"+tBarycenterToBorderDistanceTable[i]+"\n");
-		    	}
 		    }
 		    else
 		    {
+		    	FileWriter fw = new FileWriter(fileResu, true);
+		    	output = new BufferedWriter(fw);
+		    	output.write("Titre\tVolume\tBorderToBorderDistance\tBarycenterToBorderDistanceTable\n");
 		    	for (int i = 0; i < tBorderToBorderDistanceTable.length;++i )
-		    	{
 		    		output.write(imagePlusChromocenter.getTitle()+"_"+i+"\t"+tVolume[i]+"\t"+tBorderToBorderDistanceTable[i]+"\t"+tBarycenterToBorderDistanceTable[i]+"\n");
-		    	}
 		    }
 		    output.flush();
 		    output.close();

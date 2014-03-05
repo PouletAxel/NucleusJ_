@@ -70,8 +70,8 @@ public class ChromocentersPipelinePlugin_   implements PlugIn
         {
         	 ChromocenterAnalysis chromocenterAnalysis = new ChromocenterAnalysis();
              chromocenterAnalysis.computeParametersChromocenter(imagePlusBinary,imagePlusChromocenter);
-             NucleusChromocentersAnalysis ucleusChromocentersAnalysis = new NucleusChromocentersAnalysis(); 
-             ucleusChromocentersAnalysis.computeParameters(choiceRhf, imagePlusRaw, imagePlusBinary, imagePlusChromocenter);
+             NucleusChromocentersAnalysis nucleusChromocentersAnalysis = new NucleusChromocentersAnalysis(); 
+             nucleusChromocentersAnalysis.computeParameters(choiceRhf, imagePlusRaw, imagePlusBinary, imagePlusChromocenter);
         }
         else if (choiceOutput.equals("Chromocenter parameters"))
         {
@@ -80,8 +80,8 @@ public class ChromocentersPipelinePlugin_   implements PlugIn
         }
         else
         {
-            NucleusChromocentersAnalysis ucleusChromocentersAnalysis = new NucleusChromocentersAnalysis(); 
-            ucleusChromocentersAnalysis.computeParameters(choiceRhf, imagePlusRaw, imagePlusBinary, imagePlusChromocenter);
+            NucleusChromocentersAnalysis nucleusChromocentersAnalysis = new NucleusChromocentersAnalysis(); 
+            nucleusChromocentersAnalysis.computeParameters(choiceRhf, imagePlusRaw, imagePlusBinary, imagePlusChromocenter);
         }
 	}
 }

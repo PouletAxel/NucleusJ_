@@ -43,7 +43,6 @@ public class RadialDistance
 		double dimX = cal.pixelWidth;
 		double dimZ = cal.pixelDepth;
 		double rescaleZFactor = dimZ/dimX;
-		
 		ImagePlus imagePlusRescale = resizer.zScale(imagePlusBinary,(int)(imagePlusBinary.getNSlices()*rescaleZFactor), 0);
 		Distance_Map distanceMap = new Distance_Map();
 		distanceMap.aplly(imagePlusRescale);
@@ -71,7 +70,7 @@ public class RadialDistance
 		ImageStack imageStackDistanceMap = imagePlusDistanceMap.getStack();
 		int i, j, k, l;
 		double voxelValueMin, voxelValue;
-	
+
 		double distanceRadial [] = new double [tabLabel.length];
 		for (l = 0; l < tabLabel.length; ++l)
 		{
@@ -99,19 +98,23 @@ public class RadialDistance
 	  public double[] computeBarycenterToBorderDistances (ImagePlus imagePlusBinary,ImagePlus imagePlusChromocenter)
 	  {
 	    int i;
+	    Resizer resizer = new Resizer();
 		Calibration cal = imagePlusBinary.getCalibration();
 		double dimX = cal.pixelWidth;
+		double dimZ = cal.pixelDepth;
+		double rescaleZFactor = dimZ/dimX;
+		ImagePlus imagePlusChromocenterRescale = resizer.zScale(imagePlusChromocenter,(int)(imagePlusChromocenter.getNSlices()*rescaleZFactor), 0);
 	    ImagePlus imagePlusDistanceMap =  computeDistanceMap(imagePlusBinary);
 	    ImageStack imageStackDistanceMap = imagePlusDistanceMap.getStack();
 	    Measure3D measure3D = new Measure3D();
-	    VoxelRecord tabVoxelRecord[] = measure3D.computeObjectBarycenter(imagePlusChromocenter);
+	    VoxelRecord tabVoxelRecord[] = measure3D.computeObjectBarycenter(imagePlusChromocenterRescale,false);
 	    double radialDistance[] = new double[tabVoxelRecord.length];
-	    double distance;
+	    double distance =-50;
 	    for (i = 0; i < tabVoxelRecord.length; ++i)
 	    {
-	      VoxelRecord voxelRecord = tabVoxelRecord[i];
-	      distance = imageStackDistanceMap.getVoxel((int)voxelRecord._i,(int)voxelRecord._j,(int)voxelRecord._k);
-	      radialDistance[i] = dimX * distance;
+	    	VoxelRecord voxelRecord = tabVoxelRecord[i];
+	    	distance = imageStackDistanceMap.getVoxel((int)voxelRecord._i,(int)voxelRecord._j,(int)voxelRecord._k);
+	    	radialDistance[i] = dimX * distance;
 	    }
 	    return radialDistance;
 	  } //determinationRadialDistanceForEachBarycenterObject
