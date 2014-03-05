@@ -13,7 +13,7 @@ import gred.nucleus.core.NucleusChromocentersAnalysis;
  * @author gred
  *
  */
-public class ChromocentersPipelinePlugin_   implements PlugIn
+public class ChromocentersAnalysisPlugin_   implements PlugIn
 {
 	
 	public void run(String arg)

@@ -2,7 +2,7 @@ package gred.nucleus.plugins;
 
 
 import gred.nucleus.core.*;
-import gred.nucleus.dialogs.NucleusPipelineDialog;
+import gred.nucleus.dialogs.NucleusSegmentationAndAnalysisDialog;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
@@ -15,7 +15,7 @@ import ij.plugin.PlugIn;
  *
  */
 //enlever les données membres inutiles
-public class NucleusPipelinePlugin_ implements PlugIn
+public class NucleusSegmentationAndAnalysisPlugin_ implements PlugIn
 {
 	 /** image to process*/
 	ImagePlus _imagePlus;
@@ -39,7 +39,7 @@ public class NucleusPipelinePlugin_ implements PlugIn
 			return;
 		}
 		if (IJ.versionLessThan("1.32c"))   return;
-		NucleusPipelineDialog nucleusPipelineDialog = new NucleusPipelineDialog();
+		NucleusSegmentationAndAnalysisDialog nucleusPipelineDialog = new NucleusSegmentationAndAnalysisDialog();
 		while( nucleusPipelineDialog.isShowing())
 		{
 	    	 try {Thread.sleep(1);}

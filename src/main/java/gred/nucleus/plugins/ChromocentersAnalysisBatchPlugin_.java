@@ -20,7 +20,7 @@ import gred.nucleus.utils.FileList;
  * @author gred
  *
  */
-public class ChromocentersPipelineBatchPlugin_ implements PlugIn
+public class ChromocentersAnalysisBatchPlugin_ implements PlugIn
 {
 		
 	/**

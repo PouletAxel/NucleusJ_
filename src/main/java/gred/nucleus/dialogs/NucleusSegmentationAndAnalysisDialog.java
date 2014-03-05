@@ -21,7 +21,7 @@ import javax.swing.JTextField;
  *
  */
 
-public class NucleusPipelineDialog extends JFrame
+public class NucleusSegmentationAndAnalysisDialog extends JFrame
 {
 
 	private static final long serialVersionUID = 1L;
@@ -47,7 +47,7 @@ public class NucleusPipelineDialog extends JFrame
 	 */
 	public static void main(String[] args)  
 	{
-		NucleusPipelineDialog fenetre = new NucleusPipelineDialog();
+		NucleusSegmentationAndAnalysisDialog fenetre = new NucleusSegmentationAndAnalysisDialog();
 		fenetre.setLocationRelativeTo(null);
 	}
 	
@@ -57,7 +57,7 @@ public class NucleusPipelineDialog extends JFrame
 	 *
 	 */
 	
-	public NucleusPipelineDialog ()
+	public NucleusSegmentationAndAnalysisDialog ()
 	{
 		this.setTitle("Plopi");
 		this.setSize(500, 350);
@@ -193,8 +193,8 @@ public class NucleusPipelineDialog extends JFrame
 	class StartListener implements ActionListener 
 	{
 		
-		NucleusPipelineDialog _jfc;	
-		public  StartListener (NucleusPipelineDialog jfc) {_jfc = jfc;}
+		NucleusSegmentationAndAnalysisDialog _jfc;	
+		public  StartListener (NucleusSegmentationAndAnalysisDialog jfc) {_jfc = jfc;}
 		/**
 		 * 
 		 */
@@ -212,8 +212,8 @@ public class NucleusPipelineDialog extends JFrame
 	 */
 	class QuitListener implements ActionListener 
 	{
-		NucleusPipelineDialog _jfc;	
-		public  QuitListener (NucleusPipelineDialog jfc) {_jfc = jfc;}
+		NucleusSegmentationAndAnalysisDialog _jfc;	
+		public  QuitListener (NucleusSegmentationAndAnalysisDialog jfc) {_jfc = jfc;}
 		public void actionPerformed(ActionEvent actionEvent) { _jfc.dispose(); }
 	}
 }

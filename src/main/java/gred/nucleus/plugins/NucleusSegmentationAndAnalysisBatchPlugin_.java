@@ -1,7 +1,7 @@
 package gred.nucleus.plugins;
 import java.io.File;
 
-import gred.nucleus.dialogs.NucleusPipelineBatchDialog;
+import gred.nucleus.dialogs.NucleusSegmentationAndAnalysisBatchDialog;
 import gred.nucleus.multiThread.*;
 import gred.nucleus.utils.FileList;
 import ij.plugin.PlugIn;
@@ -13,9 +13,9 @@ import ij.plugin.PlugIn;
  * @author gred
  *
  */
-public class NucleusPipelineBatchPlugin_ implements PlugIn
+public class NucleusSegmentationAndAnalysisBatchPlugin_ implements PlugIn
 {
-	NucleusPipelineBatchDialog _nucleusPipelineBatchDialog = new NucleusPipelineBatchDialog();
+	NucleusSegmentationAndAnalysisBatchDialog _nucleusPipelineBatchDialog = new NucleusSegmentationAndAnalysisBatchDialog();
 	
 	/**
 	 * 
@@ -37,7 +37,7 @@ public class NucleusPipelineBatchPlugin_ implements PlugIn
 			
 		}
 	}
-	
+	public int getNbProcessor(){return _nucleusPipelineBatchDialog.getNbProcessor();}
 	public double getPixelDepth(){return _nucleusPipelineBatchDialog.getz();}
 	public double getPixelWidth(){return _nucleusPipelineBatchDialog.getx();}
 	public double getPixelHeight(){return _nucleusPipelineBatchDialog.gety();}
