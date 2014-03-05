@@ -6,8 +6,6 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 
 import java.io.File;
-import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
 import java.util.ArrayList;
 
 

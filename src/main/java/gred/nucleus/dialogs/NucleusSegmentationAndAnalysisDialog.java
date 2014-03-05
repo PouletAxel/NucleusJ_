@@ -17,7 +17,7 @@ import javax.swing.JTextField;
 
 /**
  * 
- * @author lom
+ * @author Poulet Axel
  *
  */
 
@@ -25,20 +25,20 @@ public class NucleusSegmentationAndAnalysisDialog extends JFrame
 {
 
 	private static final long serialVersionUID = 1L;
-	private JButton _JBstart = new JButton("Start"), _JBquit = new JButton("Quit");
+	private JButton _jButtonStart = new JButton("Start"), _jButtonquit = new JButton("Quit");
 	private Container _container;
-	private JFormattedTextField _jTFX = new JFormattedTextField(Number.class);
-	private JFormattedTextField _jTFY = new JFormattedTextField(Number.class);
-	private JFormattedTextField _jTFZ =  new JFormattedTextField(Number.class);
-	private JFormattedTextField _jTFMax =  new JFormattedTextField(Number.class);
-	private JFormattedTextField _jTFMin =  new JFormattedTextField(Number.class);
-	private JTextField _jTFUnit =  new JTextField();
-	private JLabel _jLXcalibration, _jLYcalibration, _jLZcalibration, _jLUnit,
-	_jLSegmentation, _jLVolumeMin, _jLVolumeMax, _jLAnalysis, _JLCalibration,_JlUnitMin;
-	private ButtonGroup bgChoiceAnalysis = new ButtonGroup();
-	private JRadioButton _JRB2d = new JRadioButton("2D");
-	private JRadioButton _JRB3d = new JRadioButton("3D");
-	private JRadioButton _JRB2d3d = new JRadioButton("2D and 3D");
+	private JFormattedTextField _jTextFieldXCalibration = new JFormattedTextField(Number.class);
+	private JFormattedTextField _jTextFieldYCalibration = new JFormattedTextField(Number.class);
+	private JFormattedTextField _jTextFieldZCalibration =  new JFormattedTextField(Number.class);
+	private JFormattedTextField _jTextFieldMax =  new JFormattedTextField(Number.class);
+	private JFormattedTextField _jTextFieldMin =  new JFormattedTextField(Number.class);
+	private JTextField _jTextFieldUnit =  new JTextField();
+	private JLabel _jLabelXcalibration, _jLabelYcalibration, _jLabelZcalibration, _jLabelUnit,
+	_jLabelSegmentation, _jLabelVolumeMin, _jLabelVolumeMax, _jLabelAnalysis, _JLabelCalibration,_jLabelUnitTexte;
+	private ButtonGroup buttonGroupChoiceAnalysis = new ButtonGroup();
+	private JRadioButton _jRadioButton2D = new JRadioButton("2D");
+	private JRadioButton _jRadioButton3D = new JRadioButton("3D");
+	private JRadioButton _jRadioButton2D3D = new JRadioButton("2D and 3D");
 	private boolean _start = false;
 	
 	/**
@@ -59,7 +59,7 @@ public class NucleusSegmentationAndAnalysisDialog extends JFrame
 	
 	public NucleusSegmentationAndAnalysisDialog ()
 	{
-		this.setTitle("Plopi");
+		this.setTitle("Nucleus segmentation & analysis");
 		this.setSize(500, 350);
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		_container = getContentPane();
@@ -70,150 +70,148 @@ public class NucleusSegmentationAndAnalysisDialog extends JFrame
 		gridBagLayout.columnWidths = new int[] {236, 109, 72, 20};
 		_container.setLayout (gridBagLayout);
 		
-		_JLCalibration = new JLabel();
-		_container.add(_JLCalibration, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
-		_JLCalibration.setText("Voxel Calibration:");
+		_JLabelCalibration = new JLabel();
+		_container.add(_JLabelCalibration, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
+		_JLabelCalibration.setText("Voxel Calibration:");
 			   	
 		_container.setLayout (gridBagLayout);
-		_jLXcalibration = new JLabel();
-		_container.add(_jLXcalibration, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(20, 20, 0, 0), 0, 0));
-		_jLXcalibration.setText("x :");
-		_jLXcalibration.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_container.add(_jTFX, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(20, 60, 0, 0), 0, 0));
-		_jTFX.setText("1");
-		_jTFX.setPreferredSize(new java.awt.Dimension(60, 21));
+		_jLabelXcalibration = new JLabel();
+		_container.add(_jLabelXcalibration, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(20, 20, 0, 0), 0, 0));
+		_jLabelXcalibration.setText("x :");
+		_jLabelXcalibration.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
+		_container.add(_jTextFieldXCalibration, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(20, 60, 0, 0), 0, 0));
+		_jTextFieldXCalibration.setText("1");
+		_jTextFieldXCalibration.setPreferredSize(new java.awt.Dimension(60, 21));
 		
-		_jLYcalibration = new JLabel();
-		_container.add(_jLYcalibration, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(45, 20, 0, 0), 0, 0));
-		_jLYcalibration.setText("y :");
-		_jLYcalibration.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_container.add(_jTFY, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(45, 60, 0, 0), 0, 0));
-		_jTFY.setText("1");
-		_jTFY.setPreferredSize(new java.awt.Dimension(60, 21));
+		_jLabelYcalibration = new JLabel();
+		_container.add(_jLabelYcalibration, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(45, 20, 0, 0), 0, 0));
+		_jLabelYcalibration.setText("y :");
+		_jLabelYcalibration.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
+		_container.add(_jTextFieldYCalibration, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(45, 60, 0, 0), 0, 0));
+		_jTextFieldYCalibration.setText("1");
+		_jTextFieldYCalibration.setPreferredSize(new java.awt.Dimension(60, 21));
 		
-		_jLZcalibration = new JLabel();
-		_container.add(_jLZcalibration, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(70, 20, 0, 0), 0, 0));
-		_jLZcalibration.setText("z :");
-		_jLZcalibration.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_container.add(_jTFZ, new GridBagConstraints(0, 1,0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(70, 60, 0, 0), 0, 0));
-		_jTFZ.setText("1");
-		_jTFZ.setPreferredSize(new java.awt.Dimension(60, 21));	 
+		_jLabelZcalibration = new JLabel();
+		_container.add(_jLabelZcalibration, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(70, 20, 0, 0), 0, 0));
+		_jLabelZcalibration.setText("z :");
+		_jLabelZcalibration.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
+		_container.add(_jTextFieldZCalibration, new GridBagConstraints(0, 1,0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(70, 60, 0, 0), 0, 0));
+		_jTextFieldZCalibration.setText("1");
+		_jTextFieldZCalibration.setPreferredSize(new java.awt.Dimension(60, 21));	 
 		
-		_jLUnit = new JLabel();
-		_container.add(_jLUnit, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(95, 20, 0, 0), 0, 0));
-		_jLUnit.setText("unit :");
-		_jLUnit.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_container.add(_jTFUnit, new GridBagConstraints(0, 1,0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(95, 60, 0, 0), 0, 0));
-		_jTFUnit.setText("pixel");
-		_jTFUnit.setPreferredSize(new java.awt.Dimension(60, 21));	
+		_jLabelUnit = new JLabel();
+		_container.add(_jLabelUnit, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(95, 20, 0, 0), 0, 0));
+		_jLabelUnit.setText("unit :");
+		_jLabelUnit.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
+		_container.add(_jTextFieldUnit, new GridBagConstraints(0, 1,0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(95, 60, 0, 0), 0, 0));
+		_jTextFieldUnit.setText("pixel");
+		_jTextFieldUnit.setPreferredSize(new java.awt.Dimension(60, 21));	
 		
 		
 		
-		_jLSegmentation = new JLabel();
-		_container.add(_jLSegmentation, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(20, 10, 0, 0), 0, 0));
-		_jLSegmentation.setText("Choose the min and max volumes of the nucleus:");
+		_jLabelSegmentation = new JLabel();
+		_container.add(_jLabelSegmentation, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(20, 10, 0, 0), 0, 0));
+		_jLabelSegmentation.setText("Choose the min and max volumes of the nucleus:");
 		
-		_jLVolumeMin = new JLabel();
-		_container.add(_jLVolumeMin, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(40, 20, 0, 0), 0, 0));
-		_jLVolumeMin.setText("Minimun volume of the segmented nucleus :");
-		_jLVolumeMin.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_container.add(_jTFMin, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(40, 320, 0, 0), 0, 0));
-		_jTFMin.setText("15");
-		_jTFMin.setPreferredSize(new java.awt.Dimension( 60, 21));
+		_jLabelVolumeMin = new JLabel();
+		_container.add(_jLabelVolumeMin, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(40, 20, 0, 0), 0, 0));
+		_jLabelVolumeMin.setText("Minimun volume of the segmented nucleus :");
+		_jLabelVolumeMin.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
+		_container.add(_jTextFieldMin, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(40, 320, 0, 0), 0, 0));
+		_jTextFieldMin.setText("15");
+		_jTextFieldMin.setPreferredSize(new java.awt.Dimension( 60, 21));
 		
-		_JlUnitMin = new JLabel();
-		_container.add(_JlUnitMin, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(40, 410, 0, 0), 0, 0));
-		_JlUnitMin.setText("unit^3");
-		_JlUnitMin.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
+		_jLabelUnitTexte = new JLabel();
+		_container.add(_jLabelUnitTexte, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(40, 410, 0, 0), 0, 0));
+		_jLabelUnitTexte.setText("unit^3");
+		_jLabelUnitTexte.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
 		
-		_jLVolumeMax = new JLabel();
-		_container.add(_jLVolumeMax, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(70, 20, 0, 0), 0, 0));
-		_jLVolumeMax.setText("Maximum volume of the segmented nucleus :");
-		_jLVolumeMax.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_container.add(_jTFMax, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(70, 320, 0, 0), 0, 0));
-		_jTFMax.setText("2000");
-		_jTFMax.setPreferredSize(new java.awt.Dimension (60, 21));
-		_JlUnitMin = new JLabel();
-		_container.add(_JlUnitMin, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(70, 410, 0, 0), 0, 0));
-		_JlUnitMin.setText("unit^3");
-		_JlUnitMin.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
+		_jLabelVolumeMax = new JLabel();
+		_container.add(_jLabelVolumeMax, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(70, 20, 0, 0), 0, 0));
+		_jLabelVolumeMax.setText("Maximum volume of the segmented nucleus :");
+		_jLabelVolumeMax.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
+		_container.add(_jTextFieldMax, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(70, 320, 0, 0), 0, 0));
+		_jTextFieldMax.setText("2000");
+		_jTextFieldMax.setPreferredSize(new java.awt.Dimension (60, 21));
+		_jLabelUnitTexte = new JLabel();
+		_container.add(_jLabelUnitTexte, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(70, 410, 0, 0), 0, 0));
+		_jLabelUnitTexte.setText("unit^3");
+		_jLabelUnitTexte.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
 		
-		_jLAnalysis = new JLabel();
-		_container.add(_jLAnalysis, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(100, 10, 0, 0), 0, 0));
-		_jLAnalysis.setText("Type of analysis:");
+		_jLabelAnalysis = new JLabel();
+		_container.add(_jLabelAnalysis, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(100, 10, 0, 0), 0, 0));
+		_jLabelAnalysis.setText("Type of analysis:");
 		
-		bgChoiceAnalysis.add(_JRB2d);
-		bgChoiceAnalysis.add(_JRB3d);
-		bgChoiceAnalysis.add(_JRB2d3d);
-		_JRB2d.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_JRB3d.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_JRB2d3d.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_container.add(_JRB2d, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(130, 170, 0, 0), 0, 0));
-		_container.add(_JRB3d, new GridBagConstraints(0, 2, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(130, 120, 0, 0), 0, 0));
-		_container.add(_JRB2d3d, new GridBagConstraints(0,2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(130, 10, 0, 0), 0, 0));
-		_JRB2d3d.setSelected(true);
+		buttonGroupChoiceAnalysis.add(_jRadioButton2D);
+		buttonGroupChoiceAnalysis.add(_jRadioButton3D);
+		buttonGroupChoiceAnalysis.add(_jRadioButton2D3D);
+		_jRadioButton2D.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
+		_jRadioButton3D.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
+		_jRadioButton2D3D.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
+		_container.add(_jRadioButton2D, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(130, 170, 0, 0), 0, 0));
+		_container.add(_jRadioButton3D, new GridBagConstraints(0, 2, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(130, 120, 0, 0), 0, 0));
+		_container.add(_jRadioButton2D3D, new GridBagConstraints(0,2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(130, 10, 0, 0), 0, 0));
+		_jRadioButton2D3D.setSelected(true);
 		
-		_container.add(_JBstart, new GridBagConstraints(0, 2, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(160, 140, 0,0), 0, 0));
-		_JBstart.setPreferredSize(new java.awt.Dimension(120, 21));
-		_container.add(_JBquit, new GridBagConstraints(0, 2, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(160, 10, 0, 0), 0, 0));
-		_JBquit.setPreferredSize(new java.awt.Dimension(120, 21));
+		_container.add(_jButtonStart, new GridBagConstraints(0, 2, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(160, 140, 0,0), 0, 0));
+		_jButtonStart.setPreferredSize(new java.awt.Dimension(120, 21));
+		_container.add(_jButtonquit, new GridBagConstraints(0, 2, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(160, 10, 0, 0), 0, 0));
+		_jButtonquit.setPreferredSize(new java.awt.Dimension(120, 21));
 		this.setVisible(true);
 		
 		QuitListener quitListener = new QuitListener(this);
-		_JBquit.addActionListener(quitListener);
+		_jButtonquit.addActionListener(quitListener);
 		StartListener startListener = new StartListener(this);
-		_JBstart.addActionListener(startListener);	   
+		_jButtonStart.addActionListener(startListener);	   
 	}
 	
-	public double getx(){ return Double.parseDouble(_jTFX.getText()); }
-	public double gety(){ return Double.parseDouble(_jTFY.getText()); }
-	public double getz(){ return Double.parseDouble(_jTFZ.getText()); }
-	public String getUnit(){ return _jTFUnit.getText(); }
-	public double getMinSeg(){ return Double.parseDouble(_jTFMin.getText()); }
-	public double getMaxSeg(){ return Double.parseDouble(_jTFMax.getText()); }
+	public double getx(){ return Double.parseDouble(_jTextFieldXCalibration.getText()); }
+	public double gety(){ return Double.parseDouble(_jTextFieldYCalibration.getText()); }
+	public double getz(){ return Double.parseDouble(_jTextFieldZCalibration.getText()); }
+	public String getUnit(){ return _jTextFieldUnit.getText(); }
+	public double getMinSeg(){ return Double.parseDouble(_jTextFieldMin.getText()); }
+	public double getMaxSeg(){ return Double.parseDouble(_jTextFieldMax.getText()); }
 	public boolean isStart() {	return _start; }
-	public boolean isTheBoth() {	return _JRB2d3d.isSelected(); }
-	public boolean is2D() {	return _JRB2d.isSelected(); }
-	public boolean is3D() {	return _JRB3d.isSelected(); }
+	public boolean isTheBoth() {	return _jRadioButton2D3D.isSelected(); }
+	public boolean is2D() {	return _jRadioButton2D.isSelected(); }
+	public boolean is3D() {	return _jRadioButton3D.isSelected(); }
 	
 	/********************************************************************************************************************************************
-	 * 	Classe listener pour interagir avec les composants de la fenetre
+	 * 	Classes listener to interact with the several element of the window
 	 */
 	/********************************************************************************************************************************************
 	/********************************************************************************************************************************************
 	/********************************************************************************************************************************************
-	/********************************************************************************************************************************************
-			
+	/********************************************************************************************************************************************/
 	/**
 	 * 
-	 * @author lom
+	 * @author Poulet Axel
 	 *
 	 */
-			 
 	class StartListener implements ActionListener 
 	{
 		
-		NucleusSegmentationAndAnalysisDialog _jfc;	
-		public  StartListener (NucleusSegmentationAndAnalysisDialog jfc) {_jfc = jfc;}
+		NucleusSegmentationAndAnalysisDialog _nucleusSegmentationAndAnalysisDialog;	
+		public  StartListener (NucleusSegmentationAndAnalysisDialog jfc) {_nucleusSegmentationAndAnalysisDialog = jfc;}
 		/**
 		 * 
 		 */
 		public void actionPerformed(ActionEvent actionEvent)
 		{
 			_start=true;
-			_jfc.dispose();
+			_nucleusSegmentationAndAnalysisDialog.dispose();
 		}
 	}
 			
 	/**
 	 * 
-	 * @author lom
+	 * @author Poulet Axel
 	 *
 	 */
 	class QuitListener implements ActionListener 
 	{
-		NucleusSegmentationAndAnalysisDialog _jfc;	
-		public  QuitListener (NucleusSegmentationAndAnalysisDialog jfc) {_jfc = jfc;}
-		public void actionPerformed(ActionEvent actionEvent) { _jfc.dispose(); }
+		NucleusSegmentationAndAnalysisDialog _nucleusSegmentationAndAnalysisDialog;	
+		public  QuitListener (NucleusSegmentationAndAnalysisDialog jfc) {_nucleusSegmentationAndAnalysisDialog = jfc;}
+		public void actionPerformed(ActionEvent actionEvent) { _nucleusSegmentationAndAnalysisDialog.dispose(); }
 	}
 }

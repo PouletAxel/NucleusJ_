@@ -7,7 +7,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -32,26 +31,27 @@ public class ChromocentersAnalysisPipelineBatchDialog extends JFrame
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JButton _JBWorkDirectory = new JButton("Output Directory"), _JBstart = new JButton("Start"), _JBquit = new JButton("Quit"), _JBRawData = new JButton("Raw Data");
+	private JButton _jButtonWorkDirectory = new JButton("Output Directory"), _jButtonStart = new JButton("Start"), _jButtonQuit = new JButton("Quit")
+	, _jButtonRawData = new JButton("Raw Data");
 	private Container _container;
 
-	private JFormattedTextField _jTFX = new JFormattedTextField(Number.class);
-	private JFormattedTextField _jTFY = new JFormattedTextField(Number.class);
-    private JFormattedTextField _jTFZ =  new JFormattedTextField(Number.class);
-    private JTextField _jTFUnit =  new JTextField(), _jTFwd  =  new JTextField(), _jTFrd = new JTextField();
-	private JLabel _jLXcalibration, _jLYcalibration, _jLZcalibration, _jLUnit,
-		 _jLAnalysis, _JLWorkDirect, _JLCalibration;
-	private ButtonGroup bgChoiceRhf = new ButtonGroup();
-	private JRadioButton _JRrhfV = new JRadioButton("VolumeRHF");
-    private JRadioButton _JRrhfI = new JRadioButton("IntensityRHF");
-    private JRadioButton _JRrhfIV = new JRadioButton("VolumeRHF and IntensityRHF");
+	private JFormattedTextField _jTextFieldXCalibration = new JFormattedTextField(Number.class);
+	private JFormattedTextField _jTextFieldYCalibration = new JFormattedTextField(Number.class);
+    private JFormattedTextField _jTextFieldZCalibration =  new JFormattedTextField(Number.class);
+    private JTextField _jTextFieldUnit =  new JTextField(), _jTextFieldWorkDirectory  =  new JTextField(), _jTextFieldRawData = new JTextField();
+	private JLabel _jLabelXcalibration, _jLabelYcalibration, _jLabelZcalibration, _jLabelUnit,
+		 _jLabelAnalysis, _jLabelWorkDirectory, _jLabelCalibration;
+	private ButtonGroup buttonGroupChoiceRhf = new ButtonGroup();
+	private JRadioButton _jRadioButtonRhfV = new JRadioButton("VolumeRHF");
+    private JRadioButton _jRadioButtonRhfI = new JRadioButton("IntensityRHF");
+    private JRadioButton _jRadioButtonRhfIV = new JRadioButton("VolumeRHF and IntensityRHF");
     
-    private ButtonGroup bgChoiceAnalysis = new ButtonGroup();
-	private JRadioButton _JRNucCc = new JRadioButton("Nucleus and chromocenter");
-    private JRadioButton _JRCc = new JRadioButton("Chromocenter");
-    private JRadioButton _JRNuc = new JRadioButton("Nucleus");
+    private ButtonGroup buttonGroupChoiceAnalysis = new ButtonGroup();
+	private JRadioButton _jRadioButtonNucCc = new JRadioButton("Nucleus and chromocenter");
+    private JRadioButton _jRadioButtonCc = new JRadioButton("Chromocenter");
+    private JRadioButton _jRadioButtonNuc = new JRadioButton("Nucleus");
     
-	private String _workDir, _dataDir;
+	private String _workDirectory, _rawDataDirectory;
 	private boolean _start = false;
 	
 	public static void main(String[] args)  
@@ -68,9 +68,8 @@ public class ChromocentersAnalysisPipelineBatchDialog extends JFrame
     
 	public ChromocentersAnalysisPipelineBatchDialog ()
 	{
-		this.setTitle("Plop");
+		this.setTitle("Chromocenters Analysis Pipeline (Batch)");
 		this.setSize(500, 600);
-		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		_container = getContentPane();
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -80,173 +79,166 @@ public class ChromocentersAnalysisPipelineBatchDialog extends JFrame
 	   	gridBagLayout.columnWidths = new int[] {236, 120, 72, 20};
 	   	_container.setLayout (gridBagLayout);
 	   	
-	   	_JLWorkDirect = new JLabel();
-	   	_container.add(_JLWorkDirect, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
-	   	_JLWorkDirect.setText("Work directory and data directory choice : ");
+	   	_jLabelWorkDirectory = new JLabel();
+	   	_container.add(_jLabelWorkDirectory, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
+	   	_jLabelWorkDirectory.setText("Work directory and data directory choice : ");
 
-	   	JTextPane plop = new JTextPane();
-	   	plop.setText("The Raw Data directory must contains 3 subdirectories."
+	   	JTextPane jTextPane = new JTextPane();
+	   	jTextPane.setText("The Raw Data directory must contains this 3 subdirectories."
 	   			+ "\nOne for raw nuclei images, named RawDataNucleus. "
 	   			+ "\nOne for segmented nuclei images, named SegmentedDataNucleus."
 	   			+ "\nOne for segmented chromocenters images, named SegmentedDataCc."
 	   			+ "\nPlease keep the same file name during the imaging process.");
-	   	plop.setEditable(false);
-	   	_container.add(plop, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(20, 20, 0, 0), 0, 0));
+	   	jTextPane.setEditable(false);
+	   	_container.add(jTextPane, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(20, 20, 0, 0), 0, 0));
 
 	   	
-	   	_container.add(_JBRawData, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(110, 10, 0, 0), 0, 0));
-	   	_JBRawData.setPreferredSize(new java.awt.Dimension(120, 21));
-	   	_JBRawData.setFont(new java.awt.Font("Albertus",2,10));
+	   	_container.add(_jButtonRawData, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(110, 10, 0, 0), 0, 0));
+	   	_jButtonRawData.setPreferredSize(new java.awt.Dimension(120, 21));
+	   	_jButtonRawData.setFont(new java.awt.Font("Albertus",2,10));
 		
-		_container.add(_jTFrd, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(110, 160, 0, 0), 0, 0));
-		_jTFrd.setPreferredSize(new java.awt.Dimension(280, 21));
-		_jTFrd.setFont(new java.awt.Font("Albertus",2,10));
+		_container.add(_jTextFieldRawData, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(110, 160, 0, 0), 0, 0));
+		_jTextFieldRawData.setPreferredSize(new java.awt.Dimension(280, 21));
+		_jTextFieldRawData.setFont(new java.awt.Font("Albertus",2,10));
 	   	
-	   	_container.add(_JBWorkDirectory, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(150, 10, 0, 0), 0, 0));
-	   	_JBWorkDirectory.setPreferredSize(new java.awt.Dimension(120, 21));
-	   	_JBWorkDirectory.setFont(new java.awt.Font("Albertus",2,10));
+	   	_container.add(_jButtonWorkDirectory, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(150, 10, 0, 0), 0, 0));
+	   	_jButtonWorkDirectory.setPreferredSize(new java.awt.Dimension(120, 21));
+	   	_jButtonWorkDirectory.setFont(new java.awt.Font("Albertus",2,10));
 	   	
-		_container.add(_jTFwd, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(150, 160, 0, 0), 0, 0));
-	   	_jTFwd.setPreferredSize(new java.awt.Dimension(280, 21));
-	   	_jTFwd.setFont(new java.awt.Font("Albertus",2,10));
+		_container.add(_jTextFieldWorkDirectory, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(150, 160, 0, 0), 0, 0));
+	   	_jTextFieldWorkDirectory.setPreferredSize(new java.awt.Dimension(280, 21));
+	   	_jTextFieldWorkDirectory.setFont(new java.awt.Font("Albertus",2,10));
 	   	
-	   	_JLCalibration = new JLabel();
-	   	_container.add(_JLCalibration, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
-	   	_JLCalibration.setText("Voxel Calibration:");
+	   	_jLabelCalibration = new JLabel();
+	   	_container.add(_jLabelCalibration, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
+	   	_jLabelCalibration.setText("Voxel Calibration:");
 	   	
 	   	_container.setLayout (gridBagLayout);
-		_jLXcalibration = new JLabel();
-		_container.add(_jLXcalibration, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(40, 20, 0, 0), 0, 0));
-		_jLXcalibration.setText("x :");
-		_jLXcalibration.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_container.add(_jTFX, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(40, 60, 0, 0), 0, 0));
-		_jTFX.setText("1");
-		_jTFX.setPreferredSize(new java.awt.Dimension(60, 21));
+		_jLabelXcalibration = new JLabel();
+		_container.add(_jLabelXcalibration, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(40, 20, 0, 0), 0, 0));
+		_jLabelXcalibration.setText("x :");
+		_jLabelXcalibration.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
+		_container.add(_jTextFieldXCalibration, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(40, 60, 0, 0), 0, 0));
+		_jTextFieldXCalibration.setText("1");
+		_jTextFieldXCalibration.setPreferredSize(new java.awt.Dimension(60, 21));
 	
-		_jLYcalibration = new JLabel();
-		_container.add(_jLYcalibration, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(65, 20, 0, 0), 0, 0));
-		_jLYcalibration.setText("y :");
-		_jLYcalibration.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_container.add(_jTFY, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(65, 60, 0, 0), 0, 0));
-		_jTFY.setText("1");
-		_jTFY.setPreferredSize(new java.awt.Dimension(60, 21));
+		_jLabelYcalibration = new JLabel();
+		_container.add(_jLabelYcalibration, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(65, 20, 0, 0), 0, 0));
+		_jLabelYcalibration.setText("y :");
+		_jLabelYcalibration.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
+		_container.add(_jTextFieldYCalibration, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(65, 60, 0, 0), 0, 0));
+		_jTextFieldYCalibration.setText("1");
+		_jTextFieldYCalibration.setPreferredSize(new java.awt.Dimension(60, 21));
 	
-		_jLZcalibration = new JLabel();
-		_container.add(_jLZcalibration, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(90, 20, 0, 0), 0, 0));
-		_jLZcalibration.setText("z :");
-		_jLZcalibration.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_container.add(_jTFZ, new GridBagConstraints(0, 2,0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(90, 60, 0, 0), 0, 0));
-		_jTFZ.setText("1");
-		_jTFZ.setPreferredSize(new java.awt.Dimension(60, 21));	 
+		_jLabelZcalibration = new JLabel();
+		_container.add(_jLabelZcalibration, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(90, 20, 0, 0), 0, 0));
+		_jLabelZcalibration.setText("z :");
+		_jLabelZcalibration.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
+		_container.add(_jTextFieldZCalibration, new GridBagConstraints(0, 2,0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(90, 60, 0, 0), 0, 0));
+		_jTextFieldZCalibration.setText("1");
+		_jTextFieldZCalibration.setPreferredSize(new java.awt.Dimension(60, 21));	 
 		
-		_jLUnit = new JLabel();
-		_container.add(_jLUnit, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(115, 20, 0, 0), 0, 0));
-		_jLUnit.setText("unit :");
-		_jLUnit.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_container.add(_jTFUnit, new GridBagConstraints(0, 2,0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(115, 60, 0, 0), 0, 0));
-		_jTFUnit.setText("pixel");
-		_jTFUnit.setPreferredSize(new java.awt.Dimension(60, 21));	
+		_jLabelUnit = new JLabel();
+		_container.add(_jLabelUnit, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(115, 20, 0, 0), 0, 0));
+		_jLabelUnit.setText("unit :");
+		_jLabelUnit.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
+		_container.add(_jTextFieldUnit, new GridBagConstraints(0, 2,0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(115, 60, 0, 0), 0, 0));
+		_jTextFieldUnit.setText("pixel");
+		_jTextFieldUnit.setPreferredSize(new java.awt.Dimension(60, 21));	
 
 		
-		_jLAnalysis = new JLabel();
-	   	_container.add(_jLAnalysis, new GridBagConstraints(0, 3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(30, 10, 0, 0), 0, 0));
-	   	_jLAnalysis.setText("Type of Relative Heterochromatin Fraction:");
+		_jLabelAnalysis = new JLabel();
+	   	_container.add(_jLabelAnalysis, new GridBagConstraints(0, 3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(30, 10, 0, 0), 0, 0));
+	   	_jLabelAnalysis.setText("Type of Relative Heterochromatin Fraction:");
 	   
-	   	bgChoiceRhf.add(_JRrhfV);
-		bgChoiceRhf.add(_JRrhfI);
-		bgChoiceRhf.add(_JRrhfIV);
-		_JRrhfV.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_JRrhfI.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_JRrhfIV.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_container.add(_JRrhfV, new GridBagConstraints(0, 3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(60, 370, 0, 0), 0, 0));
-		_container.add(_JRrhfI, new GridBagConstraints(0, 3, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(60, 250, 0, 0), 0, 0));
-		_container.add(_JRrhfIV, new GridBagConstraints(0,3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(60, 20, 0, 0), 0, 0));
-		_JRrhfIV.setSelected(true);
+	   	buttonGroupChoiceRhf.add(_jRadioButtonRhfV);
+		buttonGroupChoiceRhf.add(_jRadioButtonRhfI);
+		buttonGroupChoiceRhf.add(_jRadioButtonRhfIV);
+		_jRadioButtonRhfV.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
+		_jRadioButtonRhfI.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
+		_jRadioButtonRhfIV.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
+		_container.add(_jRadioButtonRhfV, new GridBagConstraints(0, 3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(60, 370, 0, 0), 0, 0));
+		_container.add(_jRadioButtonRhfI, new GridBagConstraints(0, 3, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(60, 250, 0, 0), 0, 0));
+		_container.add(_jRadioButtonRhfIV, new GridBagConstraints(0,3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(60, 20, 0, 0), 0, 0));
+		_jRadioButtonRhfIV.setSelected(true);
 
-		_jLAnalysis = new JLabel();
-	   	_container.add(_jLAnalysis, new GridBagConstraints(0, 3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(95, 10, 0, 0), 0, 0));
-	   	_jLAnalysis.setText("Results file of interest: ");
+		_jLabelAnalysis = new JLabel();
+	   	_container.add(_jLabelAnalysis, new GridBagConstraints(0, 3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(95, 10, 0, 0), 0, 0));
+	   	_jLabelAnalysis.setText("Results file of interest: ");
 	   
-	   	bgChoiceAnalysis.add(_JRNucCc);
-	   	bgChoiceAnalysis.add(_JRCc);
-	   	bgChoiceAnalysis.add(_JRNuc);
-	   	_JRNuc.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_JRCc.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_JRNucCc.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_container.add(_JRNuc, new GridBagConstraints(0, 3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(120, 370, 0, 0), 0, 0));
-		_container.add(_JRCc, new GridBagConstraints(0, 3, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(120, 250, 0, 0), 0, 0));
-		_container.add(_JRNucCc, new GridBagConstraints(0,3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(120, 20, 0, 0), 0, 0));
-		_JRNucCc.setSelected(true);
+	   	buttonGroupChoiceAnalysis.add(_jRadioButtonNucCc);
+	   	buttonGroupChoiceAnalysis.add(_jRadioButtonCc);
+	   	buttonGroupChoiceAnalysis.add(_jRadioButtonNuc);
+	   	_jRadioButtonNuc.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
+		_jRadioButtonCc.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
+		_jRadioButtonNucCc.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
+		_container.add(_jRadioButtonNuc, new GridBagConstraints(0, 3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(120, 370, 0, 0), 0, 0));
+		_container.add(_jRadioButtonCc, new GridBagConstraints(0, 3, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(120, 250, 0, 0), 0, 0));
+		_container.add(_jRadioButtonNucCc, new GridBagConstraints(0,3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(120, 20, 0, 0), 0, 0));
+		_jRadioButtonNucCc.setSelected(true);
 		
-	   	_container.add(_JBstart, new GridBagConstraints(0, 3, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(190, 140, 0,0), 0, 0));
-		_JBstart.setPreferredSize(new java.awt.Dimension(120, 21));
-		_container.add(_JBquit, new GridBagConstraints(0, 3, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(190, 10, 0, 0), 0, 0));
-		_JBquit.setPreferredSize(new java.awt.Dimension(120, 21));
+	   	_container.add(_jButtonStart, new GridBagConstraints(0, 3, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(190, 140, 0,0), 0, 0));
+		_jButtonStart.setPreferredSize(new java.awt.Dimension(120, 21));
+		_container.add(_jButtonQuit, new GridBagConstraints(0, 3, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(190, 10, 0, 0), 0, 0));
+		_jButtonQuit.setPreferredSize(new java.awt.Dimension(120, 21));
 	  	
 	   	
 	  	WorkDirListener wdListener = new WorkDirListener();
-	  	_JBWorkDirectory.addActionListener(wdListener);
+	  	_jButtonWorkDirectory.addActionListener(wdListener);
 	  	DataDirListener ddListener = new DataDirListener();
-	  	_JBRawData.addActionListener(ddListener);
+	  	_jButtonRawData.addActionListener(ddListener);
 	  	QuitListener quitListener = new QuitListener(this);
-	   	_JBquit.addActionListener(quitListener);
+	   	_jButtonQuit.addActionListener(quitListener);
 	   	StartListener startListener = new StartListener(this);
-	   	_JBstart.addActionListener(startListener);	  
+	   	_jButtonStart.addActionListener(startListener);	  
 	   	this.setVisible(true);
 	 }
 	
-	public double getx(){ return Double.parseDouble(_jTFX.getText()); }
-	public double gety(){ return Double.parseDouble(_jTFY.getText()); }
-	public double getz(){ return Double.parseDouble(_jTFZ.getText()); }
-	public String getUnit(){ return _jTFUnit.getText(); }
-	public String getWorkDirectory(){return _jTFwd.getText();}
-	public String getDirRawData(){return _jTFrd.getText();}
+	public double getx(){ return Double.parseDouble(_jTextFieldXCalibration.getText()); }
+	public double gety(){ return Double.parseDouble(_jTextFieldYCalibration.getText()); }
+	public double getz(){ return Double.parseDouble(_jTextFieldZCalibration.getText()); }
+	public String getUnit(){ return _jTextFieldUnit.getText(); }
+	public String getWorkDirectory(){return _jTextFieldWorkDirectory.getText();}
+	public String getDirRawData(){return _jTextFieldRawData.getText();}
 	public boolean isStart() {	return _start; }
-
-	
-	public boolean isNucAndCcAnalysis() {	return _JRNucCc.isSelected(); }
-	public boolean isNucAnalysis() {	return _JRNuc.isSelected(); }
-	public boolean isCcAnalysis() {	return _JRCc.isSelected(); }
-	
-	public boolean isRHFVolumeAndIntensity() {	return _JRrhfIV.isSelected(); }
-	public boolean isRhfVolume() {	return _JRrhfV.isSelected(); }
-	public boolean isRhfIntensity() {	return _JRrhfI.isSelected(); }
-
-	
+	public boolean isNucAndCcAnalysis() {	return _jRadioButtonNucCc.isSelected(); }
+	public boolean isNucAnalysis() {	return _jRadioButtonNuc.isSelected(); }
+	public boolean isCcAnalysis() {	return _jRadioButtonCc.isSelected(); }
+	public boolean isRHFVolumeAndIntensity() {	return _jRadioButtonRhfIV.isSelected(); }
+	public boolean isRhfVolume() {	return _jRadioButtonRhfV.isSelected(); }
+	public boolean isRhfIntensity() {	return _jRadioButtonRhfI.isSelected(); }
 
 
 
 	/********************************************************************************************************************************************
-	  * 	Classe listener pour interagir avec les composants de la fenetre
+	  * 	Classes listener to interact with the several element of the window
 	  */
 	 /********************************************************************************************************************************************
 	 /********************************************************************************************************************************************
 	 /********************************************************************************************************************************************
-	 /********************************************************************************************************************************************
-	
+	 /********************************************************************************************************************************************/
 		
 	/**
 	 * 
-	 * @author lom
+	 * @author Poulet Axel
 	 *
 	 */
-	 
 	class StartListener implements ActionListener 
 	{
 	
-		ChromocentersAnalysisPipelineBatchDialog _jfpfso;	
-		public  StartListener (ChromocentersAnalysisPipelineBatchDialog jfpfso) {_jfpfso = jfpfso;}
+		ChromocentersAnalysisPipelineBatchDialog _chromocentersAnalysisPipelineBatchDialog;	
+		public  StartListener (ChromocentersAnalysisPipelineBatchDialog jfpfso) {_chromocentersAnalysisPipelineBatchDialog = jfpfso;}
 		/**
 		  * 
 		  */
 		 public void actionPerformed(ActionEvent actionEvent)
 		 {
-			 if (_jTFwd.getText().isEmpty() || _jTFrd.getText().isEmpty())
+			 if (_jTextFieldWorkDirectory.getText().isEmpty() || _jTextFieldRawData.getText().isEmpty())
 				 JOptionPane.showMessageDialog(null, "You did not choose a work directory or the raw data", "Error", JOptionPane.ERROR_MESSAGE); 
 			 else
 			 {
 				 _start=true;
-				 _jfpfso.dispose();
+				 _chromocentersAnalysisPipelineBatchDialog.dispose();
 			 }
 		 }
 	 }
@@ -254,23 +246,19 @@ public class ChromocentersAnalysisPipelineBatchDialog extends JFrame
 	
 	/**
 	 * 
-	 * @author lom
+	 * @author Poulet Axel
 	 *
 	 */
-	
 	class QuitListener implements ActionListener 
 	{
-		ChromocentersAnalysisPipelineBatchDialog _jfpfso;	
-		public  QuitListener (ChromocentersAnalysisPipelineBatchDialog jfpfso) {_jfpfso = jfpfso;}
-		public void actionPerformed(ActionEvent actionEvent) { _jfpfso.dispose(); }
+		ChromocentersAnalysisPipelineBatchDialog _chromocentersAnalysisPipelineBatchDialog;	
+		public  QuitListener (ChromocentersAnalysisPipelineBatchDialog jfpfso) {_chromocentersAnalysisPipelineBatchDialog = jfpfso;}
+		public void actionPerformed(ActionEvent actionEvent) { _chromocentersAnalysisPipelineBatchDialog.dispose(); }
 	}
-	
-	
-	/*	Bouton Reference et dossier ava		*/
 	
 	/**
 	 * 
-	 * @author lom
+	 * @author Poulet Axel
 	 *
 	 */
 	 class WorkDirListener implements ActionListener
@@ -288,18 +276,18 @@ public class ChromocentersAnalysisPipelineBatchDialog extends JFrame
 			 {
 				@SuppressWarnings("unused")
 				String run = jFileChooser.getSelectedFile().getName();
-				 _workDir = jFileChooser.getSelectedFile().getAbsolutePath();
-				 _jTFwd.setText(_workDir);
+				 _workDirectory = jFileChooser.getSelectedFile().getAbsolutePath();
+				 _jTextFieldWorkDirectory.setText(_workDirectory);
 			 }
 			 setCursor (Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		 }	
 	 }
 	 
 	 /**
-		 * 
-		 * @author lom
-		 *
-		 */
+	  * 
+	  * @author Poulet Axel
+	  *
+	  */
 	 class DataDirListener implements ActionListener
 	 {
 		 /**
@@ -315,8 +303,8 @@ public class ChromocentersAnalysisPipelineBatchDialog extends JFrame
 			 {
 				 @SuppressWarnings("unused")
 				 String run = jFileChooser.getSelectedFile().getName();
-				 _dataDir = jFileChooser.getSelectedFile().getAbsolutePath();
-				 _jTFrd.setText(_dataDir);
+				 _rawDataDirectory = jFileChooser.getSelectedFile().getAbsolutePath();
+				 _jTextFieldRawData.setText(_rawDataDirectory);
 			 }
 			 setCursor (Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		 }	

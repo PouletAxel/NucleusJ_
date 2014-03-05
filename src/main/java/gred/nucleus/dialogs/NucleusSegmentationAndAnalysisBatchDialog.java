@@ -65,7 +65,7 @@ public class NucleusSegmentationAndAnalysisBatchDialog extends JFrame
     
 	public NucleusSegmentationAndAnalysisBatchDialog ()
 	{
-		this.setTitle("Nucleus segmentation & analysis");
+		this.setTitle("Nucleus segmentation & analysis (batch)");
 		this.setSize(500, 500);
 		this.setLocationRelativeTo(null);
 		_container = getContentPane();
@@ -215,14 +215,18 @@ public class NucleusSegmentationAndAnalysisBatchDialog extends JFrame
 
 
 	/********************************************************************************************************************************************
-	  * 	Classe listener pour interagir avec les composants de la fenetre
+	  * 	Classes listener to interact with the several element of the window
 	  */
 	 /********************************************************************************************************************************************
 	 /********************************************************************************************************************************************
 	 /********************************************************************************************************************************************
-	 /********************************************************************************************************************************************
+	 /********************************************************************************************************************************************/
 	
-*/
+	/**
+	 * 
+	 * @author Poulet Axel
+	 *
+	 */
 	class ItemState implements ItemListener
 	{
 		public void itemStateChanged(ItemEvent e)
@@ -230,23 +234,27 @@ public class NucleusSegmentationAndAnalysisBatchDialog extends JFrame
 			setNbProcessor((Integer) e.getItem());
 	   }               
 	}
- 
+	
+	/**
+	 * 
+	 * @author Poulet Axel
+	 *
+	 */
 	class StartListener implements ActionListener 
 	{
 	
-		NucleusSegmentationAndAnalysisBatchDialog _jfpfso;	
-		public  StartListener (NucleusSegmentationAndAnalysisBatchDialog jfpfso) {_jfpfso = jfpfso;}
-		/**
-		  * 
-		  */
-		 public void actionPerformed(ActionEvent actionEvent)
+		NucleusSegmentationAndAnalysisBatchDialog _nucleusSegmentationAndAnalysisBatchDialog;	
+		public  StartListener (NucleusSegmentationAndAnalysisBatchDialog jfpfso)
+		{_nucleusSegmentationAndAnalysisBatchDialog = jfpfso;}
+		
+		public void actionPerformed(ActionEvent actionEvent)
 		 {
 			 if (_jTextFieldWorkDirectory.getText().isEmpty() || _jTextFieldRawData.getText().isEmpty())
 				 JOptionPane.showMessageDialog(null, "You did not choose a work directory or the raw data", "Error", JOptionPane.ERROR_MESSAGE); 
 			 else
 			 {
 				 _start=true;
-				 _jfpfso.dispose();
+				 _nucleusSegmentationAndAnalysisBatchDialog.dispose();
 			 }
 		 }
 	 }
@@ -254,23 +262,20 @@ public class NucleusSegmentationAndAnalysisBatchDialog extends JFrame
 	
 	/**
 	 * 
-	 * @author lom
+	 * @author Poulet Axel
 	 *
 	 */
-	
 	class QuitListener implements ActionListener 
 	{
-		NucleusSegmentationAndAnalysisBatchDialog _jfpfso;	
-		public  QuitListener (NucleusSegmentationAndAnalysisBatchDialog jfpfso) {_jfpfso = jfpfso;}
-		public void actionPerformed(ActionEvent actionEvent) { _jfpfso.dispose(); }
+		NucleusSegmentationAndAnalysisBatchDialog _nucleusSegmentationAndAnalysisBatchDialog;	
+		public  QuitListener (NucleusSegmentationAndAnalysisBatchDialog jfpfso) {_nucleusSegmentationAndAnalysisBatchDialog = jfpfso;}
+		public void actionPerformed(ActionEvent actionEvent) { _nucleusSegmentationAndAnalysisBatchDialog.dispose(); }
 	}
 	
 	
-	/*	Bouton Reference et dossier ava		*/
-	
 	/**
 	 * 
-	 * @author lom
+	 * @author Poulet Axel
 	 *
 	 */
 	 class WorkDirListener implements ActionListener
@@ -296,29 +301,30 @@ public class NucleusSegmentationAndAnalysisBatchDialog extends JFrame
 	 }
 	 
 	 /**
-		 * 
-		 * @author lom
-		 *
-		 */
-		 class DataDirListener implements ActionListener
+	  * 
+	  * @author Poulet Axel
+	  *
+	  */
+	 
+	 class DataDirListener implements ActionListener
+	 {
+		 /**
+		  * 
+		  */		 
+		 public void actionPerformed(ActionEvent actionEvent)
 		 {
-			 /**
-			  * 
-			  */		 
-			 public void actionPerformed(ActionEvent actionEvent)
+			 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			 JFileChooser jFileChooser = new JFileChooser();
+			 jFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			 int returnVal = jFileChooser.showOpenDialog(getParent());
+			 if(returnVal == JFileChooser.APPROVE_OPTION)
 			 {
-				 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-				 JFileChooser jFileChooser = new JFileChooser();
-				 jFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				 int returnVal = jFileChooser.showOpenDialog(getParent());
-				 if(returnVal == JFileChooser.APPROVE_OPTION)
-				 {
-					 @SuppressWarnings("unused")
-					String run = jFileChooser.getSelectedFile().getName();
-					_rawDataDirectory = jFileChooser.getSelectedFile().getAbsolutePath();
-					 _jTextFieldRawData.setText(_rawDataDirectory);
-				 }
-				 setCursor (Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-			 }	
-		 }
+				 @SuppressWarnings("unused")
+				 String run = jFileChooser.getSelectedFile().getName();
+				 _rawDataDirectory = jFileChooser.getSelectedFile().getAbsolutePath();
+				 _jTextFieldRawData.setText(_rawDataDirectory);
+			 }
+			 setCursor (Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		 }	
+	 }
 }
