@@ -1,5 +1,4 @@
 package gred.nucleus.core;
-
 import gred.nucleus.myGradient.MyGradient;
 import gred.nucleus.utils.RegionalExtremaFilter;
 import ij.measure.*;
@@ -7,7 +6,6 @@ import ij.*;
 import ij.process.*;
 import inra.ijpb.binary.ConnectedComponents;
 import inra.ijpb.watershed.Watershed;;;
-
 
 /**
  * Class containig differents tools after the watershed. We compute the contraste
@@ -33,18 +31,18 @@ public class ChromocenterSegmentation
 	 * @return Image contrast
 	 */
 
-	public ImagePlus applyChromocentersSegmentation(ImagePlus imagePlusInput,ImagePlus imagePlusBinary)
+	public ImagePlus applyChromocentersSegmentation(ImagePlus imagePlusRaw,ImagePlus imagePlusSegmented)
 	{
-		MyGradient myGradient = new MyGradient (imagePlusInput,imagePlusBinary);
+		MyGradient myGradient = new MyGradient (imagePlusRaw,imagePlusSegmented);
 		ImagePlus imagePlusGradient = myGradient.run();
 		RegionalExtremaFilter regionalExtremaFilter = new RegionalExtremaFilter();
-	    regionalExtremaFilter.setMask(imagePlusBinary);
-	    ImagePlus extrema = regionalExtremaFilter.applyWithMask( imagePlusGradient);
-	    ImagePlus ImagePlusLabels = ConnectedComponents.computeLabels(extrema, 26, 32);
-	    ImagePlus imagePlusWatershed = Watershed.computeWatershed(imagePlusGradient,ImagePlusLabels,imagePlusBinary, 26,true,false);
-		double contrast [] = computeContrast (imagePlusInput,imagePlusWatershed);
-		ImagePlus imagePlusOutput = computeImage (imagePlusWatershed, contrast);
-		return imagePlusOutput;
+	    regionalExtremaFilter.setMask(imagePlusSegmented);
+	    ImagePlus imagePlusExtrema = regionalExtremaFilter.applyWithMask( imagePlusGradient);
+	    ImagePlus imagePlusLabels = ConnectedComponents.computeLabels(imagePlusExtrema, 26, 32);
+	    ImagePlus imagePlusWatershed = Watershed.computeWatershed(imagePlusGradient,imagePlusLabels,imagePlusSegmented, 26,true,false);
+		double contrast [] = computeContrast (imagePlusRaw,imagePlusWatershed);
+		ImagePlus imagePlusContrast = computeImage (imagePlusWatershed, contrast);
+		return imagePlusContrast;
 	}
 
 
@@ -53,11 +51,11 @@ public class ChromocenterSegmentation
 	 * @return Region adjacency graph (RAG)
 	 */
 
-	public double [][] getRag (ImagePlus imagePlusWatershed)
+	public double [][] getRegionAdjacencyGraph (ImagePlus imagePlusWatershed)
 	{
-		int i, j, k, ii, jj, kk, voxelValue, neigVoxelValue;
-		ImageStatistics statistics = new StackStatistics(imagePlusWatershed);
-		double rag[][] = new double [(int)statistics.histMax + 1] [(int)statistics.histMax + 1];
+		int i, j, k, ii, jj, kk, voxelValue, neighborVoxelValue;
+		ImageStatistics imageStatistics = new StackStatistics(imagePlusWatershed);
+		double regionAdjacencyGraph[][] = new double [(int)imageStatistics.histMax + 1] [(int)imageStatistics.histMax + 1];
 		Calibration calibration = imagePlusWatershed.getCalibration();
 		double volumeVoxel = calibration.pixelWidth * calibration.pixelHeight * calibration.pixelDepth;
 		ImageStack imageStackWatershed = imagePlusWatershed.getStack();
@@ -68,24 +66,24 @@ public class ChromocenterSegmentation
 					voxelValue = (int)imageStackWatershed.getVoxel(i,j,k);
 					for (kk = k - 1; kk <= k + 1; kk += 2)
 					{
-						neigVoxelValue = (int) imageStackWatershed.getVoxel(i,j,kk);
-						if (neigVoxelValue > 0 && voxelValue != neigVoxelValue)
-							rag[voxelValue][neigVoxelValue] += volumeVoxel;
+						neighborVoxelValue = (int) imageStackWatershed.getVoxel(i,j,kk);
+						if (neighborVoxelValue > 0 && voxelValue != neighborVoxelValue)
+							regionAdjacencyGraph[voxelValue][neighborVoxelValue] += volumeVoxel;
 					}
 					for (jj = j - 1; jj <= j + 1; jj += 2)
 					{
-						neigVoxelValue = (int) imageStackWatershed.getVoxel(i,jj,k);
-						if (neigVoxelValue > 0 && voxelValue != neigVoxelValue)
-							rag[voxelValue][neigVoxelValue] += volumeVoxel;
+						neighborVoxelValue = (int) imageStackWatershed.getVoxel(i,jj,k);
+						if (neighborVoxelValue > 0 && voxelValue != neighborVoxelValue)
+							regionAdjacencyGraph[voxelValue][neighborVoxelValue] += volumeVoxel;
 					}
 					for (ii = i - 1; ii <= i + 1; ii += 2)
 					{
-						neigVoxelValue = (int) imageStackWatershed.getVoxel(ii,j,k);
-						if (neigVoxelValue > 0 && voxelValue != neigVoxelValue)
-							rag[voxelValue][neigVoxelValue] += volumeVoxel;
+						neighborVoxelValue = (int) imageStackWatershed.getVoxel(ii,j,k);
+						if (neighborVoxelValue > 0 && voxelValue != neighborVoxelValue)
+							regionAdjacencyGraph[voxelValue][neighborVoxelValue] += volumeVoxel;
 					}
 				}
-		return rag;
+		return regionAdjacencyGraph;
 	}
 
 	/**
@@ -94,29 +92,29 @@ public class ChromocenterSegmentation
 	 */
 
 	
-	public double [] computeContrast (ImagePlus imagePlusInput,ImagePlus imagePlusWatershed)
+	public double [] computeContrast (ImagePlus imagePlusRaw,ImagePlus imagePlusWatershed)
 	{
-		double rag[][] = getRag(imagePlusWatershed);
-		double mean[] = computeMeanIntensity (imagePlusInput,imagePlusWatershed);
-		double tabContrast[]= new double [rag.length+1];
-		double neigbVolumeTotal;
+		double regionAdjacencyGraph[][] = getRegionAdjacencyGraph(imagePlusWatershed);
+		double mean[] = computeMeanIntensity (imagePlusRaw,imagePlusWatershed);
+		double tContrast[]= new double [regionAdjacencyGraph.length+1];
+		double neighborVolumeTotal;
 		int i,j;
-		for(i = 1; i < rag.length; ++i)
+		for(i = 1; i < regionAdjacencyGraph.length; ++i)
 		{
-			neigbVolumeTotal = 0;
-			for(j = 1; j < rag[i].length; ++j)
+			neighborVolumeTotal = 0;
+			for(j = 1; j < regionAdjacencyGraph[i].length; ++j)
 			{
-				if (rag[i][j] > 0 && i != j)
+				if (regionAdjacencyGraph[i][j] > 0 && i != j)
 				{
-					tabContrast[i] +=  rag[i][j]*(mean[i]-mean[j]);
-					neigbVolumeTotal += rag[i][j];
+					tContrast[i] +=  regionAdjacencyGraph[i][j]*(mean[i]-mean[j]);
+					neighborVolumeTotal += regionAdjacencyGraph[i][j];
 				}
 			}
-			if (tabContrast[i] <= 0)  tabContrast[i] = 0;
-			else tabContrast[i] = tabContrast[i] / neigbVolumeTotal;
+			if (tContrast[i] <= 0)  tContrast[i] = 0;
+			else tContrast[i] = tContrast[i] / neighborVolumeTotal;
 			
 		}
-		return tabContrast;
+		return tContrast;
    }
 
 	/**
@@ -124,56 +122,56 @@ public class ChromocenterSegmentation
 	 * @return new value of region
 	 */
 
-	public double [] topHat (ImagePlus imagePlusInput,ImagePlus imagePlusWatershed)
+	public double [] topHat (ImagePlus imagePlusRaw,ImagePlus imagePlusWatershed)
 	{
-		double tabIntensite[] = computeMeanIntensity (imagePlusInput,imagePlusWatershed);
-		double rag[][] = getRag(imagePlusWatershed);
-		double tabOuverture[] =  ouverture(rag,imagePlusInput,imagePlusWatershed);
-		double tabContrast[] = new double [rag.length+1];
-		for(int i = 1; i < rag.length; ++i)
-			tabContrast[i] = tabIntensite[i] - tabOuverture[i];
-		return tabContrast;
+		double tIntensite[] = computeMeanIntensity (imagePlusRaw,imagePlusWatershed);
+		double regionAdjacencyGraph[][] = getRegionAdjacencyGraph(imagePlusWatershed);
+		double tOuverture[] =  ouverture(regionAdjacencyGraph,imagePlusRaw,imagePlusWatershed);
+		double tContrast[] = new double [regionAdjacencyGraph.length+1];
+		for(int i = 1; i < regionAdjacencyGraph.length; ++i)
+			tContrast[i] = tIntensite[i] - tOuverture[i];
+		return tContrast;
 	}
 
 	/**
 	 * Filter max on the RAG
-	 * @param tabMeanIntensity 
+	 * @param tMeanIntensity 
 	 * @param rag
 	 * @return new value of region
 	 */
 
-	public double [] FilterMaxRag (double tabMeanIntensity [], double rag [][])
+	public double [] filterMaxRegionAdjacencyGraph (double tMeanIntensity [], double regionAdjacencyGraph [][])
 	{
-		double tabSortie[] = new double [rag.length];
+		double tOutput[] = new double [regionAdjacencyGraph.length];
 		double max;
 		int i,j;
-		for(i = 1; i < rag.length; ++i)
+		for(i = 1; i < regionAdjacencyGraph.length; ++i)
 		{
-			max = tabMeanIntensity[i];
-			for(j = 1; j < rag.length; ++j) if  (tabMeanIntensity[j] > max && rag[i][j]>0 )  max = tabMeanIntensity[j];
-			tabSortie[i] = max;
+			max = tMeanIntensity[i];
+			for(j = 1; j < regionAdjacencyGraph.length; ++j) if  (tMeanIntensity[j] > max && regionAdjacencyGraph[i][j]>0 )  max = tMeanIntensity[j];
+			tOutput[i] = max;
 		}
-		return tabSortie;
+		return tOutput;
 	}
   
 	/**
 	 * Filter min on the RAG
-	 * @param tabMeanIntensity
+	 * @param tMeanIntensity
 	 * @param rag
 	 * @return new value of region
 	 */
-	public double [] FilterMinRag (double tabMeanIntensity [], double rag [][])
+	public double [] filterMinRegionAdjacencyGraph (double tMeanIntensity [], double regionAdjacencyGraph [][])
 	{
-		double tabSortie[] = new double [rag.length];
+		double tOutput[] = new double [regionAdjacencyGraph.length];
 		double min;
 		int i,j;
-		for(i = 1; i < rag.length; ++i)
+		for(i = 1; i < regionAdjacencyGraph.length; ++i)
 		{
-			min = tabMeanIntensity[i];
-			for(j = 1; j < rag.length; ++j) if (tabMeanIntensity[j] > 0 && tabMeanIntensity[j] < min && rag[i][j] > 0 ) min = tabMeanIntensity[j];
-			tabSortie[i] = (int) min;
+			min = tMeanIntensity[i];
+			for(j = 1; j < regionAdjacencyGraph.length; ++j) if (tMeanIntensity[j] > 0 && tMeanIntensity[j] < min && regionAdjacencyGraph[i][j] > 0 ) min = tMeanIntensity[j];
+			tOutput[i] = (int) min;
 		}
-		return tabSortie;
+		return tOutput;
 	}
 
 	/**
@@ -182,11 +180,11 @@ public class ChromocenterSegmentation
    	* @return new value of region
    	*/
 
-	public double [] fermeture( double rag [][],ImagePlus imagePlusInput,ImagePlus imagePlusWatershed)
+	public double [] fermeture( double regionAdjacencyGraph [][],ImagePlus imagePlusInput,ImagePlus imagePlusWatershed)
 	{
 		double tabIntensite[] = computeMeanIntensity (imagePlusInput,imagePlusWatershed);
-		double max [] = FilterMaxRag (tabIntensite, rag);
-		return FilterMinRag (max, rag);
+		double max [] = filterMaxRegionAdjacencyGraph (tabIntensite, regionAdjacencyGraph);
+		return filterMinRegionAdjacencyGraph (max, regionAdjacencyGraph);
 	}
 
 	/**
@@ -195,11 +193,11 @@ public class ChromocenterSegmentation
 	 * @return new value of region
 	 */
 	
-	public double [] ouverture (double rag [][],ImagePlus imagePlusInput,ImagePlus imagePlusWatershed)
+	public double [] ouverture (double regionAdjacencyGraph [][],ImagePlus imagePlusInput,ImagePlus imagePlusWatershed)
 	{
 		double tabIntensite [] = computeMeanIntensity (imagePlusInput,imagePlusWatershed);
-		double min []  = FilterMinRag (tabIntensite, rag);
-		return FilterMaxRag (min, rag);
+		double min []  = filterMinRegionAdjacencyGraph (tabIntensite, regionAdjacencyGraph);
+		return filterMaxRegionAdjacencyGraph (min, regionAdjacencyGraph);
 	}
 
 	/**
@@ -230,7 +228,7 @@ public class ChromocenterSegmentation
 		for (i = 1; i < tabIntensiteTotal.length; ++i)
 			tabIntensiteMoy[i] = tabIntensiteTotal[i] / tabNbVoxelInEachRegion [i];
 		return tabIntensiteMoy;
-	}//getIntensiteMoyenne
+	}
 
 	/**
 	 * With the image results of watershed and a table of regions value, create a
@@ -254,4 +252,4 @@ public class ChromocenterSegmentation
 				}
 		return imagePlusOutput;
 	}
-}//fin de classe
+}
