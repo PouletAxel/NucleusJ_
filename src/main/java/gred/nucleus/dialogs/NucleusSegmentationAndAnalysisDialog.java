@@ -1,5 +1,4 @@
 package gred.nucleus.dialogs;
-
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -47,8 +46,8 @@ public class NucleusSegmentationAndAnalysisDialog extends JFrame
 	 */
 	public static void main(String[] args)  
 	{
-		NucleusSegmentationAndAnalysisDialog fenetre = new NucleusSegmentationAndAnalysisDialog();
-		fenetre.setLocationRelativeTo(null);
+		NucleusSegmentationAndAnalysisDialog nucleusSegmentationAndAnalysisDialog = new NucleusSegmentationAndAnalysisDialog();
+		nucleusSegmentationAndAnalysisDialog.setLocationRelativeTo(null);
 	}
 	
 	    
@@ -165,12 +164,12 @@ public class NucleusSegmentationAndAnalysisDialog extends JFrame
 		_jButtonStart.addActionListener(startListener);	   
 	}
 	
-	public double getx(){ return Double.parseDouble(_jTextFieldXCalibration.getText()); }
-	public double gety(){ return Double.parseDouble(_jTextFieldYCalibration.getText()); }
-	public double getz(){ return Double.parseDouble(_jTextFieldZCalibration.getText()); }
+	public double getXCalibration(){ return Double.parseDouble(_jTextFieldXCalibration.getText()); }
+	public double getYCalibration(){ return Double.parseDouble(_jTextFieldYCalibration.getText()); }
+	public double getZCalibration(){ return Double.parseDouble(_jTextFieldZCalibration.getText()); }
 	public String getUnit(){ return _jTextFieldUnit.getText(); }
-	public double getMinSeg(){ return Double.parseDouble(_jTextFieldMin.getText()); }
-	public double getMaxSeg(){ return Double.parseDouble(_jTextFieldMax.getText()); }
+	public double getMinVolume(){ return Double.parseDouble(_jTextFieldMin.getText()); }
+	public double getMaxVolume(){ return Double.parseDouble(_jTextFieldMax.getText()); }
 	public boolean isStart() {	return _start; }
 	public boolean isTheBoth() {	return _jRadioButton2D3D.isSelected(); }
 	public boolean is2D() {	return _jRadioButton2D.isSelected(); }
@@ -183,19 +182,13 @@ public class NucleusSegmentationAndAnalysisDialog extends JFrame
 	/********************************************************************************************************************************************
 	/********************************************************************************************************************************************
 	/********************************************************************************************************************************************/
-	/**
-	 * 
-	 * @author Poulet Axel
-	 *
-	 */
+	
 	class StartListener implements ActionListener 
 	{
 		
 		NucleusSegmentationAndAnalysisDialog _nucleusSegmentationAndAnalysisDialog;	
-		public  StartListener (NucleusSegmentationAndAnalysisDialog jfc) {_nucleusSegmentationAndAnalysisDialog = jfc;}
-		/**
-		 * 
-		 */
+		public  StartListener (NucleusSegmentationAndAnalysisDialog nucleusSegmentationAndAnalysisDialog) {_nucleusSegmentationAndAnalysisDialog = nucleusSegmentationAndAnalysisDialog;}
+
 		public void actionPerformed(ActionEvent actionEvent)
 		{
 			_start=true;
@@ -203,15 +196,11 @@ public class NucleusSegmentationAndAnalysisDialog extends JFrame
 		}
 	}
 			
-	/**
-	 * 
-	 * @author Poulet Axel
-	 *
-	 */
+	
 	class QuitListener implements ActionListener 
 	{
 		NucleusSegmentationAndAnalysisDialog _nucleusSegmentationAndAnalysisDialog;	
-		public  QuitListener (NucleusSegmentationAndAnalysisDialog jfc) {_nucleusSegmentationAndAnalysisDialog = jfc;}
+		public  QuitListener (NucleusSegmentationAndAnalysisDialog nucleusSegmentationAndAnalysisDialog) {_nucleusSegmentationAndAnalysisDialog = nucleusSegmentationAndAnalysisDialog;}
 		public void actionPerformed(ActionEvent actionEvent) { _nucleusSegmentationAndAnalysisDialog.dispose(); }
 	}
 }

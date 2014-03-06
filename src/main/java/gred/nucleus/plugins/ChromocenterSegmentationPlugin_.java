@@ -1,5 +1,4 @@
 package gred.nucleus.plugins;
-
 import gred.nucleus.core.ChromocenterSegmentation;
 import ij.measure.Calibration;
 import ij.IJ;
@@ -8,13 +7,21 @@ import ij.WindowManager;
 import ij.gui.GenericDialog;
 import ij.plugin.PlugIn;
 	
+/**
+ * 
+ * @author Poulet Axel
+ *
+ */
 public class ChromocenterSegmentationPlugin_ implements PlugIn
 {
+	/**
+	 * 
+	 */
 	public void run(String arg)
 	{
-		int rawImage = 0;
-		int nucSeg = 0;
-		double x = 1,y=1,z=1;
+		int indiceRawImage = 0;
+		int indiceSementedImage = 0;
+		double xCalibration = 1,yCalibration = 1,zCalibration = 1;
 		String unit = "pixel";
 		int[] wList = WindowManager.getIDList();
 		if (wList == null)
@@ -25,34 +32,35 @@ public class ChromocenterSegmentationPlugin_ implements PlugIn
 		String[] titles = new String[wList.length];
 		for (int i = 0; i < wList.length; i++)
 		{
-			ImagePlus imp = WindowManager.getImage(wList[i]);
-			if (imp != null)          titles[i] = imp.getTitle();
-			else          titles[i] = "";
+			ImagePlus imagePlus = WindowManager.getImage(wList[i]);
+			if (imagePlus != null)	titles[i] = imagePlus.getTitle();
+			else	titles[i] = "";
 		}
-		GenericDialog gd = new GenericDialog("Chromocenter Segmentation", IJ.getInstance());
-		gd.addChoice("Raw image",titles,titles[rawImage]);
-		gd.addChoice("Nucleus segmeneted image",titles,titles[nucSeg]);
-		gd.addNumericField("x calibartion", x,4);
-		gd.addNumericField("y calibration", y, 4);
-		gd.addNumericField("z calibration",z, 4);
-		gd.addStringField("Unit",unit,10);
-		gd.showDialog();
-		if (gd.wasCanceled())   return;
-		ImagePlus imagePlusRaw =  WindowManager.getImage(wList[gd.getNextChoiceIndex()]);
-		ImagePlus imagePlusBinary =  WindowManager.getImage(wList[gd.getNextChoiceIndex()]);
-		x = gd.getNextNumber();
-		y = gd.getNextNumber();
-		z = gd.getNextNumber();
-		unit = gd.getNextString();
-		Calibration cal = new Calibration();
-		cal.pixelDepth = z;
-		cal.pixelWidth = x;
-		cal.pixelHeight = y;
-		cal.setUnit(unit);
-		imagePlusRaw.setCalibration(cal);
-		imagePlusBinary.setCalibration(cal);
+		
+		GenericDialog genericDialog = new GenericDialog("Chromocenter Segmentation", IJ.getInstance());
+		genericDialog.addChoice("Raw image",titles,titles[indiceRawImage]);
+		genericDialog.addChoice("Nucleus segmeneted image",titles,titles[indiceSementedImage]);
+		genericDialog.addNumericField("x calibartion", xCalibration,3);
+		genericDialog.addNumericField("y calibration", yCalibration, 3);
+		genericDialog.addNumericField("z calibration",zCalibration, 3);
+		genericDialog.addStringField("Unit",unit,10);
+		genericDialog.showDialog();
+		if (genericDialog.wasCanceled())   return;
+		ImagePlus imagePlusInput =  WindowManager.getImage(wList[genericDialog.getNextChoiceIndex()]);
+		ImagePlus imagePlusSegmented =  WindowManager.getImage(wList[genericDialog.getNextChoiceIndex()]);
+		xCalibration = genericDialog.getNextNumber();
+		yCalibration = genericDialog.getNextNumber();
+		zCalibration = genericDialog.getNextNumber();
+		unit = genericDialog.getNextString();
+		Calibration calibration = new Calibration();
+		calibration.pixelDepth = zCalibration;
+		calibration.pixelWidth = xCalibration;
+		calibration.pixelHeight = yCalibration;
+		calibration.setUnit(unit);
+		imagePlusInput.setCalibration(calibration);
+		imagePlusSegmented.setCalibration(calibration);
 		ChromocenterSegmentation chromocentersSegmentation	= new ChromocenterSegmentation();
-		ImagePlus imagePlusContraste = chromocentersSegmentation.applyChromocentersSegmentation(imagePlusRaw, imagePlusBinary);
+		ImagePlus imagePlusContraste = chromocentersSegmentation.applyChromocentersSegmentation(imagePlusInput, imagePlusSegmented);
 		imagePlusContraste.setTitle("imageContraste");
 		imagePlusContraste.show();
 	}

@@ -13,72 +13,64 @@ import java.util.HashMap;
 
 public class FileList
 {
-	
-
-     /**
-      * 
-      * @param repertoire
-      */
-     public FileList() {   }
-     /**
-      * 
-      */
+    public FileList() {   }
+    /**
+     * 
+     * @param repertoire
+     * @return
+     */
 	public File[]  run (String repertoire){ 	return repertoryFileList( repertoire); }
 	
 
 	
 	/**
 	 * 
-	 * @param repertoire
+	 * @param directory
 	 * @return
 	 */
-	public File[] repertoryFileList(String repertoire)
+	public File[] repertoryFileList(String directory)
     {    
-		 File directoryToScan = new File(repertoire);
-	     File[] tFile = null;
-	     tFile = directoryToScan.listFiles();
-        for( int i = 0; i < tFile.length; ++i)
+		File directoryToScan = new File(directory);
+		File[] tFileDirectory = null;
+		tFileDirectory = directoryToScan.listFiles();
+        for( int i = 0; i < tFileDirectory.length; ++i)
         {
-            if (tFile[i].isDirectory())
+        	if (tFileDirectory[i].isDirectory())
             {
-                File[] tempAvElement = recupFileAv(i,tFile);
-                File[] tempApElement = recupFileAp(i,tFile);
-                File[] fichiersTemp = repertoryFileList(tFile[i].toString());
-                //si dossier n'est pas vide :
-                if (fichiersTemp.length != 0)
-                    tFile=this.redim(tempAvElement, tempApElement, fichiersTemp, i);
+                File[] tTempBeforeElement = stockFileBefore(i,tFileDirectory);
+                File[] tTempAfterElement = stockFileAfter(i,tFileDirectory);
+                File[] tTempFile = repertoryFileList(tFileDirectory[i].toString());
+                if (tTempFile.length != 0)    tFileDirectory=this.resize(tTempBeforeElement, tTempAfterElement, tTempFile, i);
             }
         }
-         return tFile;
+         return tFileDirectory;
     }
+	
     /**
      * 
-     * @param tempAvElement
-     * @param tempApElement
-     * @param fichiersTemp
+     * @param tTempBeforeElement
+     * @param tTempAfterElement
+     * @param tTempFile
      * @param indiceMax
      * @return
      */
-    public File[] redim (File[] tempAvElement,File[] tempApElement,File[] fichiersTemp, int indiceMax)
+    public File[] resize (File[] tTempBeforeElement,File[] tTempAfterElement,File[] tTempFile, int indiceMax)
     {
-    	File [] tFile = new File[tempAvElement.length + fichiersTemp.length + tempApElement.length - 1];
-         //insertion des elements dans la liste
-         for (int j = 0; j < tFile.length; ++j)
-         {
-             //fichiers list� avant le dossier :
-             if (j < indiceMax)
-                 tFile[j] = tempAvElement[j];
-             //fichier list� dans le dossier :
-             else
-             {
-            	 if (j < indiceMax + fichiersTemp.length)
-            		 tFile[j] = fichiersTemp[j - indiceMax];
-            	 //fichiers list� apres le dossier :
-            	 else
-            		 tFile[j] = tempApElement[j - indiceMax - fichiersTemp.length];
-              }
-         }
-         return tFile;  
+    	File [] tFile = new File[tTempBeforeElement.length + tTempFile.length + tTempAfterElement.length - 1];
+         //element insertion in the file list
+        for (int j = 0; j < tFile.length; ++j)
+        {
+        	//list file before the directory :
+        	if (j < indiceMax)    tFile[j] = tTempBeforeElement[j];
+        	//listed file in the directory :
+        	else
+        	{
+        		if (j < indiceMax + tTempFile.length)	 tFile[j] = tTempFile[j - indiceMax];
+        		//listed files after directory :
+        		else  tFile[j] = tTempAfterElement[j - indiceMax - tTempFile.length];
+        	}
+        }
+	return tFile;  
     }
     
     /**
@@ -87,12 +79,12 @@ public class FileList
      * @param tFile
      * @return
      */
-    public File[] recupFileAv ( int indiceMax, File[] tFile)
+    public File[] stockFileBefore ( int indiceMax, File[] tFile)
     {
-    		File[] tempAvElement = new File[indiceMax];
+    		File[] tTempBeforeElement = new File[indiceMax];
     		 for (int j = 0; j < indiceMax; ++j)
-                 tempAvElement[j] = tFile[j];
-    		 return tempAvElement;
+    			 tTempBeforeElement[j] = tFile[j];
+    		 return tTempBeforeElement;
     }
     
     /**
@@ -101,22 +93,22 @@ public class FileList
      * @param tFile
      * @return
      */
-    
-    public File[] recupFileAp (int indiceMax, File[] tFile)
+    public File[] stockFileAfter (int indiceMax, File[] tFile)
     {
-    	File[] tempApElement = new File[tFile.length - indiceMax ];
+    	File[] tTempAfterElement = new File[tFile.length - indiceMax ];
         int j = 0;
     	for (int k = (indiceMax + 1); k < tFile.length; ++k)
     	{
-               tempApElement[j] = tFile[k];
+    		tTempAfterElement[j] = tFile[k];
                ++j;
     	} 
-        return tempApElement;
+        return tTempAfterElement;
     }
     
    /**
-    *  
+    * 
     * @param filePathway
+    * @param tableFile
     * @return
     */
    	public boolean isInDirectory (String filePathway, File[] tableFile)
@@ -132,83 +124,87 @@ public class FileList
     /**
      * 
      * @param regex
+     * @param tFile
      * @return
      */
-    public String fileSearch (String regex,File[] tableFile)
+    public String fileSearch (String regex,File[] tFile)
     {
     	String file = null;
-    	for(int i = 0; i < tableFile.length; ++i)
+    	for(int i = 0; i < tFile.length; ++i)
 		{
-    		if(tableFile[i].toString().matches((regex)))
+    		if(tFile[i].toString().matches((regex)))
    			{
-   				file =tableFile[i].toString();
+   				file =tFile[i].toString();
    				break;
    			}
 		}
     	return file;
     }
     
+
     /**
      * 
      * @param regex
+     * @param tFile
      * @return
      */
- 	public boolean isDirectoryOrFileExist (String regex, File[] tableFile)
+ 	public boolean isDirectoryOrFileExist (String regex, File[] tFile)
     {
     	boolean testFile = false;
-    	IJ.log("taille "+ tableFile.length);
-        for(int i = 0; i < tableFile.length; ++i)
+    	IJ.log("taille "+ tFile.length);
+        for(int i = 0; i < tFile.length; ++i)
  		{
-        	if(tableFile[i].toString().matches((regex)))	{	testFile = true; break;}
+        	if(tFile[i].toString().matches((regex)))	{	testFile = true; break;}
      	}
         	return testFile;
      }
  	
-    /**
-     * 
-     * @return
-     */
-    public String[] getDirectoryFiles (String repertoire, File[] tableFile)
+    
+ 	/**
+ 	 * 
+ 	 * @param directory
+ 	 * @param tFile
+ 	 * @return
+ 	 */
+    public String[] getDirectoryFiles (String directory, File[] tFile)
     {
-    	String [] ref = repertoire.split("\\"+File.separator);
-    	String [] t = new String [0];
-    	ArrayList <String> al = new ArrayList <String>();
-    	HashMap<String, Integer> dir = new HashMap<String, Integer>();
-    	for(int i = 0; i < tableFile.length; ++i)
+    	String [] tRef = directory.split("\\"+File.separator);
+    	String [] tTemp = new String [0];
+    	ArrayList <String> arrayList = new ArrayList <String>();
+    	HashMap<String, Integer> hasMapDirectory = new HashMap<String, Integer>();
+    	for(int i = 0; i < tFile.length; ++i)
 		{
-    		String [] temp = tableFile[i].toString().split ("\\"+File.separator);
-    		if (temp.length > ref.length+1)
+    		String [] temp = tFile[i].toString().split ("\\"+File.separator);
+    		if (temp.length > tRef.length+1)
             {
-    			if (!dir.containsKey(temp[ref.length]))
+    			if (!hasMapDirectory.containsKey(temp[tRef.length]))
     			{
-    				dir.put(temp[ref.length], 1);
-    				al.add(temp[ref.length]);
+    				hasMapDirectory.put(temp[tRef.length], 1);
+    				arrayList.add(temp[tRef.length]);
     			}   				
    			}
 		}
-    	if (al.size() > 0)
+    	if (arrayList.size() > 0)
     	{
-    		t = new String [al.size()];
-    		for(int i = 0; i < al.size(); ++i) t[i] = al.get(i);
+    		tTemp = new String [arrayList.size()];
+    		for(int i = 0; i < arrayList.size(); ++i) tTemp[i] = arrayList.get(i);
     	}
-    	
-    	return t;
+    	return tTemp;
     }
     
+
     /**
      * 
      * @param regex
+     * @param tFile
      * @return
      */
-    
-	public ArrayList<String> fileSearchList(String regex, File[] tableFile)
+	public ArrayList<String> fileSearchList(String regex, File[] tFile)
 	{
-		ArrayList<String> file = new ArrayList<String>();
-       	for(int i = 0; i < tableFile.length; ++i)
-		{
-    		if(tableFile[i].toString().matches((regex))) file.add(tableFile[i].toString());
+		ArrayList<String> arrayListFile = new ArrayList<String>();
+       	for(int i = 0; i < tFile.length; ++i)
+    		if(tFile[i].toString().matches((regex))) arrayListFile.add(tFile[i].toString());
    	
-    	}
-    	return file;
+    	return arrayListFile;
 	}   	
 }

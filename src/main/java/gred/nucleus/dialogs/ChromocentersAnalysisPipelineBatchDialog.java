@@ -1,5 +1,4 @@
 package gred.nucleus.dialogs;
-
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.GridBagConstraints;
@@ -27,9 +26,6 @@ import javax.swing.JTextPane;
 
 public class ChromocentersAnalysisPipelineBatchDialog extends JFrame
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JButton _jButtonWorkDirectory = new JButton("Output Directory"), _jButtonStart = new JButton("Start"), _jButtonQuit = new JButton("Quit")
 	, _jButtonRawData = new JButton("Raw Data");
@@ -54,10 +50,14 @@ public class ChromocentersAnalysisPipelineBatchDialog extends JFrame
 	private String _workDirectory, _rawDataDirectory;
 	private boolean _start = false;
 	
+	/**
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args)  
     {
-		ChromocentersAnalysisPipelineBatchDialog fenetre = new ChromocentersAnalysisPipelineBatchDialog();
-    	fenetre.setLocationRelativeTo(null);
+		ChromocentersAnalysisPipelineBatchDialog chromocentersAnalysisPipelineBatchDialog = new ChromocentersAnalysisPipelineBatchDialog();
+    	chromocentersAnalysisPipelineBatchDialog.setLocationRelativeTo(null);
     }
 	
     
@@ -194,12 +194,12 @@ public class ChromocentersAnalysisPipelineBatchDialog extends JFrame
 	   	this.setVisible(true);
 	 }
 	
-	public double getx(){ return Double.parseDouble(_jTextFieldXCalibration.getText()); }
-	public double gety(){ return Double.parseDouble(_jTextFieldYCalibration.getText()); }
-	public double getz(){ return Double.parseDouble(_jTextFieldZCalibration.getText()); }
+	public double getXCalibration(){ return Double.parseDouble(_jTextFieldXCalibration.getText()); }
+	public double getYCalibration(){ return Double.parseDouble(_jTextFieldYCalibration.getText()); }
+	public double getZCalibration(){ return Double.parseDouble(_jTextFieldZCalibration.getText()); }
 	public String getUnit(){ return _jTextFieldUnit.getText(); }
 	public String getWorkDirectory(){return _jTextFieldWorkDirectory.getText();}
-	public String getDirRawData(){return _jTextFieldRawData.getText();}
+	public String getRawDataDirectory(){return _jTextFieldRawData.getText();}
 	public boolean isStart() {	return _start; }
 	public boolean isNucAndCcAnalysis() {	return _jRadioButtonNucCc.isSelected(); }
 	public boolean isNucAnalysis() {	return _jRadioButtonNuc.isSelected(); }
@@ -228,27 +228,20 @@ public class ChromocentersAnalysisPipelineBatchDialog extends JFrame
 	
 		ChromocentersAnalysisPipelineBatchDialog _chromocentersAnalysisPipelineBatchDialog;	
 		public  StartListener (ChromocentersAnalysisPipelineBatchDialog jfpfso) {_chromocentersAnalysisPipelineBatchDialog = jfpfso;}
-		/**
-		  * 
-		  */
-		 public void actionPerformed(ActionEvent actionEvent)
-		 {
-			 if (_jTextFieldWorkDirectory.getText().isEmpty() || _jTextFieldRawData.getText().isEmpty())
-				 JOptionPane.showMessageDialog(null, "You did not choose a work directory or the raw data", "Error", JOptionPane.ERROR_MESSAGE); 
-			 else
-			 {
-				 _start=true;
-				 _chromocentersAnalysisPipelineBatchDialog.dispose();
-			 }
-		 }
-	 }
+		public void actionPerformed(ActionEvent actionEvent)
+		{
+			if (_jTextFieldWorkDirectory.getText().isEmpty() || _jTextFieldRawData.getText().isEmpty())
+				JOptionPane.showMessageDialog(null, "You did not choose a work directory or the raw data", "Error", JOptionPane.ERROR_MESSAGE); 
+			else
+			{
+				_start=true;
+				_chromocentersAnalysisPipelineBatchDialog.dispose();
+			}
+		}
+	}
 	
 	
-	/**
-	 * 
-	 * @author Poulet Axel
-	 *
-	 */
+	
 	class QuitListener implements ActionListener 
 	{
 		ChromocentersAnalysisPipelineBatchDialog _chromocentersAnalysisPipelineBatchDialog;	
@@ -256,16 +249,10 @@ public class ChromocentersAnalysisPipelineBatchDialog extends JFrame
 		public void actionPerformed(ActionEvent actionEvent) { _chromocentersAnalysisPipelineBatchDialog.dispose(); }
 	}
 	
-	/**
-	 * 
-	 * @author Poulet Axel
-	 *
-	 */
+	
 	 class WorkDirListener implements ActionListener
 	 {
-		 /**
-		  * 
-		  */		 
+			 
 		 public void actionPerformed(ActionEvent actionEvent)
 		 {
 			 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -283,16 +270,8 @@ public class ChromocentersAnalysisPipelineBatchDialog extends JFrame
 		 }	
 	 }
 	 
-	 /**
-	  * 
-	  * @author Poulet Axel
-	  *
-	  */
 	 class DataDirListener implements ActionListener
 	 {
-		 /**
-		  * 
-		  */		 
 		 public void actionPerformed(ActionEvent actionEvent)
 		 {
 			 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));

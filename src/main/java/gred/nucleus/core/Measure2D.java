@@ -9,51 +9,50 @@ import ij.measure.*;
  * This class allow the determination of two shapes parameter in 2D, Circularity and AspectRation. This class detect the stack with the greatest Area
  *  and after compute the two shape parameters in this stack 
  *  
- * @author gred
+ * @author Poulet Axel
+ *
  */
-
 public class Measure2D
 {
     /** Object to stock the two parameters computed*/
-    ResultsTable _rt;
-    
-    /**
-     *  Constructor
-     * @param imagePlus
-     */
-    public Measure2D ()
-    {
+    ResultsTable _resultsTable;
 
-    }
+    public Measure2D ()  {   }
     
-    public void run (ImagePlus imagePlus)
-    {
-    	 StackConverter stackConverter = new StackConverter( imagePlus );
-         if (imagePlus.getType() != ImagePlus.GRAY8)	stackConverter.convertToGray8();
-         _rt = computePrameters(imagePlus,searchMaxArea(imagePlus));  
-    }
     /**
-     * Compute the area on each stack of the image and select the stack with the greatest area
+     * 
+     * @param imagePlusSegmented
+     */
+    public void run (ImagePlus imagePlusSegmented)
+    {
+    	 StackConverter stackConverter = new StackConverter( imagePlusSegmented );
+         if (imagePlusSegmented.getType() != ImagePlus.GRAY8)	stackConverter.convertToGray8();
+         _resultsTable = computePrameters(imagePlusSegmented,searchStackWithMaxArea(imagePlusSegmented));  
+    }
+
+    /**
+     * 
+     * @param imagePlusSegmented
      * @return
      */
-    private int searchMaxArea(ImagePlus imagePlus)
+    private int searchStackWithMaxArea(ImagePlus imagePlusSegmented)
     {
-    	Calibration calibration= imagePlus.getCalibration();
+    	Calibration calibration= imagePlusSegmented.getCalibration();
     	int stackMaxArea = -1;
-    	double dimX = calibration.pixelWidth;
-    	double dimY = calibration.pixelHeight;
-        ImageStack imageStack = imagePlus.getStack();
+    	double xCalibration = calibration.pixelWidth;
+    	double yCalibration = calibration.pixelHeight;
+        ImageStack imageStackSegmented = imagePlusSegmented.getStack();
         double areaMax = 0, area = 0;
-        for (int k = 0; k < imagePlus.getNSlices(); ++k)
+        for (int k = 0; k < imagePlusSegmented.getNSlices(); ++k)
         {
             int nbVoxel = 0;
-            for (int i = 1; i < imagePlus.getWidth(); ++i)
+            for (int i = 1; i < imagePlusSegmented.getWidth(); ++i)
             {
-                for (int j = 1;  j < imagePlus.getHeight(); ++j)
-                	if (imageStack.getVoxel(i, j, k)>0)
+                for (int j = 1;  j < imagePlusSegmented.getHeight(); ++j)
+                	if (imageStackSegmented.getVoxel(i, j, k)>0)
                 		++nbVoxel ;
             }
-            area = dimX*dimY*nbVoxel;
+            area = xCalibration*yCalibration*nbVoxel;
             if (area > areaMax)
             {
                 areaMax = area ;
@@ -64,29 +63,28 @@ public class Measure2D
     }
 
     /**
-     * Method to compute the two parameters of interest with help of imageJ class
+     * 
+     * @param imagePlusSegmented
      * @param stackMaxArea
      * @return
      */
-    private ResultsTable computePrameters(ImagePlus imagePlus, int stackMaxArea)
+    private ResultsTable computePrameters(ImagePlus imagePlusSegmented, int stackMaxArea)
     {
-    	ImagePlus imagePlusTmp = new ImagePlus();
-    	ImageStack imageStack = imagePlus.getStack();
-        ImageStack imageStackTmp = new ImageStack(imagePlus.getWidth(),imagePlus.getHeight());
-        imageStackTmp.addSlice(imageStack.getProcessor(stackMaxArea));
-        imagePlusTmp.setStack(imageStackTmp);
-        Calibration calibrationImagePlus= imagePlus.getCalibration();
-    	double dimX = calibrationImagePlus.pixelWidth;
-    	double dimY = calibrationImagePlus.pixelHeight;
+    	ImagePlus imagePlusTemp = new ImagePlus();
+    	ImageStack imageStackSegmented = imagePlusSegmented.getStack();
+        ImageStack imageStackTemp = new ImageStack(imagePlusSegmented.getWidth(),imagePlusSegmented.getHeight());
+        imageStackTemp.addSlice(imageStackSegmented.getProcessor(stackMaxArea));
+        imagePlusTemp.setStack(imageStackTemp);
+        Calibration calibrationImagePlusSegmented= imagePlusSegmented.getCalibration();
         Calibration calibration = new Calibration();
-        calibration.pixelHeight = dimY;
-        calibration.pixelWidth = dimX;
-        imagePlusTmp.setCalibration(calibration);
-        ResultsTable rt = new ResultsTable(); 
-        ParticleAnalyzer analyser = new ParticleAnalyzer
-        (ParticleAnalyzer.SHOW_NONE,Measurements.AREA+Measurements.CIRCULARITY, rt, 10, Double.MAX_VALUE, 0,1); 
-        analyser.analyze(imagePlusTmp); 
-        return rt;
+        calibration.pixelHeight = calibrationImagePlusSegmented.pixelHeight;
+        calibration.pixelWidth =  calibrationImagePlusSegmented.pixelWidth;
+        imagePlusTemp.setCalibration(calibration);
+        ResultsTable resultTable = new ResultsTable(); 
+        ParticleAnalyzer particleAnalyser = new ParticleAnalyzer
+        (ParticleAnalyzer.SHOW_NONE,Measurements.AREA+Measurements.CIRCULARITY, resultTable, 10, Double.MAX_VALUE, 0,1); 
+        particleAnalyser.analyze(imagePlusTemp); 
+        return resultTable;
        
     }
     
@@ -97,7 +95,7 @@ public class Measure2D
      * 
      * @return
      */
-   public double getAspectRatio () {	return _rt.getValue("AR", 0);	} 
+    public double getAspectRatio () {	return _resultsTable.getValue("AR", 0);	} 
     
     
     /**
@@ -106,5 +104,5 @@ public class Measure2D
      * 
      * @return
      */
-    public double getCirculairty() {   return _rt.getValue("Circ.", 0); }
+    public double getCirculairty() {   return _resultsTable.getValue("Circ.", 0); }
 }

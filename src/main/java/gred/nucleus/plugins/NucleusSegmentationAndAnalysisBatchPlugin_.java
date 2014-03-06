@@ -6,11 +6,9 @@ import gred.nucleus.multiThread.*;
 import gred.nucleus.utils.FileList;
 import ij.plugin.PlugIn;
 
-
-
 /**
  * 
- * @author gred
+ * @author Poulet Axel
  *
  */
 public class NucleusSegmentationAndAnalysisBatchPlugin_ implements PlugIn
@@ -30,22 +28,22 @@ public class NucleusSegmentationAndAnalysisBatchPlugin_ implements PlugIn
 		if (_nucleusPipelineBatchDialog.isStart())
 		{
 			FileList fileList = new FileList ();
-			File[] rawImage = fileList.run(_nucleusPipelineBatchDialog.getDirRawData());
-			ProcessImageSegmentaion processImage = new ProcessImageSegmentaion(this, rawImage);
-			try {	processImage.go(); } 
+			File[] tFileRawImage = fileList.run(_nucleusPipelineBatchDialog.getRawDataDirectory());
+			ProcessImageSegmentaion processImageSegmentation = new ProcessImageSegmentaion();
+			try {	processImageSegmentation.go(this, tFileRawImage,true); } 
 			catch (InterruptedException e) { e.printStackTrace(); }
 			
 		}
 	}
-	public int getNbProcessor(){return _nucleusPipelineBatchDialog.getNbProcessor();}
-	public double getPixelDepth(){return _nucleusPipelineBatchDialog.getz();}
-	public double getPixelWidth(){return _nucleusPipelineBatchDialog.getx();}
-	public double getPixelHeight(){return _nucleusPipelineBatchDialog.gety();}
+	public int getNbCpu(){return _nucleusPipelineBatchDialog.getNbCpu();}
+	public double getZCalibration(){return _nucleusPipelineBatchDialog.getZCalibration();}
+	public double getXCalibration(){return _nucleusPipelineBatchDialog.getXCalibration();}
+	public double getYCalibration(){return _nucleusPipelineBatchDialog.getYCalibration();}
 	public String getUnit(){return _nucleusPipelineBatchDialog.getUnit();}
-	public double getSegMinValue(){return _nucleusPipelineBatchDialog.getMinSeg();}
-	public double getSegMaxValue(){return _nucleusPipelineBatchDialog.getMaxSeg();}
-	public String getWorkDir() {return _nucleusPipelineBatchDialog.getWorkDirectory();}
-	public boolean is2D3DAnalysis(){return _nucleusPipelineBatchDialog.isTheBoth();}
+	public double getMinVolume(){return _nucleusPipelineBatchDialog.getMinVolume();}
+	public double getMaxVolume(){return _nucleusPipelineBatchDialog.getMaxVolume();}
+	public String getWorkDirectory() {return _nucleusPipelineBatchDialog.getWorkDirectory();}
+	public boolean is2D3DAnalysis(){return _nucleusPipelineBatchDialog.is2D3DAnalysis();}
 	public boolean is3DAnalysis(){return _nucleusPipelineBatchDialog.is3D();}
 
 }

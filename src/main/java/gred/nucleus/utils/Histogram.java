@@ -32,9 +32,9 @@ public class Histogram
      */
     public void run(ImagePlus imagePlusInput)
     {
-    	Object[] temp = computeHistogram(imagePlusInput).keySet().toArray();
-    	_label = new double[temp.length];
-    	for (int i = 0; i < temp.length; ++i)   _label[i] = Double.parseDouble(temp[i].toString());
+    	Object[] tTemp = computeHistogram(imagePlusInput).keySet().toArray();
+    	_label = new double[tTemp.length];
+    	for (int i = 0; i < tTemp.length; ++i)   _label[i] = Double.parseDouble(tTemp[i].toString());
     	Arrays.sort(_label);
     	_labelMax = _label[_label.length-1];
     }
@@ -42,7 +42,8 @@ public class Histogram
     /**
      * this method return a Histogram of the image input in hashMap form
      * 
-     * @return 
+     * @param imagePlusInput
+     * @return
      */
     private HashMap<Double , Integer> computeHistogram(ImagePlus imagePlusInput)
     {
@@ -91,6 +92,4 @@ public class Histogram
     {
     	return _hHistogram.size();
     }
-    
-    
 }

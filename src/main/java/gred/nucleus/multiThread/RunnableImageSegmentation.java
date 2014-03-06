@@ -6,24 +6,27 @@ import ij.io.FileSaver;
 import java.io.File;
 import java.io.IOException;
 
-
-
-
+/**
+ * 
+ * @author Poulet Axel
+ *
+ */
 public class RunnableImageSegmentation extends Thread implements Runnable
 {
 
-	String _workDir;
-	ImagePlus _imagePlus;
-	double _vmin, _vmax;
-	boolean _isanalysis3D, _isanalysis2D3D;
+	String _workDirectory;
+	ImagePlus _imagePlusInput;
+	double _volumeMin, _volumeMax;
+	boolean _isanalysis3D, _isanalysis2D3D, _doAnalysis;
 
-	public RunnableImageSegmentation (ImagePlus imagePlusInput, double vmin, double vmax, String workDir,boolean analysis3D2D
-			,boolean analysis3D)
+	public RunnableImageSegmentation (ImagePlus imagePlusInput, double volumeMin, double volumeMax, String workDirectory,boolean analysis3D2D
+			,boolean analysis3D, boolean doAnalysis)
 	{
-		_imagePlus = imagePlusInput;
-		_vmin = vmin;
-		_vmax = vmax;
-		_workDir = workDir;
+		_doAnalysis = doAnalysis;
+		_imagePlusInput = imagePlusInput;
+		_volumeMin = volumeMin;
+		_volumeMax = volumeMax;
+		_workDirectory = workDirectory;
 		_isanalysis3D = analysis3D;
 		_isanalysis2D3D = analysis3D2D;
 	}
@@ -33,25 +36,28 @@ public class RunnableImageSegmentation extends Thread implements Runnable
 		ProcessImageSegmentaion._nbLance++;
 		ProcessImageSegmentaion._continuer = true;
 		NucleusSegmentation nucleusSegmentation = new NucleusSegmentation();
-		nucleusSegmentation.setLogErrorSegmentationFile(_workDir+File.separator+"logErrorSeg.txt");
-		nucleusSegmentation.setVolumeRange(_vmin, _vmax);
-		ImagePlus impagePlusSegmented = nucleusSegmentation.run(_imagePlus);
-		impagePlusSegmented.setTitle(_imagePlus.getTitle());
-		saveFile (impagePlusSegmented,_workDir+File.separator+"SegmentedDataNucleus");
+		nucleusSegmentation.setLogErrorSegmentationFile(_workDirectory+File.separator+"logErrorSeg.txt");
+		nucleusSegmentation.setVolumeRange(_volumeMin, _volumeMax);
+		ImagePlus impagePlusSegmented = nucleusSegmentation.run(_imagePlusInput);
+		impagePlusSegmented.setTitle(_imagePlusInput.getTitle());
+		saveFile(impagePlusSegmented,_workDirectory+File.separator+"SegmentedDataNucleus");
 		NucleusAnalysis nucleusAnalysis = new NucleusAnalysis();
-		try
+		if(_doAnalysis)
 		{
-			if (_isanalysis2D3D)
+			try
 			{
-				nucleusAnalysis.nucleusParameter3D(_workDir+File.separator+"3DNucleiParameters.tab",impagePlusSegmented);
-				nucleusAnalysis.nucleusParameter2D(_workDir+File.separator+"2DNucleiParameters.tab",impagePlusSegmented);
+				if(_isanalysis2D3D)
+				{
+					nucleusAnalysis.nucleusParameter3D(_workDirectory+File.separator+"3DNucleiParameters.tab",impagePlusSegmented);
+					nucleusAnalysis.nucleusParameter2D(_workDirectory+File.separator+"2DNucleiParameters.tab",impagePlusSegmented);
+				}
+				else if(_isanalysis3D)  nucleusAnalysis.nucleusParameter3D(_workDirectory+File.separator+"3DNucleiParameters.tab",impagePlusSegmented);
+				else nucleusAnalysis.nucleusParameter2D(_workDirectory+File.separator+"2DNucleiParameters.tab",impagePlusSegmented);
 			}
-			else if(_isanalysis3D)  nucleusAnalysis.nucleusParameter3D(_workDir+File.separator+"3DNucleiParameters.tab",impagePlusSegmented);
-			else nucleusAnalysis.nucleusParameter2D(_workDir+File.separator+"2DNucleiParameters.tab",impagePlusSegmented);
+			catch (IOException e) {	e.printStackTrace();	}
 		}
-		catch (IOException e) {	e.printStackTrace();	}
 		ProcessImageSegmentaion._nbLance--;
-}
+	}
 	
 	 /**
 	   *
@@ -70,5 +76,5 @@ public class RunnableImageSegmentation extends Thread implements Runnable
 	      file.mkdir();
 	      fileSaver.saveAsTiffStack( pathFile+File.separator+imagePlus.getTitle());
 	    }
-	  }
+	}
 }

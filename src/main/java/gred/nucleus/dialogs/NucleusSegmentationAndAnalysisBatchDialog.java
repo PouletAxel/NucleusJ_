@@ -1,5 +1,4 @@
 package gred.nucleus.dialogs;
-
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.GridBagConstraints;
@@ -35,7 +34,7 @@ public class NucleusSegmentationAndAnalysisBatchDialog extends JFrame
 	private static final long serialVersionUID = 1L;
 	private JButton _jButtonWorkDirectory = new JButton("Output Directory"), _jButtonStart = new JButton("Start"), _jButtonQuit = new JButton("Quit"), _jButtonRawData = new JButton("Raw Data");
 	private Container _container;
-	private JComboBox _comboBoxProcessor = new JComboBox();
+	private JComboBox _comboBoxCpu = new JComboBox();
 	private JFormattedTextField _jTextFieldXCalibration = new JFormattedTextField(Number.class);
 	private JFormattedTextField _jTextFieldYCalibration = new JFormattedTextField(Number.class);
     private JFormattedTextField _jTextFieldZCalibration =  new JFormattedTextField(Number.class);
@@ -43,14 +42,18 @@ public class NucleusSegmentationAndAnalysisBatchDialog extends JFrame
     private JFormattedTextField _jTextFieldMin =  new JFormattedTextField(Number.class);
     private JTextField _jTextFieldUnit =  new JTextField(), _jTextFieldWorkDirectory  =  new JTextField(), _jTextFieldRawData = new JTextField();
 	private JLabel _jLabelXcalibration, _jLabelYcalibration, _jLabelZcalibration, _jLabelUnit,_jLabelSegmentation,
-	_jLabelVolumeMin, _jLabelVolumeMax, _jLabelAnalysis, _jLabelWorkDirectory, _jLabelCalibration, _jLabelNbProcessor;
+	_jLabelVolumeMin, _jLabelVolumeMax, _jLabelAnalysis, _jLabelWorkDirectory, _jLabelCalibration, _jLabelNbCpu;
 	private ButtonGroup buttonGroupChoiceAnalysis = new ButtonGroup();
 	private JRadioButton _jRadioButton2DAnalysis = new JRadioButton("2D");
     private JRadioButton _jRadioButton3DAnalysis = new JRadioButton("3D");
     private JRadioButton _jRadioButton2D3DAnalysis = new JRadioButton("2D and 3D");
 	private String _workDirectory, _rawDataDirectory;
 	private boolean _start = false;
-	private int _nbProcChosen = -50;
+	private int _nbCpuChosen = 1;
+	/**
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args)  
     {
 		NucleusSegmentationAndAnalysisBatchDialog nucleusSegmentationAndAnalysisBatchDialog = new NucleusSegmentationAndAnalysisBatchDialog();
@@ -133,8 +136,6 @@ public class NucleusSegmentationAndAnalysisBatchDialog extends JFrame
 		_jTextFieldUnit.setText("pixel");
 		_jTextFieldUnit.setPreferredSize(new java.awt.Dimension(60, 21));	
 
-		
-		
 		_jLabelSegmentation = new JLabel();
 	   	_container.add(_jLabelSegmentation, new GridBagConstraints(0, 3, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(20, 10, 0, 0), 0, 0));
 	   	_jLabelSegmentation.setText("Choose the min and max volumes of the nucleus:");
@@ -173,12 +174,12 @@ public class NucleusSegmentationAndAnalysisBatchDialog extends JFrame
 		
 		OperatingSystemMXBean bean = ManagementFactory.getOperatingSystemMXBean();
 		int nbProc = bean.getAvailableProcessors();
-		for (int i = 1; i <= nbProc; ++i) _comboBoxProcessor.addItem(i);
-		_jLabelNbProcessor= new JLabel();
-		_jLabelNbProcessor.setText("How many processor(s) :");
-		_container.add(_jLabelNbProcessor, new GridBagConstraints(0, 3, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(175, 10, 0,0), 0, 0));
-		_container.add(_comboBoxProcessor, new GridBagConstraints(0, 3, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(170, 200, 0,0), 0, 0));
-		_comboBoxProcessor.addItemListener(new ItemState());
+		for (int i = 1; i <= nbProc; ++i) _comboBoxCpu.addItem(i);
+		_jLabelNbCpu= new JLabel();
+		_jLabelNbCpu.setText("How many CPU(s) :");
+		_container.add(_jLabelNbCpu, new GridBagConstraints(0, 3, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(175, 10, 0,0), 0, 0));
+		_container.add(_comboBoxCpu, new GridBagConstraints(0, 3, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(170, 200, 0,0), 0, 0));
+		_comboBoxCpu.addItemListener(new ItemState());
 			
 		_container.add(_jButtonStart, new GridBagConstraints(0, 3, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(210, 140, 0,0), 0, 0));
 		_jButtonStart.setPreferredSize(new java.awt.Dimension(120, 21));
@@ -195,18 +196,18 @@ public class NucleusSegmentationAndAnalysisBatchDialog extends JFrame
 	   	StartListener startListener = new StartListener(this);
 	   	_jButtonStart.addActionListener(startListener);	   
 	 }
-	public void setNbProcessor(int nb){ _nbProcChosen = nb; }
-	public int getNbProcessor(){ return _nbProcChosen; }
-	public double getx(){ return Double.parseDouble(_jTextFieldXCalibration.getText()); }
-	public double gety(){ return Double.parseDouble(_jTextFieldYCalibration.getText()); }
-	public double getz(){ return Double.parseDouble(_jTextFieldZCalibration.getText()); }
+	public void setNbCpu(int nb){ _nbCpuChosen = nb; }
+	public int getNbCpu(){ return _nbCpuChosen; }
+	public double getXCalibration(){ return Double.parseDouble(_jTextFieldXCalibration.getText()); }
+	public double getYCalibration(){ return Double.parseDouble(_jTextFieldYCalibration.getText()); }
+	public double getZCalibration(){ return Double.parseDouble(_jTextFieldZCalibration.getText()); }
 	public String getUnit(){ return _jTextFieldUnit.getText(); }
-	public double getMinSeg(){ return Double.parseDouble(_jTextFieldMin.getText()); }
-	public double getMaxSeg(){ return Double.parseDouble(_jTextFieldMax.getText()); }
+	public double getMinVolume(){ return Double.parseDouble(_jTextFieldMin.getText()); }
+	public double getMaxVolume(){ return Double.parseDouble(_jTextFieldMax.getText()); }
 	public String getWorkDirectory(){return _jTextFieldWorkDirectory.getText();}
-	public String getDirRawData(){return _jTextFieldRawData.getText();}
+	public String getRawDataDirectory(){return _jTextFieldRawData.getText();}
 	public boolean isStart() {	return _start; }
-	public boolean isTheBoth() {	return _jRadioButton2D3DAnalysis.isSelected(); }
+	public boolean is2D3DAnalysis() {	return _jRadioButton2D3DAnalysis.isSelected(); }
 	public boolean is2D() {	return _jRadioButton2DAnalysis.isSelected(); }
 	public boolean is3D() {	return _jRadioButton3DAnalysis.isSelected(); }
 
@@ -222,109 +223,77 @@ public class NucleusSegmentationAndAnalysisBatchDialog extends JFrame
 	 /********************************************************************************************************************************************
 	 /********************************************************************************************************************************************/
 	
-	/**
-	 * 
-	 * @author Poulet Axel
-	 *
-	 */
 	class ItemState implements ItemListener
 	{
 		public void itemStateChanged(ItemEvent e)
 		{
-			setNbProcessor((Integer) e.getItem());
+			setNbCpu((Integer) e.getItem());
 	   }               
 	}
 	
-	/**
-	 * 
-	 * @author Poulet Axel
-	 *
-	 */
 	class StartListener implements ActionListener 
 	{
 	
 		NucleusSegmentationAndAnalysisBatchDialog _nucleusSegmentationAndAnalysisBatchDialog;	
-		public  StartListener (NucleusSegmentationAndAnalysisBatchDialog jfpfso)
-		{_nucleusSegmentationAndAnalysisBatchDialog = jfpfso;}
+		public  StartListener (NucleusSegmentationAndAnalysisBatchDialog nucleusSegmentationAndAnalysisBatchDialog)
+		{
+			_nucleusSegmentationAndAnalysisBatchDialog = nucleusSegmentationAndAnalysisBatchDialog;
+		}
 		
 		public void actionPerformed(ActionEvent actionEvent)
-		 {
-			 if (_jTextFieldWorkDirectory.getText().isEmpty() || _jTextFieldRawData.getText().isEmpty())
+		{
+			if (_jTextFieldWorkDirectory.getText().isEmpty() || _jTextFieldRawData.getText().isEmpty())
 				 JOptionPane.showMessageDialog(null, "You did not choose a work directory or the raw data", "Error", JOptionPane.ERROR_MESSAGE); 
-			 else
-			 {
-				 _start=true;
-				 _nucleusSegmentationAndAnalysisBatchDialog.dispose();
-			 }
-		 }
-	 }
+			else
+			{
+				_start=true;
+				_nucleusSegmentationAndAnalysisBatchDialog.dispose();
+			}
+		}
+	}
 	
-	
-	/**
-	 * 
-	 * @author Poulet Axel
-	 *
-	 */
 	class QuitListener implements ActionListener 
 	{
 		NucleusSegmentationAndAnalysisBatchDialog _nucleusSegmentationAndAnalysisBatchDialog;	
-		public  QuitListener (NucleusSegmentationAndAnalysisBatchDialog jfpfso) {_nucleusSegmentationAndAnalysisBatchDialog = jfpfso;}
+		public  QuitListener (NucleusSegmentationAndAnalysisBatchDialog nucleusSegmentationAndAnalysisBatchDialog) {_nucleusSegmentationAndAnalysisBatchDialog = nucleusSegmentationAndAnalysisBatchDialog;}
 		public void actionPerformed(ActionEvent actionEvent) { _nucleusSegmentationAndAnalysisBatchDialog.dispose(); }
 	}
 	
-	
-	/**
-	 * 
-	 * @author Poulet Axel
-	 *
-	 */
-	 class WorkDirListener implements ActionListener
-	 {
-		 /**
-		  * 
-		  */		 
-		 public void actionPerformed(ActionEvent actionEvent)
-		 {
-			 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			 JFileChooser jFileChooser = new JFileChooser();
-			 jFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			 int returnVal = jFileChooser.showOpenDialog(getParent());
-			 if(returnVal == JFileChooser.APPROVE_OPTION)
-			 {
+	class WorkDirListener implements ActionListener
+	{		 
+		public void actionPerformed(ActionEvent actionEvent)
+		{
+			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			JFileChooser jFileChooser = new JFileChooser();
+			jFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			int returnVal = jFileChooser.showOpenDialog(getParent());
+			if(returnVal == JFileChooser.APPROVE_OPTION)
+			{
 				@SuppressWarnings("unused")
 				String run = jFileChooser.getSelectedFile().getName();
 				 _workDirectory = jFileChooser.getSelectedFile().getAbsolutePath();
 				 _jTextFieldWorkDirectory.setText(_workDirectory);
-			 }
-			 setCursor (Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-		 }	
-	 }
-	 
-	 /**
-	  * 
-	  * @author Poulet Axel
-	  *
-	  */
-	 
-	 class DataDirListener implements ActionListener
-	 {
-		 /**
-		  * 
-		  */		 
-		 public void actionPerformed(ActionEvent actionEvent)
-		 {
-			 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-			 JFileChooser jFileChooser = new JFileChooser();
-			 jFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			 int returnVal = jFileChooser.showOpenDialog(getParent());
-			 if(returnVal == JFileChooser.APPROVE_OPTION)
-			 {
-				 @SuppressWarnings("unused")
-				 String run = jFileChooser.getSelectedFile().getName();
-				 _rawDataDirectory = jFileChooser.getSelectedFile().getAbsolutePath();
-				 _jTextFieldRawData.setText(_rawDataDirectory);
-			 }
-			 setCursor (Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+			setCursor (Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		}	
+	}
+
+	class DataDirListener implements ActionListener
+	{
+		public void actionPerformed(ActionEvent actionEvent)
+		{
+			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			JFileChooser jFileChooser = new JFileChooser();
+			jFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			int returnVal = jFileChooser.showOpenDialog(getParent());
+			if(returnVal == JFileChooser.APPROVE_OPTION)
+			{
+				@SuppressWarnings("unused")
+				String run = jFileChooser.getSelectedFile().getName();
+				_rawDataDirectory = jFileChooser.getSelectedFile().getAbsolutePath();
+				_jTextFieldRawData.setText(_rawDataDirectory);
+			}
+			setCursor (Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		 }	
 	 }
 }

@@ -33,11 +33,15 @@ public class ChromocenterSegmentationPipelineBatchDialog extends JFrame
 	private JLabel _jLabelXcalibration, _jLabelYcalibration, _jLabelZcalibration, _jLabelUnit, _jLabelWorkDirectory, _jLabelCalibration;
 	private String _workDirectory, _rawDataDirectory;
 	private boolean _start = false;
-		
+	
+	/**
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args)  
 	{
-		ChromocenterSegmentationPipelineBatchDialog fenetre = new ChromocenterSegmentationPipelineBatchDialog();
-		fenetre.setLocationRelativeTo(null);
+		ChromocenterSegmentationPipelineBatchDialog chromocenterSegmentationPipelineBatchDialog = new ChromocenterSegmentationPipelineBatchDialog();
+		chromocenterSegmentationPipelineBatchDialog.setLocationRelativeTo(null);
 	}
 		
 	    
@@ -141,12 +145,12 @@ public class ChromocenterSegmentationPipelineBatchDialog extends JFrame
 		_jButtonStart.addActionListener(startListener);	   
 	}
 		
-	public double getx(){ return Double.parseDouble(_jTextFieldXCalibration.getText()); }
-	public double gety(){ return Double.parseDouble(_jTextFieldYCalibration.getText()); }
-	public double getz(){ return Double.parseDouble(_jTextFieldZCalibration.getText()); }
+	public double getXCalibration(){ return Double.parseDouble(_jTextFieldXCalibration.getText()); }
+	public double getYCalibration(){ return Double.parseDouble(_jTextFieldYCalibration.getText()); }
+	public double getZCalibration(){ return Double.parseDouble(_jTextFieldZCalibration.getText()); }
 	public String getUnit(){ return _jTextFieldUnit.getText(); }
 	public String getWorkDirectory(){return _jTextFieldWorkDirectory.getText();}
-	public String getDirRawData(){return _jTextFieldRawData.getText();}
+	public String getRawDataDirectory(){return _jTextFieldRawData.getText();}
 	public boolean isStart() {	return _start; };
 
 	/********************************************************************************************************************************************
@@ -167,10 +171,10 @@ public class ChromocenterSegmentationPipelineBatchDialog extends JFrame
 		
 		ChromocenterSegmentationPipelineBatchDialog _chromocenterSegmentationPipelineBatchDialog;	
 		public  StartListener (ChromocenterSegmentationPipelineBatchDialog chromocenterSegmentationPipelineBatchDialog)
-		{_chromocenterSegmentationPipelineBatchDialog = chromocenterSegmentationPipelineBatchDialog;}
-		/**
-		 * 
-		 */
+		{
+			_chromocenterSegmentationPipelineBatchDialog = chromocenterSegmentationPipelineBatchDialog;
+		}
+		
 		public void actionPerformed(ActionEvent actionEvent)
 		{
 			if (_jTextFieldWorkDirectory.getText().isEmpty() || _jTextFieldRawData.getText().isEmpty())
@@ -183,11 +187,7 @@ public class ChromocenterSegmentationPipelineBatchDialog extends JFrame
 		}
 	}
 		
-	/**
-	 * 
-	 * @author Poulet Axel
-	 *
-	 */
+	
 	class QuitListener implements ActionListener 
 	{
 		ChromocenterSegmentationPipelineBatchDialog _chromocenterSegmentationPipelineBatchDialog;
@@ -196,16 +196,8 @@ public class ChromocenterSegmentationPipelineBatchDialog extends JFrame
 	}
 		
 		
-	/**
-	 * 
-	 * @author Poulet Axel
-	 *
-	 */
 	class WorkDirListener implements ActionListener
 	{
-		/**
-		 * 
-		 */		 
 		public void actionPerformed(ActionEvent actionEvent)
 		{
 			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -223,16 +215,9 @@ public class ChromocenterSegmentationPipelineBatchDialog extends JFrame
 		}	
 	}
 	
-	/**
-	 * 
-	 * @author Poulet Axel
-	 *
-	 */
+	
 	class DataDirListener implements ActionListener
 	{
-		/**
-		 * 
-		 */		 
 		public void actionPerformed(ActionEvent actionEvent)
 		{
 			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));

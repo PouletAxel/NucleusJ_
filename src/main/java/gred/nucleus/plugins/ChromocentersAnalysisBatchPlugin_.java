@@ -17,7 +17,7 @@ import gred.nucleus.utils.FileList;
 
 /**
  * 
- * @author gred
+ * @author Poulet Axel
  *
  */
 public class ChromocentersAnalysisBatchPlugin_ implements PlugIn
@@ -29,7 +29,6 @@ public class ChromocentersAnalysisBatchPlugin_ implements PlugIn
 	public void run(String arg)
 	{
 		ChromocentersAnalysisPipelineBatchDialog chromocentersPipelineBatchDialog = new ChromocentersAnalysisPipelineBatchDialog();
-	
 		while( chromocentersPipelineBatchDialog.isShowing())
 		{
 			try {Thread.sleep(1);}
@@ -38,21 +37,20 @@ public class ChromocentersAnalysisBatchPlugin_ implements PlugIn
 		if (chromocentersPipelineBatchDialog.isStart())
 		{
 			FileList fileList = new FileList ();
-			File[] tableFile = fileList.run(chromocentersPipelineBatchDialog.getDirRawData());
-			if (fileList.isDirectoryOrFileExist(".+RawDataNucleus.+",tableFile) && fileList.isDirectoryOrFileExist(".+SegmentedDataNucleus.+",tableFile)
-					&& fileList.isDirectoryOrFileExist(".+SegmentedDataCc.+",tableFile))
+			File[] tFileRawImage = fileList.run(chromocentersPipelineBatchDialog.getRawDataDirectory());
+			if (fileList.isDirectoryOrFileExist(".+RawDataNucleus.+",tFileRawImage) && fileList.isDirectoryOrFileExist(".+SegmentedDataNucleus.+",tFileRawImage)
+					&& fileList.isDirectoryOrFileExist(".+SegmentedDataCc.+",tFileRawImage))
 			{
-				double dimX =chromocentersPipelineBatchDialog.getx();
-				double dimY = chromocentersPipelineBatchDialog.gety();
-				double dimZ = chromocentersPipelineBatchDialog.getz();
+				double xCalibration = chromocentersPipelineBatchDialog.getXCalibration();
+				double yCalibration = chromocentersPipelineBatchDialog.getYCalibration();
+				double zCalibration = chromocentersPipelineBatchDialog.getZCalibration();
 				String unit = chromocentersPipelineBatchDialog.getUnit();
+				String rhfChoice;
+				if (chromocentersPipelineBatchDialog.isRHFVolumeAndIntensity())	rhfChoice = "Volume and intensity";
+				else if (chromocentersPipelineBatchDialog.isRhfVolume())	rhfChoice = "Volume";
+				else rhfChoice = "Intensity";
 				
-				String choiceRhf;
-				if (chromocentersPipelineBatchDialog.isRHFVolumeAndIntensity())	choiceRhf = "Volume and intensity";
-				else if (chromocentersPipelineBatchDialog.isRhfVolume())	choiceRhf = "Volume";
-				else choiceRhf = "Intensity";
-				
-				ArrayList<String> imageChromocenterList = fileList.fileSearchList(".+SegmentedDataCc.+",tableFile);
+				ArrayList<String> imageChromocenterList = fileList.fileSearchList(".+SegmentedDataCc.+",tFileRawImage);
 				String workDirectory = chromocentersPipelineBatchDialog.getWorkDirectory();
 				String nameFileChromocenterAndNucleus = workDirectory+File.separator+"NucAndCcParameters.tab";
 				String nameFileChromocenter = workDirectory+File.separator+"CcParameters.tab";
@@ -61,44 +59,42 @@ public class ChromocentersAnalysisBatchPlugin_ implements PlugIn
 					IJ.log("image"+(i+1)+" / "+(imageChromocenterList.size())+"   "+imageChromocenterList.get(i));
 					String pathImageChromocenter = imageChromocenterList.get(i);
 					String pathNucleusRaw = pathImageChromocenter.replaceAll("SegmentedDataCc", "RawDataNucleus");
-					String pathNucleusBinary= pathImageChromocenter.replaceAll("SegmentedDataCc", "SegmentedDataNucleus");
+					String pathNucleusSegmented= pathImageChromocenter.replaceAll("SegmentedDataCc", "SegmentedDataNucleus");
 					IJ.log(pathNucleusRaw);
-					IJ.log(pathNucleusBinary);
-				
-					if (fileList.isDirectoryOrFileExist(pathNucleusRaw,tableFile) && fileList.isDirectoryOrFileExist(pathNucleusBinary,tableFile))
+					IJ.log(pathNucleusSegmented);
+					if (fileList.isDirectoryOrFileExist(pathNucleusRaw,tFileRawImage) && fileList.isDirectoryOrFileExist(pathNucleusSegmented,tFileRawImage))
 					{
 						ImagePlus imagePlusChromocenter = IJ.openImage(imageChromocenterList.get(i));
-						ImagePlus imagePlusBinary = IJ.openImage(pathNucleusBinary);
-						ImagePlus imagePlusRaw = IJ.openImage(pathNucleusRaw);
+						ImagePlus imagePlusSegmented = IJ.openImage(pathNucleusSegmented);
+						ImagePlus imagePlusInput = IJ.openImage(pathNucleusRaw);
 						Calibration cal = new Calibration();
-						cal.pixelDepth = dimZ;
-						cal.pixelWidth = dimX;
-						cal.pixelHeight = dimY;
+						cal.pixelDepth = zCalibration;
+						cal.pixelWidth = xCalibration;
+						cal.pixelHeight = yCalibration;
 						cal.setUnit(unit);
 						imagePlusChromocenter.setCalibration(cal);
-						imagePlusBinary.setCalibration(cal);
-						imagePlusRaw.setCalibration(cal);
-						
+						imagePlusSegmented.setCalibration(cal);
+						imagePlusInput.setCalibration(cal);
 						try
 						{
 							if (chromocentersPipelineBatchDialog.isNucAndCcAnalysis())
 							{
 								ChromocenterAnalysis chromocenterAnalysis = new ChromocenterAnalysis();
-								chromocenterAnalysis.computeParametersChromocenter(nameFileChromocenter,imagePlusBinary,imagePlusChromocenter);
+								chromocenterAnalysis.computeParametersChromocenter(nameFileChromocenter,imagePlusSegmented,imagePlusChromocenter);
 								IJ.log("chromocenter analysis is computing ...");
 								NucleusChromocentersAnalysis nucleusChromocenterAnalysis = new NucleusChromocentersAnalysis(); 
 								IJ.log("nucleusChromocenterAnalysis is computing...");
-								nucleusChromocenterAnalysis.computeParameters(nameFileChromocenterAndNucleus,choiceRhf, imagePlusRaw, imagePlusBinary, imagePlusChromocenter);
+								nucleusChromocenterAnalysis.computeParameters(nameFileChromocenterAndNucleus,rhfChoice, imagePlusInput, imagePlusSegmented, imagePlusChromocenter);
 							}
 							else if (chromocentersPipelineBatchDialog.isCcAnalysis())
 							{
 								ChromocenterAnalysis chromocenterAnalysis = new ChromocenterAnalysis();
-								chromocenterAnalysis.computeParametersChromocenter(nameFileChromocenter,imagePlusBinary,imagePlusChromocenter);
+								chromocenterAnalysis.computeParametersChromocenter(nameFileChromocenter,imagePlusSegmented,imagePlusChromocenter);
 							}
 							else
 							{
 								NucleusChromocentersAnalysis nucleusChromocenterAnalysis = new NucleusChromocentersAnalysis(); 
-								nucleusChromocenterAnalysis.computeParameters(nameFileChromocenterAndNucleus,choiceRhf, imagePlusRaw, imagePlusBinary, imagePlusChromocenter);
+								nucleusChromocenterAnalysis.computeParameters(nameFileChromocenterAndNucleus,rhfChoice, imagePlusInput, imagePlusSegmented, imagePlusChromocenter);
 							}
 						}
 						catch (IOException e) {	e.printStackTrace(); }

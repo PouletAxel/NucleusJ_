@@ -12,155 +12,128 @@ import inra.ijpb.binary.ConnectedComponents;
 
 public class FillingHoles 
 {
-
-  /** Image to be processed*/
- //ImagePlus _imagePlusInput;
- /** Histogram of the inputImage*/
- //Histogram _hist;
-
- /**
-  * Constructor
-  * @param imagePlusInput Image to be processed
-  */
-  public FillingHoles() {}
+	public FillingHoles() {}
  
+	/**
+	 * Method which process the image in the three dimensions (x, y, z) in the same time.
+	 */
   
- /**
-  * Method which process the image in the three dimensions (x, y, z) in the same time.
-  */
-  
- public ImagePlus apply3D (ImagePlus imagePlusInput)
- {
- // image inversion (0 became 255 and 255 became 0)
-  ImagePlus output = imagePlusInput;
-  
-  ImageStack imageStackOutput = output.getStack();
-  int width = imageStackOutput.getWidth();
-  int height = imageStackOutput.getHeight();
-  int depth = imageStackOutput.getSize();
-  int x, y, z;
-  for (z = 0; z < depth; ++z)
-    for (x = 0; x < width; ++x)
-      for (y = 0; y < height; ++y)
-      {
-        double voxelCourrant = imageStackOutput.getVoxel(x, y, z);
-        if (voxelCourrant > 0) imageStackOutput.setVoxel(x, y, z, 0);
-        else imageStackOutput.setVoxel(x, y, z, 255);
-        
-      }
-  output = ConnectedComponents.computeLabels(output, 26, 32);
-  int label;
-  boolean edgeFlags [] = new boolean [(int)output.getStatistics().max+1];
-  imageStackOutput = output.getImageStack();
-  IJ.log(""+output.getStatistics().max);
-  for (int a = 0; a < edgeFlags.length;++a)  edgeFlags[a] = false;
-    // Analyse of plans extreme in the dim x
-    for (z = 0; z < depth; ++z)
-      for (y = 0; y < height; ++y)
-      {
-        label = (int) imageStackOutput.getVoxel(0, y, z);
-        edgeFlags[label] = true;
-        label = (int) imageStackOutput.getVoxel(width-1, y, z);
-        edgeFlags[label] = true;
-      }
+	public ImagePlus apply3D (ImagePlus imagePlusInput)
+	{
+		// image inversion (0 became 255 and 255 became 0)
+		ImagePlus imagePlusCorrected = imagePlusInput;
+		ImageStack imageStackCorrected = imagePlusCorrected.getStack();
+		int i, j, k;
+		for (k = 0; k < imageStackCorrected.getSize(); ++k)
+			for (i = 0; i < imageStackCorrected.getWidth(); ++i)
+				for (j = 0; j < imageStackCorrected.getHeight(); ++j)
+				{
+					double voxelCurrent = imageStackCorrected.getVoxel(i, j, k);
+					if (voxelCurrent > 0) imageStackCorrected.setVoxel(i, j, k, 0);
+					else imageStackCorrected.setVoxel(i, j, k, 255);
+        		}
+		imagePlusCorrected = ConnectedComponents.computeLabels(imagePlusCorrected, 26, 32);
+		int label;
+		boolean[] tEdgeFlags  = new boolean [(int)imagePlusCorrected.getStatistics().max+1];
+		imageStackCorrected = imagePlusCorrected.getImageStack();
+		for (int a = 0; a < tEdgeFlags.length;++a)  tEdgeFlags[a] = false;
+		// Analyse of plans extreme in the dim x
+		for (k = 0; k < imageStackCorrected.getSize(); ++k)
+			for (j = 0; j < imageStackCorrected.getHeight(); ++j)
+			{
+				label = (int) imageStackCorrected.getVoxel(0, j, k);
+				tEdgeFlags[label] = true;
+				label = (int) imageStackCorrected.getVoxel(imageStackCorrected.getWidth()-1, j, k);
+				tEdgeFlags[label] = true;
+			}
 
-    // Analyse of plans extreme in the dim y
-    for (z = 0; z < depth; ++z)
-      for (x = 0; x < width; ++x)
-      {
-        label = (int) imageStackOutput.getVoxel(x, 0, z);
-        edgeFlags[label] = true;
-        label = (int) imageStackOutput.getVoxel(x, height-1, z);
-        edgeFlags[label] = true;
-      }
+		// Analyse of plans extreme in the dim y
+		for (k = 0; k < imageStackCorrected.getSize(); ++k)
+			for (i = 0; i < imageStackCorrected.getWidth(); ++i)
+			{
+				label = (int) imageStackCorrected.getVoxel(i, 0, k);
+				tEdgeFlags[label] = true;
+				label = (int) imageStackCorrected.getVoxel(i, imageStackCorrected.getHeight()-1, k);
+				tEdgeFlags[label] = true;
+			}
 
-    // Analyse of plans extreme in the dim z
-    for (x = 0; x < depth; ++x)
-      for (y = 0; y < width; ++y)
-      {
-        label = (int) imageStackOutput.getVoxel(x, y, 0);
-        edgeFlags[label] = true;
-        label = (int) imageStackOutput.getVoxel(x, y, depth-1);
-        edgeFlags[label] = true;
-      }
+		// Analyse of plans extreme in the dim z
+		for (i = 0; i < imageStackCorrected.getSize(); ++i)
+			for (j = 0; j < imageStackCorrected.getWidth(); ++j)
+			{
+				label = (int) imageStackCorrected.getVoxel(i, j, 0);
+				tEdgeFlags[label] = true;
+				label = (int) imageStackCorrected.getVoxel(i, j, imageStackCorrected.getSize()-1);
+				tEdgeFlags[label] = true;
+			}
     
-     //Creation of the image results
-    for (z = 0; z < depth; ++z)
-      for (x = 0; x < width; ++x)
-        for (y = 0; y < height; ++y)
-        {
-          label = (int) imageStackOutput.getVoxel(x, y, z);
-          if (label == 0 || edgeFlags[label] == false)
-        	  imageStackOutput.setVoxel(x, y, z, 255);
-        else   imageStackOutput.setVoxel(x, y, z, 0);
-        }
+		//Creation of the image results
+		for (k = 0; k < imageStackCorrected.getSize(); ++k)
+			for (i = 0; i < imageStackCorrected.getWidth(); ++i)
+				for (j = 0; j < imageStackCorrected.getHeight(); ++j)
+				{
+					label = (int) imageStackCorrected.getVoxel(i, j, k);
+					if (label == 0 || tEdgeFlags[label] == false)	imageStackCorrected.setVoxel(i, j, k, 255);
+					else   imageStackCorrected.setVoxel(i, j, k, 0);
+				}
     
-    output.setStack(imageStackOutput);
-    return output;
- } //apply3D
-
+		imagePlusCorrected.setStack(imageStackCorrected);
+		return imagePlusCorrected;
+	} 
  
  
- /**
-  * Method in two dimensions which process ecah plan z independent,
-  *
-  */
- public ImagePlus apply2D (ImagePlus imagePlusInput)
- {
-	 //Image stack a renommer correctement & modifier image d'entree
-   ImagePlus output = imagePlusInput;
-   ImageStack imageStack = output.getStack();
-   int width = imageStack.getWidth();
-   int height = imageStack.getHeight();
-   int depth = imageStack.getSize();
-   double voxelValue;
-   int x, y, z;
-   ImageStack imageStackOutput = new ImageStack(width,height);
-   for (z = 1; z <= depth; ++z)
-   {
-	   ImageProcessor imageProcessor = imageStack.getProcessor(z);
-	   for (x = 0; x < width; ++x)
-		   for (y = 0; y < height; ++y)
-		   {
-			   voxelValue = imageProcessor.getPixel(x, y);
-			   if (voxelValue > 0)      imageProcessor.putPixelValue(x, y, 0);
-			   else        imageProcessor.putPixelValue(x, y, 255);
-		   }
-    
+	/**
+	 * Method in two dimensions which process ecah plan z independent,
+	 *
+	 */
+	public ImagePlus apply2D (ImagePlus imagePlusInput)
+	{
+		ImagePlus imagePlusCorrected = imagePlusInput;
+		ImageStack imageStackCorrected = imagePlusCorrected.getStack();
+		double voxelValue;
+		int i, j, k;
+		ImageStack imageStackOutput = new ImageStack(imageStackCorrected.getWidth(),imageStackCorrected.getHeight());
+		for (k = 1; k <= imageStackCorrected.getSize(); ++k)
+		{
+			ImageProcessor imageProcessorLabellised = imageStackCorrected.getProcessor(k);
+			for (i = 0; i < imageStackCorrected.getWidth(); ++i)
+				for (j = 0; j < imageStackCorrected.getHeight(); ++j)
+				{
+					voxelValue = imageProcessorLabellised.getPixel(i, j);
+					if (voxelValue > 0)      imageProcessorLabellised.putPixelValue(i, j, 0);
+					else        imageProcessorLabellised.putPixelValue(i, j, 255);
+				}
+			imageProcessorLabellised = ConnectedComponents.computeLabels(imageProcessorLabellised, 26, 32);
+			int label;
+			boolean [] tEdgeFlags = new boolean [(int)imageProcessorLabellised.getMax()+1];
+			for (int a = 0; a < tEdgeFlags.length; ++a)  tEdgeFlags[a] = false;
+			// Analyse des plans extremes selon la dim x
+			for (j = 0; j < imageStackCorrected.getHeight(); ++j)
+			{
+				label = (int) imageProcessorLabellised.getf(0, j);
+				tEdgeFlags[label] = true;
+				label = (int) imageProcessorLabellised.getf(imageStackCorrected.getWidth()-1, j);
+				tEdgeFlags[label] = true;
+			}
+			// Analyse des plans extremes selon la dim y
+			for (i = 0; i < imageStackCorrected.getWidth(); ++i)
+			{
+				label = (int)imageProcessorLabellised.getf(i, 0);
+				tEdgeFlags[label] = true;
+				label = (int) imageProcessorLabellised.getf(i, imageStackCorrected.getHeight()-1);
+				tEdgeFlags[label] = true;
+			}
       
-	  imageProcessor = ConnectedComponents.computeLabels(imageProcessor, 26, 32);
-      int label;
-      boolean edgeFlags [] = new boolean [(int)imageProcessor.getMax()+1];
-      for (int a = 0; a < edgeFlags.length; ++a)  edgeFlags[a] = false;
-
-      // Analyse des plans extremes selon la dim x
-      for (y = 0; y < height; ++y)
-      {
-        label = (int) imageProcessor.getf(0, y);
-        edgeFlags[label] = true;
-        label = (int) imageProcessor.getf(width-1, y);
-        edgeFlags[label] = true;
-      }
-
-      // Analyse des plans extremes selon la dim y
-      for (x = 0; x < width; ++x)
-      {
-        label = (int)imageProcessor.getf(x, 0);
-        edgeFlags[label] = true;
-        label = (int) imageProcessor.getf(x, height-1);
-        edgeFlags[label] = true;
-      }
-      
-      for (x = 0; x < width; ++x)
-        for (y = 0; y < height; ++y)
-        {
-          label = (int)  imageProcessor.getf(x, y);
-          if (label == 0 || edgeFlags[label] == false) imageProcessor.putPixelValue(x,y,255);
-          else    imageProcessor.putPixelValue(x, y, 0);
-        }
-      imageStackOutput.addSlice(imageProcessor);
-    }
-    output.setStack(imageStackOutput);
-    return output;
-  }//apply2D
-}//fin classe
+			for (i = 0; i < imageStackCorrected.getWidth(); ++i)
+				for (j = 0; j < imageStackCorrected.getHeight(); ++j)
+				{
+					label = (int)  imageProcessorLabellised.getf(i, j);
+					if (label == 0 || tEdgeFlags[label] == false) imageProcessorLabellised.putPixelValue(i,j,255);
+					else    imageProcessorLabellised.putPixelValue(i, j, 0);
+				}
+			imageStackOutput.addSlice(imageProcessorLabellised);
+		}
+		imagePlusCorrected.setStack(imageStackOutput);
+		return imagePlusCorrected;
+	}
+}

@@ -10,18 +10,20 @@ import gred.nucleus.core.NucleusChromocentersAnalysis;
 
 /**
  * 
- * @author gred
+ * @author Poulet Axel
  *
  */
 public class ChromocentersAnalysisPlugin_   implements PlugIn
 {
-	
+	/**
+	 * 
+	 */
 	public void run(String arg)
 	{
-		int ccSeg = 0;
-		int rawImage = 0;
-		int nucSeg = 0;
-		double x = 1,y=1,z=1;
+		int indiceCcImage = 0;
+		int indiceRawImage = 0;
+		int indiceSegmentedImage = 0;
+		double xCalibration = 1,yCalibration=1,zCalibration=1;
 		String unit = "pixel";
 		int[] wList = WindowManager.getIDList();
 		if (wList == null)
@@ -32,56 +34,56 @@ public class ChromocentersAnalysisPlugin_   implements PlugIn
 		String[] titles = new String[wList.length];
 		for (int i = 0; i < wList.length; i++)
 		{
-			ImagePlus imp = WindowManager.getImage(wList[i]);
-			if (imp != null)          titles[i] = imp.getTitle();
-			else          titles[i] = "";
+			ImagePlus imagePlus = WindowManager.getImage(wList[i]);
+			if (imagePlus != null)  titles[i] = imagePlus.getTitle();
+			else titles[i] = "";
 		}
-		GenericDialog gd = new GenericDialog("Chromocenter Analysis", IJ.getInstance());
-		gd.addChoice("Raw image",titles,titles[rawImage]);
-		gd.addChoice("Chromocenters image Segemented",titles,titles[ccSeg]);
-		gd.addChoice("Nucleus Segmeneted",titles,titles[nucSeg]);
-		gd.addNumericField("x calibartion", x,4);
-      	gd.addNumericField("y calibration", y, 4);
-      	gd.addNumericField("z calibration).",z, 4);
-    	gd.addStringField("Unit",unit,10);
-       	gd.addRadioButtonGroup("Type of RHF ", new String[]{"Volume and intensity","Volume","Intensity"}, 1, 3, "Volume and intensity");
-     	gd.addRadioButtonGroup("Type of OutPut ", new String[]{"Nucleus and chromocenter parameters","Chromocenter parameters","Nucleus parameters"}, 3, 1, "Nucleus and chromocenter parameters");
-		gd.showDialog();
-        if (gd.wasCanceled())   return;
-        ImagePlus imagePlusRaw =  WindowManager.getImage(wList[gd.getNextChoiceIndex()]);
-        ImagePlus imagePlusChromocenter =  WindowManager.getImage(wList[gd.getNextChoiceIndex()]);
-        ImagePlus imagePlusBinary =  WindowManager.getImage(wList[gd.getNextChoiceIndex()]);
-        x = gd.getNextNumber();
-        y = gd.getNextNumber();
-        z = gd.getNextNumber();
-        String choiceRhf = gd.getNextRadioButton();
-        String choiceOutput = gd.getNextRadioButton();
-        unit = gd.getNextString();
-        Calibration cal = new Calibration();
-        cal.pixelDepth = z;
-        cal.pixelWidth = x;
-        cal.pixelHeight = y;
-        cal.setUnit(unit);
-        imagePlusRaw.setCalibration(cal);
-        imagePlusChromocenter.setCalibration(cal);
-        imagePlusBinary.setCalibration(cal);
+		GenericDialog genericDialog = new GenericDialog("Chromocenter Analysis", IJ.getInstance());
+		genericDialog.addChoice("Raw image",titles,titles[indiceRawImage]);
+		genericDialog.addChoice("Chromocenters image Segemented",titles,titles[indiceCcImage]);
+		genericDialog.addChoice("Nucleus Segmeneted",titles,titles[indiceSegmentedImage]);
+		genericDialog.addNumericField("x calibartion", xCalibration,3);
+      	genericDialog.addNumericField("y calibration", yCalibration, 3);
+      	genericDialog.addNumericField("z calibration).",zCalibration, 3);
+    	genericDialog.addStringField("Unit",unit,10);
+       	genericDialog.addRadioButtonGroup("Type of RHF ", new String[]{"Volume and intensity","Volume","Intensity"}, 1, 3, "Volume and intensity");
+     	genericDialog.addRadioButtonGroup("Type of results ", new String[]{"Nucleus and chromocenter parameters","Chromocenter parameters","Nucleus parameters"}, 3, 1, "Nucleus and chromocenter parameters");
+		genericDialog.showDialog();
+        if (genericDialog.wasCanceled())   return;
+        ImagePlus imagePlusInput =  WindowManager.getImage(wList[genericDialog.getNextChoiceIndex()]);
+        ImagePlus imagePlusChromocenter =  WindowManager.getImage(wList[genericDialog.getNextChoiceIndex()]);
+        ImagePlus imagePlusSegmented =  WindowManager.getImage(wList[genericDialog.getNextChoiceIndex()]);
+        xCalibration = genericDialog.getNextNumber();
+        yCalibration = genericDialog.getNextNumber();
+        zCalibration = genericDialog.getNextNumber();
+        String rhfChoice = genericDialog.getNextRadioButton();
+        String analysisChoice = genericDialog.getNextRadioButton();
+        unit = genericDialog.getNextString();
+        Calibration calibration = new Calibration();
+        calibration.pixelDepth = zCalibration;
+        calibration.pixelWidth = xCalibration;
+        calibration.pixelHeight = yCalibration;
+        calibration.setUnit(unit);
+        imagePlusInput.setCalibration(calibration);
+        imagePlusChromocenter.setCalibration(calibration);
+        imagePlusSegmented.setCalibration(calibration);
         
-        if (choiceOutput.equals("Nucleus and chromocenter parameters"))
+        if (analysisChoice.equals("Nucleus and chromocenter parameters"))
         {
         	 ChromocenterAnalysis chromocenterAnalysis = new ChromocenterAnalysis();
-             chromocenterAnalysis.computeParametersChromocenter(imagePlusBinary,imagePlusChromocenter);
+             chromocenterAnalysis.computeParametersChromocenter(imagePlusSegmented,imagePlusChromocenter);
              NucleusChromocentersAnalysis nucleusChromocentersAnalysis = new NucleusChromocentersAnalysis(); 
-             nucleusChromocentersAnalysis.computeParameters(choiceRhf, imagePlusRaw, imagePlusBinary, imagePlusChromocenter);
+             nucleusChromocentersAnalysis.computeParameters(rhfChoice, imagePlusInput, imagePlusSegmented, imagePlusChromocenter);
         }
-        else if (choiceOutput.equals("Chromocenter parameters"))
+        else if (analysisChoice.equals("Chromocenter parameters"))
         {
         	ChromocenterAnalysis chromocenterAnalysis = new ChromocenterAnalysis();
-            chromocenterAnalysis.computeParametersChromocenter(imagePlusBinary,imagePlusChromocenter);
+            chromocenterAnalysis.computeParametersChromocenter(imagePlusSegmented,imagePlusChromocenter);
         }
         else
         {
             NucleusChromocentersAnalysis nucleusChromocentersAnalysis = new NucleusChromocentersAnalysis(); 
-            nucleusChromocentersAnalysis.computeParameters(choiceRhf, imagePlusRaw, imagePlusBinary, imagePlusChromocenter);
+            nucleusChromocentersAnalysis.computeParameters(rhfChoice, imagePlusInput, imagePlusSegmented, imagePlusChromocenter);
         }
 	}
 }
