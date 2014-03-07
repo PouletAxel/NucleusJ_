@@ -45,9 +45,9 @@ public class ProcessImageSegmentaion
 			_continuer = false;
 			_indiceImage = i;
 			IJ.log("image"+(i+1)+" / "+tInputFile.length);
-			ImagePlus imagePlus = IJ.openImage(tInputFile[i].toString());
-			imagePlus.setCalibration(calibration);
-			arrayListImageThread.add(new RunnableImageSegmentation(imagePlus,nucleusSegmentationAndAnalysisBatchPlugin.getMinVolume(),nucleusSegmentationAndAnalysisBatchPlugin.getMaxVolume()
+			ImagePlus imagePlusInput = IJ.openImage(tInputFile[i].toString());
+			imagePlusInput.setCalibration(calibration);
+			arrayListImageThread.add(new RunnableImageSegmentation(imagePlusInput,nucleusSegmentationAndAnalysisBatchPlugin.getMinVolume(),nucleusSegmentationAndAnalysisBatchPlugin.getMaxVolume()
 					,nucleusSegmentationAndAnalysisBatchPlugin.getWorkDirectory(),nucleusSegmentationAndAnalysisBatchPlugin.is2D3DAnalysis(),
 					nucleusSegmentationAndAnalysisBatchPlugin.is3DAnalysis(),doAnalysis));
 			arrayListImageThread.get(j).start();
@@ -71,11 +71,11 @@ public class ProcessImageSegmentaion
 	 */
 	public void go(NucleusSegmentationBatchPlugin_ nucleusSegmentationBatchPlugin, File[] tInputFile, boolean doAnalysis) throws InterruptedException
 	{
-		Calibration cal = new Calibration();
-		cal.pixelDepth = nucleusSegmentationBatchPlugin.getZCalibration();
-		cal.pixelWidth = nucleusSegmentationBatchPlugin.getXCalibration();
-		cal.pixelHeight = nucleusSegmentationBatchPlugin.getYCalibration();
-		cal.setUnit(nucleusSegmentationBatchPlugin.getUnit());
+		Calibration calibration = new Calibration();
+		calibration.pixelDepth = nucleusSegmentationBatchPlugin.getZCalibration();
+		calibration.pixelWidth = nucleusSegmentationBatchPlugin.getXCalibration();
+		calibration.pixelHeight = nucleusSegmentationBatchPlugin.getYCalibration();
+		calibration.setUnit(nucleusSegmentationBatchPlugin.getUnit());
 		_nbLance = 0;
 		ArrayList<Thread> arrayListImageThread = new ArrayList<Thread>() ;
 		int j = 0;
@@ -86,9 +86,9 @@ public class ProcessImageSegmentaion
 			_continuer = false;
 			_indiceImage = i;
 			IJ.log("image"+(i+1)+" / "+tInputFile.length);
-			ImagePlus imagePlus = IJ.openImage(tInputFile[i].toString());
-			imagePlus.setCalibration(cal);
-			arrayListImageThread.add(new RunnableImageSegmentation(imagePlus,nucleusSegmentationBatchPlugin.getMinVolume(),nucleusSegmentationBatchPlugin.getMaxVolume()
+			ImagePlus imagePlusInput = IJ.openImage(tInputFile[i].toString());
+			imagePlusInput.setCalibration(calibration);
+			arrayListImageThread.add(new RunnableImageSegmentation(imagePlusInput,nucleusSegmentationBatchPlugin.getMinVolume(),nucleusSegmentationBatchPlugin.getMaxVolume()
 					,nucleusSegmentationBatchPlugin.getWorkDirectory(),false, false ,doAnalysis));
 			arrayListImageThread.get(j).start();
 			while (_continuer == false)

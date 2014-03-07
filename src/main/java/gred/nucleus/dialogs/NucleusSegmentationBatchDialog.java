@@ -54,11 +54,9 @@ public class NucleusSegmentationBatchDialog extends JFrame
 	}
 		
 	    
-	/*
-	 * 
-	 *
+	/**
+	 *     
 	 */
-	    
 	public NucleusSegmentationBatchDialog ()
 	{
 		this.setTitle("Nucleus segmentation (batch)");
@@ -150,8 +148,8 @@ public class NucleusSegmentationBatchDialog extends JFrame
 		_jTextFieldMax.setPreferredSize(new java.awt.Dimension (60, 21));
 
 		OperatingSystemMXBean bean = ManagementFactory.getOperatingSystemMXBean();
-		int nbProc = bean.getAvailableProcessors();
-		for (int i = 1; i <= nbProc; ++i) _comboBoxCpu.addItem(i);
+		int nbCpu = bean.getAvailableProcessors();
+		for (int i = 1; i <= nbCpu; ++i) _comboBoxCpu.addItem(i);
 		_jLabelNbCpu= new JLabel();
 		_jLabelNbCpu.setText("How many CPU :");
 		_container.add(_jLabelNbCpu, new GridBagConstraints(0, 3, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(95, 10, 0,0), 0, 0));
@@ -164,9 +162,9 @@ public class NucleusSegmentationBatchDialog extends JFrame
 		_jButtonQuit.setPreferredSize(new java.awt.Dimension(120, 21));
 		this.setVisible(true);
 		
-		WorkDirListener wdListener = new WorkDirListener();
+		WorkDirectoryListener wdListener = new WorkDirectoryListener();
 		_jButtonWorkDirectory.addActionListener(wdListener);
-		DataDirListener ddListener = new DataDirListener();
+		RAwDataDirectoryListener ddListener = new RAwDataDirectoryListener();
 		_jButtonRawData.addActionListener(ddListener);
 		QuitListener quitListener = new QuitListener(this);
 		_jButtonQuit.addActionListener(quitListener);
@@ -231,15 +229,15 @@ public class NucleusSegmentationBatchDialog extends JFrame
 		public void actionPerformed(ActionEvent actionEvent) { _nucleusSegmentationBatchDialog.dispose(); }
 	}
 		
-	class WorkDirListener implements ActionListener
+	class WorkDirectoryListener implements ActionListener
 	{
 		public void actionPerformed(ActionEvent actionEvent)
 		{
 			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 			JFileChooser jFileChooser = new JFileChooser();
 			jFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			int returnVal = jFileChooser.showOpenDialog(getParent());
-			if(returnVal == JFileChooser.APPROVE_OPTION)
+			int returnValue = jFileChooser.showOpenDialog(getParent());
+			if(returnValue == JFileChooser.APPROVE_OPTION)
 			{
 				@SuppressWarnings("unused")
 				String run = jFileChooser.getSelectedFile().getName();
@@ -250,7 +248,7 @@ public class NucleusSegmentationBatchDialog extends JFrame
 		}	
 	}
 	
-	class DataDirListener implements ActionListener
+	class RAwDataDirectoryListener implements ActionListener
 	{
 				 
 		public void actionPerformed(ActionEvent actionEvent)
@@ -258,8 +256,8 @@ public class NucleusSegmentationBatchDialog extends JFrame
 			setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 			JFileChooser jFileChooser = new JFileChooser();
 			jFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			int returnVal = jFileChooser.showOpenDialog(getParent());
-			if(returnVal == JFileChooser.APPROVE_OPTION)
+			int returnValue = jFileChooser.showOpenDialog(getParent());
+			if(returnValue == JFileChooser.APPROVE_OPTION)
 			{
 				@SuppressWarnings("unused")
 				String run = jFileChooser.getSelectedFile().getName();

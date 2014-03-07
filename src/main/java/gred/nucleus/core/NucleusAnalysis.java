@@ -21,26 +21,25 @@ public class NucleusAnalysis
 	 public NucleusAnalysis (){}
 
 	 /**
-	  * Method which compute diffrents parameters of shape (sphericity, flataness and
+	  * this method compute severals parameters of shape (sphericity, flataness and
 	  * elongation) and parameters of lenght (volume and equivalent spherique radius)
 	  * Take in input the path of results files output.
-	  *
 	  * 
-	  * @param pathFile
+	  * @param pathResultsFile
 	  * @param imagePlusInput
 	  * @throws IOException
 	  */
-	  public void nucleusParameter3D (String pathFile, ImagePlus imagePlusInput) throws IOException
+	  public void nucleusParameter3D (String pathResultsFile, ImagePlus imagePlusInput) throws IOException
 	  {
 		  Measure3D measure3D = new Measure3D();
-		  File fileResu = new File(pathFile);
-		  boolean exist = fileResu.exists();
+		  File fileResults = new File(pathResultsFile);
+		  boolean exist = fileResults.exists();
 		  BufferedWriter bufferedWriterOutput;
 		  double volume = measure3D.computeVolumeObject(imagePlusInput,255);
 		  double surfacicArea = measure3D.computeSurfaceObject(imagePlusInput,255);
 		  if (exist)
 		  {
-			  FileWriter fileWriter = new FileWriter(fileResu, true);
+			  FileWriter fileWriter = new FileWriter(fileResults, true);
 		      bufferedWriterOutput = new BufferedWriter(fileWriter);
 		      bufferedWriterOutput.write(imagePlusInput.getTitle()+"\t"+measure3D.computeVolumeObject(imagePlusInput,255)+"\t"+measure3D.computeFlatnessObject(imagePlusInput,255)
 		    		  +"\t"+ measure3D.computeElongationObject(imagePlusInput,255)+"\t"+measure3D.computeSphericity(volume, surfacicArea)
@@ -48,7 +47,7 @@ public class NucleusAnalysis
 		  }
 		  else
 		  {
-			  FileWriter fileWriter = new FileWriter(fileResu, true);
+			  FileWriter fileWriter = new FileWriter(fileResults, true);
 		      bufferedWriterOutput = new BufferedWriter(fileWriter);
 		      bufferedWriterOutput.write("NucleusFileName\tVolume\tFlatness\tElongation\tSphericity\tEsr\tSurfacicArea\t\n"+
 		    		  imagePlusInput.getTitle()+"\t"+measure3D.computeVolumeObject(imagePlusInput,255)+"\t"+measure3D.computeFlatnessObject(imagePlusInput,255)+"\t"+
@@ -78,15 +77,15 @@ public class NucleusAnalysis
 
 	  /**
 	   * 
-	   * @param pathFile
+	   * @param pathResultsFile
 	   * @param imagePlusInput
 	   * @throws IOException
 	   */
-	  public void nucleusParameter2D (String pathFile,ImagePlus imagePlusInput) throws IOException
+	  public void nucleusParameter2D (String pathResultsFile,ImagePlus imagePlusInput) throws IOException
 	  {
 		  Measure2D measure2D = new Measure2D();
 		  measure2D.run(imagePlusInput);
-		  File fileResu = new File(pathFile);
+		  File fileResu = new File(pathResultsFile);
 		  boolean exist = fileResu.exists();
 		  BufferedWriter bufferedWriterOutput;
 		  if (exist)
@@ -106,7 +105,6 @@ public class NucleusAnalysis
 		  bufferedWriterOutput.close();   
 	  }
 	  
-
 	  /**
 	   * 
 	   * @param imagePlusInput

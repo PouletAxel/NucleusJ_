@@ -13,12 +13,21 @@ import java.io.IOException;
  */
 public class RunnableImageSegmentation extends Thread implements Runnable
 {
-
 	String _workDirectory;
 	ImagePlus _imagePlusInput;
 	double _volumeMin, _volumeMax;
 	boolean _isanalysis3D, _isanalysis2D3D, _doAnalysis;
 
+	/**
+	 * 
+	 * @param imagePlusInput
+	 * @param volumeMin
+	 * @param volumeMax
+	 * @param workDirectory
+	 * @param analysis3D2D
+	 * @param analysis3D
+	 * @param doAnalysis
+	 */
 	public RunnableImageSegmentation (ImagePlus imagePlusInput, double volumeMin, double volumeMax, String workDirectory,boolean analysis3D2D
 			,boolean analysis3D, boolean doAnalysis)
 	{
@@ -31,6 +40,9 @@ public class RunnableImageSegmentation extends Thread implements Runnable
 		_isanalysis2D3D = analysis3D2D;
 	}
 	
+	/**
+	 * 
+	 */
 	public void run()
 	{
 		ProcessImageSegmentaion._nbLance++;
@@ -59,22 +71,22 @@ public class RunnableImageSegmentation extends Thread implements Runnable
 		ProcessImageSegmentaion._nbLance--;
 	}
 	
-	 /**
-	   *
-	   * Method which save the image in the directory.
-	   *
-	   * @param imagePlusInput Image to be save
-	   * @param pathFile path of directory
-	   */
-	public void saveFile ( ImagePlus imagePlus, String pathFile)
+	/**
+	 *
+	 * Method which save the image in the directory.
+	 *
+	 * @param imagePlusInput Image to be save
+	 * @param pathFile path of directory
+	 */
+	public void saveFile ( ImagePlus imagePlusInput, String pathFile)
 	{
-		FileSaver fileSaver = new FileSaver(imagePlus);
+		FileSaver fileSaver = new FileSaver(imagePlusInput);
 	    File file = new File(pathFile);
-	    if (file.exists()) fileSaver.saveAsTiffStack( pathFile+File.separator+imagePlus.getTitle());
+	    if (file.exists()) fileSaver.saveAsTiffStack( pathFile+File.separator+imagePlusInput.getTitle());
 	    else
 	    {
 	      file.mkdir();
-	      fileSaver.saveAsTiffStack( pathFile+File.separator+imagePlus.getTitle());
+	      fileSaver.saveAsTiffStack( pathFile+File.separator+imagePlusInput.getTitle());
 	    }
 	}
 }

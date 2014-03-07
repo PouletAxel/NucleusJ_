@@ -36,30 +36,32 @@ public class ChromocenterAnalysis
 	   
 	   /**
 	    * 
-	    * @param pathFile
-	    * @throws IOException 
+	    * @param pathResultsFile
+	    * @param imagePlusSegmented
+	    * @param imagePlusChromocenter
+	    * @throws IOException
 	    */
 	   
-	   public void computeParametersChromocenter (String pathFile,ImagePlus imagePlusSegmented, ImagePlus imagePlusChromocenter) throws IOException
+	   public void computeParametersChromocenter (String pathResultsFile,ImagePlus imagePlusSegmented, ImagePlus imagePlusChromocenter) throws IOException
 	   {
 		   	Measure3D measure3D = new Measure3D();
 		    double [] tVolume =  measure3D.computeVolumeofAllObjects(imagePlusChromocenter);
 		    RadialDistance radialDistance = new RadialDistance();
-		    double tBorderToBorderDistanceTable [] = radialDistance.computeBorderToBorderDistances(imagePlusSegmented,imagePlusChromocenter);
-			double tBarycenterToBorderDistanceTable [] = radialDistance.computeBarycenterToBorderDistances (imagePlusSegmented,imagePlusChromocenter);
-		    File fileResu = new File (pathFile);
-		    boolean exist = fileResu.exists();
+		    double [] tBorderToBorderDistanceTable = radialDistance.computeBorderToBorderDistances(imagePlusSegmented,imagePlusChromocenter);
+			double [] tBarycenterToBorderDistanceTable = radialDistance.computeBarycenterToBorderDistances (imagePlusSegmented,imagePlusChromocenter);
+		    File fileResults = new File (pathResultsFile);
+		    boolean exist = fileResults.exists();
 		    BufferedWriter bufferedWirterOutput;	
 		    if (exist) 
 		    {
-		    	FileWriter fileWriter = new FileWriter(fileResu, true);
+		    	FileWriter fileWriter = new FileWriter(fileResults, true);
 		    	bufferedWirterOutput = new BufferedWriter(fileWriter);
 		    	for (int i = 0; i < tBorderToBorderDistanceTable.length;++i )
 		    		bufferedWirterOutput.write(imagePlusChromocenter.getTitle()+"_"+i+"\t"+tVolume[i]+"\t"+tBorderToBorderDistanceTable[i]+"\t"+tBarycenterToBorderDistanceTable[i]+"\n");
 		    }
 		    else
 		    {
-		    	FileWriter fileWriter = new FileWriter(fileResu, true);
+		    	FileWriter fileWriter = new FileWriter(fileResults, true);
 		    	bufferedWirterOutput = new BufferedWriter(fileWriter);
 		    	bufferedWirterOutput.write("Titre\tVolume\tBorderToBorderDistance\tBarycenterToBorderDistanceTable\n");
 		    	for (int i = 0; i < tBorderToBorderDistanceTable.length;++i )

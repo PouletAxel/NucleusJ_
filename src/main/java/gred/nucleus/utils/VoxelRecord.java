@@ -1,6 +1,4 @@
 package gred.nucleus.utils;
-
-
 /**
  * Class to create a voxel with its coordinates in the three dimensions and its value
  *
@@ -8,7 +6,6 @@ package gred.nucleus.utils;
  */
 @SuppressWarnings("rawtypes")
 public class VoxelRecord implements Comparable
-
 {
   /** Coordinates voxel*/
   public double _i, _j, _k;
@@ -85,10 +82,7 @@ public class VoxelRecord implements Comparable
    * @param p a VoxelRecord
    */
 
-  public void shiftCoordinates (VoxelRecord p)
-  {
-    this.setLocation(  this._i+p._i, this._j+p._j, this._k+p._k);
-  }
+  public void shiftCoordinates (VoxelRecord p) {   this.setLocation(  this._i+p._i, this._j+p._j, this._k+p._k); }
 
   /**
    * Multiplied the coordinates of voxel with a differnts factor for each coordinates
@@ -97,17 +91,11 @@ public class VoxelRecord implements Comparable
    * @param c
    */
   
-  public void Multiplie (double a, double b, double c )
-  {
-    this.setLocation(this._i*a,this._j*b, this._k*c);
-  }
+  public void Multiplie (double a, double b, double c ) {  this.setLocation(this._i*a,this._j*b, this._k*c); }
 
   /**
   * Multiplied the coordinates of voxel with a same factor for each coordinates
    * @param a
    */
-  public void Multiplie (double a)
-  {
-    this.setLocation(this._i*a,this._j*a,this._k*a);
-  }
+  public void Multiplie (double a)  {  this.setLocation(this._i*a,this._j*a,this._k*a);  }
 }

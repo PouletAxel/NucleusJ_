@@ -10,8 +10,8 @@ import ij.plugin.Resizer;
 
 
 /**
- * Class which determine the radial distance of chromocenters, using the binary nucleus
- * and the image of segmented chromcenters.
+ * this class allows the determination of the radial distance of chromocenters, using the binary nucleus
+ * and the image of segmented chromocenters.
  * 
  * @author Poulet Axel
  *
@@ -23,9 +23,11 @@ public class RadialDistance
    
 	/**
 	 * Method which compute the distance map of binary nucleus
-	 * Rescale the voxel to abtain cubic voxel
-	 * @return distance map
-	 */
+	 * Rescale the voxel to obtain cubic voxel
+  	 * 
+  	 * @param imagePlusSegmented
+  	 * @return
+  	 */
 	public ImagePlus computeDistanceMap (ImagePlus imagePlusSegmented)
 	{
 		Resizer resizer = new Resizer();
@@ -43,12 +45,16 @@ public class RadialDistance
 	 * Compute the shortest distance between the chromocenter periphery and the
 	 * nuclear envelope
 	 * @return Table of radial distance for each chromocenter
+	 * 
+	 * @param imagePlusSegmented
+	 * @param imagePlusChromocenter
+	 * @return
 	 */
 	public double[] computeBorderToBorderDistances (ImagePlus imagePlusSegmented,ImagePlus imagePlusChromocenter)
 	{
 		Histogram histogram = new Histogram ();
 		histogram.run(imagePlusChromocenter);
-		double []tLabel = histogram.getLabels();
+		double [] tLabel = histogram.getLabels();
 		Resizer resizer = new Resizer();
 		Calibration calibration = imagePlusSegmented.getCalibration();
 		double xCalibration = calibration.pixelWidth;
@@ -60,7 +66,6 @@ public class RadialDistance
 		ImageStack imageStackDistanceMap = imagePlusDistanceMap.getStack();
 		int i, j, k, l;
 		double voxelValueMin, voxelValue;
-
 		double [] tDistanceRadial = new double [tLabel.length];
 		for (l = 0; l < tLabel.length; ++l)
 		{
@@ -78,17 +83,20 @@ public class RadialDistance
 		return   tDistanceRadial;
 	}
 	
-	  /**
-	   * Determine the radial distance of all chromocenter in the image of nucleus. We realise
-	   * the distance map on the bianary nucleus. This method measure the radial distance
-	   * between the barycenter of chromocenter and the nuclear envelope.
-	   * @return Table of radial distance in µm (barycenter => nuclear envelope)
-	   */
-
-	  public double[] computeBarycenterToBorderDistances (ImagePlus imagePlusSegmented,ImagePlus imagePlusChromocenter)
-	  {
-	    int i;
-	    Resizer resizer = new Resizer();
+	/**
+	 * Determine the radial distance of all chromocenter in the image of nucleus. We realise
+	 * the distance map on the bianary nucleus. This method measure the radial distance
+	 * between the barycenter of chromocenter and the nuclear envelope. 
+	 * 
+	 * @param imagePlusSegmented
+	 * @param imagePlusChromocenter
+	 * @return
+	 */
+	
+	public double[] computeBarycenterToBorderDistances (ImagePlus imagePlusSegmented,ImagePlus imagePlusChromocenter)
+	{
+		int i;
+		Resizer resizer = new Resizer();
 		Calibration calibration = imagePlusSegmented.getCalibration();
 		double xCalibration = calibration.pixelWidth;
 		double zCalibration = calibration.pixelDepth;
@@ -107,5 +115,5 @@ public class RadialDistance
 	    	tRadialDistance[i] = xCalibration * distance;
 	    }
 	    return tRadialDistance;
-	  }
-} 
+	}
+}	 

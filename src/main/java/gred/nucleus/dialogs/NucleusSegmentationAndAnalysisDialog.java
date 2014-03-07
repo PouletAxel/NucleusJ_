@@ -171,7 +171,7 @@ public class NucleusSegmentationAndAnalysisDialog extends JFrame
 	public double getMinVolume(){ return Double.parseDouble(_jTextFieldMin.getText()); }
 	public double getMaxVolume(){ return Double.parseDouble(_jTextFieldMax.getText()); }
 	public boolean isStart() {	return _start; }
-	public boolean isTheBoth() {	return _jRadioButton2D3D.isSelected(); }
+	public boolean is2D3DAnalysis() {	return _jRadioButton2D3D.isSelected(); }
 	public boolean is2D() {	return _jRadioButton2D.isSelected(); }
 	public boolean is3D() {	return _jRadioButton3D.isSelected(); }
 	

@@ -50,38 +50,38 @@ public class ChromocentersAnalysisBatchPlugin_ implements PlugIn
 				else if (chromocentersPipelineBatchDialog.isRhfVolume())	rhfChoice = "Volume";
 				else rhfChoice = "Intensity";
 				
-				ArrayList<String> imageChromocenterList = fileList.fileSearchList(".+SegmentedDataCc.+",tFileRawImage);
+				ArrayList<String> arrayListImageChromocenter = fileList.fileSearchList(".+SegmentedDataCc.+",tFileRawImage);
 				String workDirectory = chromocentersPipelineBatchDialog.getWorkDirectory();
 				String nameFileChromocenterAndNucleus = workDirectory+File.separator+"NucAndCcParameters.tab";
 				String nameFileChromocenter = workDirectory+File.separator+"CcParameters.tab";
-				for (int i = 0; i < imageChromocenterList.size(); ++i)
+				for (int i = 0; i < arrayListImageChromocenter.size(); ++i)
 				{
-					IJ.log("image"+(i+1)+" / "+(imageChromocenterList.size())+"   "+imageChromocenterList.get(i));
-					String pathImageChromocenter = imageChromocenterList.get(i);
+					IJ.log("image"+(i+1)+" / "+(arrayListImageChromocenter.size())+"   "+arrayListImageChromocenter.get(i));
+					String pathImageChromocenter = arrayListImageChromocenter.get(i);
 					String pathNucleusRaw = pathImageChromocenter.replaceAll("SegmentedDataCc", "RawDataNucleus");
 					String pathNucleusSegmented= pathImageChromocenter.replaceAll("SegmentedDataCc", "SegmentedDataNucleus");
 					IJ.log(pathNucleusRaw);
 					IJ.log(pathNucleusSegmented);
 					if (fileList.isDirectoryOrFileExist(pathNucleusRaw,tFileRawImage) && fileList.isDirectoryOrFileExist(pathNucleusSegmented,tFileRawImage))
 					{
-						ImagePlus imagePlusChromocenter = IJ.openImage(imageChromocenterList.get(i));
+						ImagePlus imagePlusChromocenter = IJ.openImage(arrayListImageChromocenter.get(i));
 						ImagePlus imagePlusSegmented = IJ.openImage(pathNucleusSegmented);
 						ImagePlus imagePlusInput = IJ.openImage(pathNucleusRaw);
-						Calibration cal = new Calibration();
-						cal.pixelDepth = zCalibration;
-						cal.pixelWidth = xCalibration;
-						cal.pixelHeight = yCalibration;
-						cal.setUnit(unit);
-						imagePlusChromocenter.setCalibration(cal);
-						imagePlusSegmented.setCalibration(cal);
-						imagePlusInput.setCalibration(cal);
+						Calibration calibration = new Calibration();
+						calibration.pixelDepth = zCalibration;
+						calibration.pixelWidth = xCalibration;
+						calibration.pixelHeight = yCalibration;
+						calibration.setUnit(unit);
+						imagePlusChromocenter.setCalibration(calibration);
+						imagePlusSegmented.setCalibration(calibration);
+						imagePlusInput.setCalibration(calibration);
 						try
 						{
 							if (chromocentersPipelineBatchDialog.isNucAndCcAnalysis())
 							{
 								ChromocenterAnalysis chromocenterAnalysis = new ChromocenterAnalysis();
 								chromocenterAnalysis.computeParametersChromocenter(nameFileChromocenter,imagePlusSegmented,imagePlusChromocenter);
-								IJ.log("chromocenter analysis is computing ...");
+								IJ.log("chromocenterAnalysis is computing ...");
 								NucleusChromocentersAnalysis nucleusChromocenterAnalysis = new NucleusChromocentersAnalysis(); 
 								IJ.log("nucleusChromocenterAnalysis is computing...");
 								nucleusChromocenterAnalysis.computeParameters(nameFileChromocenterAndNucleus,rhfChoice, imagePlusInput, imagePlusSegmented, imagePlusChromocenter);
@@ -101,14 +101,14 @@ public class ChromocentersAnalysisBatchPlugin_ implements PlugIn
 					}
 					else
 					{
-						IJ.log("Image name problem :  the image "+pathImageChromocenter+" is not find in the directory SegmentedDataNucleusor or RawDataNucleus, see nameProblem.txt in "+workDirectory);
-						BufferedWriter output;
+						IJ.log("Image name problem :  the image "+pathImageChromocenter+" is not find in the directory SegmentedDataNucleus or RawDataNucleus, see nameProblem.txt in "+workDirectory);
+						BufferedWriter bufferedWriterLogFile;
 					    try
 					    {
-					    	 output = new BufferedWriter(new FileWriter(workDirectory+File.separator+"nameProblem.txt", true));
-					    	 output.write(pathImageChromocenter+"\n");
-					    	 output.flush();
-					    	 output.close();  
+					    	 bufferedWriterLogFile = new BufferedWriter(new FileWriter(workDirectory+File.separator+"nameProblem.txt", true));
+					    	 bufferedWriterLogFile.write(pathImageChromocenter+"\n");
+					    	 bufferedWriterLogFile.flush();
+					    	 bufferedWriterLogFile.close();  
 					    }
 					    catch (IOException e) {	e.printStackTrace();}
 					 } 	  

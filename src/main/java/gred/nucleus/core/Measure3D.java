@@ -11,7 +11,7 @@ import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
 
 /**
- * Class NucleusMeasure : which compute differents parameters (shape, lenght) in
+ * Class NucleusMeasure : allow the compute of severals 3Dparameters (shape, lenght) in
  * binary object
  * @author Poulet Axel
  */
@@ -70,10 +70,8 @@ public class Measure3D
 
 
 	/**
-	 * Method which compute the volume of each segmented objects
-	 * in _imagePlus
-	 * @return Table of Object volume
-	 * 
+	 * This Method compute the volume of each segmented objects
+	 * in imagePlus
 	 * @param imagePlusInput
 	 * @return
 	 */
@@ -111,8 +109,8 @@ public class Measure3D
 		double volume = 0;
 		Histogram histogram = new Histogram ();
 		histogram.run(imagePlusInput);
-		HashMap<Double , Integer> hHisto = histogram.getHistogram();
-		volume =  hHisto.get(label) *xCalibration*yCalibration*zCalibration;
+		HashMap<Double , Integer> hashMapHisto = histogram.getHistogram();
+		volume =  hashMapHisto.get(label) *xCalibration*yCalibration*zCalibration;
 		return volume;
 	}
     
@@ -138,7 +136,6 @@ public class Measure3D
 	/**
 	 * Method which compute the sphericity :
 	 * 36Pi*Volume^2/Surface^3 = 1 if perfect sphere
-	 * @return sphericity
 	 * 
 	 * @param volume
 	 * @param surface
@@ -191,7 +188,7 @@ public class Measure3D
 						compteur++;
 					}
 				}
-		double[][] tValues = {{xx / compteur, xy / compteur, xz / compteur},
+		double [][] tValues = {{xx / compteur, xy / compteur, xz / compteur},
                       {xy / compteur, yy / compteur, yz / compteur},
                       {xz / compteur, yz / compteur, zz / compteur}};
 		Matrix matrix = new Matrix (tValues);
@@ -236,7 +233,7 @@ public class Measure3D
 		double xCalibration = calibration.pixelWidth;
 		double yCalibration = calibration.pixelHeight;
 		double zCalibration = calibration.pixelDepth;
-		VoxelRecord barycenter = new VoxelRecord ();
+		VoxelRecord voxelRecordBarycenter = new VoxelRecord ();
 		int compteur = 0;
 		double voxelValue;
 		int i,j,k;
@@ -249,13 +246,13 @@ public class Measure3D
 					{
 						VoxelRecord voxelRecord = new VoxelRecord();
 						voxelRecord.setLocation((double)i,(double)j,(double)k);
-						barycenter.shiftCoordinates(voxelRecord);
+						voxelRecordBarycenter.shiftCoordinates(voxelRecord);
 						compteur++;
 					}
 				}
-		barycenter.Multiplie(1 / (double)compteur);
-		if (unit) barycenter.Multiplie(xCalibration, yCalibration,zCalibration);
-		return barycenter;
+		voxelRecordBarycenter.Multiplie(1 / (double)compteur);
+		if (unit) voxelRecordBarycenter.Multiplie(xCalibration, yCalibration,zCalibration);
+		return voxelRecordBarycenter;
   	}
 	
 	/**
@@ -339,7 +336,6 @@ public class Measure3D
 	   */
 	  public int getNumberOfObject (ImagePlus imagePlusInput)
 	  {
-	   
 	    Histogram histogram = new Histogram ();
 		histogram.run(imagePlusInput);
 		return histogram.getNbLabels();

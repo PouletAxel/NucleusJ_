@@ -183,9 +183,9 @@ public class ChromocentersAnalysisPipelineBatchDialog extends JFrame
 		_jButtonQuit.setPreferredSize(new java.awt.Dimension(120, 21));
 	  	
 	   	
-	  	WorkDirListener wdListener = new WorkDirListener();
+	  	WorkDirectoryListener wdListener = new WorkDirectoryListener();
 	  	_jButtonWorkDirectory.addActionListener(wdListener);
-	  	DataDirListener ddListener = new DataDirListener();
+	  	RawDataDirectoryListener ddListener = new RawDataDirectoryListener();
 	  	_jButtonRawData.addActionListener(ddListener);
 	  	QuitListener quitListener = new QuitListener(this);
 	   	_jButtonQuit.addActionListener(quitListener);
@@ -218,16 +218,11 @@ public class ChromocentersAnalysisPipelineBatchDialog extends JFrame
 	 /********************************************************************************************************************************************
 	 /********************************************************************************************************************************************/
 		
-	/**
-	 * 
-	 * @author Poulet Axel
-	 *
-	 */
 	class StartListener implements ActionListener 
 	{
 	
 		ChromocentersAnalysisPipelineBatchDialog _chromocentersAnalysisPipelineBatchDialog;	
-		public  StartListener (ChromocentersAnalysisPipelineBatchDialog jfpfso) {_chromocentersAnalysisPipelineBatchDialog = jfpfso;}
+		public  StartListener (ChromocentersAnalysisPipelineBatchDialog chromocentersAnalysisPipelineBatchDialog) {_chromocentersAnalysisPipelineBatchDialog = chromocentersAnalysisPipelineBatchDialog;}
 		public void actionPerformed(ActionEvent actionEvent)
 		{
 			if (_jTextFieldWorkDirectory.getText().isEmpty() || _jTextFieldRawData.getText().isEmpty())
@@ -241,16 +236,15 @@ public class ChromocentersAnalysisPipelineBatchDialog extends JFrame
 	}
 	
 	
-	
 	class QuitListener implements ActionListener 
 	{
 		ChromocentersAnalysisPipelineBatchDialog _chromocentersAnalysisPipelineBatchDialog;	
-		public  QuitListener (ChromocentersAnalysisPipelineBatchDialog jfpfso) {_chromocentersAnalysisPipelineBatchDialog = jfpfso;}
+		public  QuitListener (ChromocentersAnalysisPipelineBatchDialog chromocentersAnalysisPipelineBatchDialog) {_chromocentersAnalysisPipelineBatchDialog = chromocentersAnalysisPipelineBatchDialog;}
 		public void actionPerformed(ActionEvent actionEvent) { _chromocentersAnalysisPipelineBatchDialog.dispose(); }
 	}
 	
 	
-	 class WorkDirListener implements ActionListener
+	 class WorkDirectoryListener implements ActionListener
 	 {
 			 
 		 public void actionPerformed(ActionEvent actionEvent)
@@ -258,8 +252,8 @@ public class ChromocentersAnalysisPipelineBatchDialog extends JFrame
 			 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 			 JFileChooser jFileChooser = new JFileChooser();
 			 jFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			 int returnVal = jFileChooser.showOpenDialog(getParent());
-			 if(returnVal == JFileChooser.APPROVE_OPTION)
+			 int returnValue = jFileChooser.showOpenDialog(getParent());
+			 if(returnValue == JFileChooser.APPROVE_OPTION)
 			 {
 				@SuppressWarnings("unused")
 				String run = jFileChooser.getSelectedFile().getName();
@@ -270,15 +264,15 @@ public class ChromocentersAnalysisPipelineBatchDialog extends JFrame
 		 }	
 	 }
 	 
-	 class DataDirListener implements ActionListener
+	 class RawDataDirectoryListener implements ActionListener
 	 {
 		 public void actionPerformed(ActionEvent actionEvent)
 		 {
 			 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 			 JFileChooser jFileChooser = new JFileChooser();
 			 jFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			 int returnVal = jFileChooser.showOpenDialog(getParent());
-			 if(returnVal == JFileChooser.APPROVE_OPTION)
+			 int returnValue = jFileChooser.showOpenDialog(getParent());
+			 if(returnValue == JFileChooser.APPROVE_OPTION)
 			 {
 				 @SuppressWarnings("unused")
 				 String run = jFileChooser.getSelectedFile().getName();

@@ -15,9 +15,9 @@ import ij.process.AutoThresholder.Method;
 import inra.ijpb.binary.ConnectedComponents;
 
 /**
- * Class to realise the segmention of object in the image in input. This segmentation
- * is based on the method of Otsu, execpt I maximise the sphericity (shape parameter)
- * of object.
+ * this class allows the realization of segmention method in the image in input. This segmentation
+ * is based on the method of Otsu, and we add the maximization of the sphericity (shape parameter)
+ * of detected object .
  * 
  * @author Poulet Axel
  *
@@ -40,10 +40,7 @@ public class NucleusSegmentation
 
 	/**
 	 * Method which run the process in input image. This image will be segmented, and
-	 * the binary image will be save in a directory. Then we realise the image gradient
-	 * and the image contrast of the input image.
-	 * The image contrast is saved in other directory. It is from this image contrast
-	 * that a manual thresholding is necessary to segment chromocentre.
+	 * the binary image will be saved in a directory. 
 	 *  
 	 * @param imagePlusInput
 	 * @return
@@ -51,7 +48,7 @@ public class NucleusSegmentation
 	public ImagePlus run (ImagePlus imagePlusInput)
 	{
 		IJ.log("Begin segmentation "+imagePlusInput.getTitle());
-		ImagePlus imagePlusBinary = applySegmentation (imagePlusInput);
+		ImagePlus imagePlusSegmented = applySegmentation (imagePlusInput);
 		IJ.log("End segmentation "+imagePlusInput.getTitle());
 		if (_bestThreshold == 0)
 		{
@@ -63,24 +60,24 @@ public class NucleusSegmentation
 			else
 			{
 				File fileLogError = new File (_logErrorSeg);
-				BufferedWriter bufferedWriterOutputLog;
-				FileWriter fileWriter;
+				BufferedWriter bufferedWriterLogError;
+				FileWriter fileWriterLogError;
 				try
 				{
-					fileWriter = new FileWriter(fileLogError, true);
-					bufferedWriterOutputLog = new BufferedWriter(fileWriter);
-					bufferedWriterOutputLog.write(imagePlusInput.getTitle()+"\n");
-					bufferedWriterOutputLog.flush();
-					bufferedWriterOutputLog.close();
+					fileWriterLogError = new FileWriter(fileLogError, true);
+					bufferedWriterLogError = new BufferedWriter(fileWriterLogError);
+					bufferedWriterLogError.write(imagePlusInput.getTitle()+"\n");
+					bufferedWriterLogError.flush();
+					bufferedWriterLogError.close();
 				}
 				catch (IOException e) { e.printStackTrace(); } 
 			}
 		}
-		return imagePlusBinary;
+		return imagePlusSegmented;
 	}
 	
 	/**
-	 * Compute the first threshold of input image with the method of Otsu
+	 * Compute of the first threshold of input image with the method of Otsu
 	 * From this initial value we will seek the better segmentaion possible:
 	 * for this we will take the voxels value superior at the threshold value of method of Otsu :
 	 * Then we compute the standard deviation of this values voxel > threshold value
@@ -105,7 +102,7 @@ public class NucleusSegmentation
 		ImagePlus imagePlusSegmented = new ImagePlus();
 		double sphericityMax = -1.0, sphericity, volume;
 		ArrayList<Integer> arrayListThreshold = computeMinMaxThreshold(imagePlusInput);		
-		IJ.log("borne inf: "+arrayListThreshold.get(0)+" bornSupThreshold "+arrayListThreshold.get(1));
+		IJ.log("Lower limit: "+arrayListThreshold.get(0)+" Upper limit "+arrayListThreshold.get(1));
 		for (int t = arrayListThreshold.get(0) ; t <= arrayListThreshold.get(1); ++t)
 		{
 			ImagePlus imagePlusSegmentedTemp = generateSegmentedImage(imagePlusInput,t);
@@ -123,7 +120,7 @@ public class NucleusSegmentation
 				imagePlusSegmented= imagePlusSegmentedTemp.duplicate();			
 			}
 		}
-		IJ.log ("end segmentation "+imagePlusInput.getTitle()+" "+_bestThreshold);
+		IJ.log ("end of the segmentation "+imagePlusInput.getTitle()+" "+_bestThreshold);
 		imagePlusSegmented.setCalibration(calibration);
 		return imagePlusSegmented;
 	}
@@ -230,8 +227,9 @@ public class NucleusSegmentation
 	
 	}
 
+	
 	/**
-	 * compute openning et  use the HolesFilling
+	 * 	 
 	 * @param imagePlusSegmented image to be correct
 	 */
 	private void morphologicalCorrection (ImagePlus imagePlusSegmented)
@@ -304,7 +302,7 @@ public class NucleusSegmentation
 	public void setLogErrorSegmentationFile (String logErrorSeg) {_logErrorSeg = logErrorSeg;}
 	
 	/**
-	 * Preserve the larger object and remove the other objects
+	 * Preserve the larger object and remove the other
 	 *
 	 * @param imagePluslab Image labeled
 	 */
@@ -312,15 +310,15 @@ public class NucleusSegmentation
 	public void deleteArtefact (ImagePlus imagePlusInput)
 	{
 		int i,j,k;
-	    double voxel;
+	    double voxelValue;
 	    double mode = getLabelOfLargestObject(imagePlusInput);
 	    ImageStack imageStackInput = imagePlusInput.getStack();
 	    for(k = 0; k < imagePlusInput.getNSlices(); ++k)
 	    	for (i = 0; i < imagePlusInput.getWidth(); ++i)
 	    		for (j = 0; j < imagePlusInput.getHeight(); ++j)
 	    		{
-	    			voxel = imageStackInput.getVoxel(i,j,k);
-	    			if (voxel == mode) imageStackInput.setVoxel(i,j,k,255);
+	    			voxelValue = imageStackInput.getVoxel(i,j,k);
+	    			if (voxelValue == mode) imageStackInput.setVoxel(i,j,k,255);
 	    			else imageStackInput.setVoxel(i,j,k,0);
 	    		}
 	}
