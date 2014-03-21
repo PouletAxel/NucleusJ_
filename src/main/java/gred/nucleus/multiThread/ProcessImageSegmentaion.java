@@ -18,9 +18,9 @@ public class ProcessImageSegmentaion
 	static boolean _continuer;
 	static int _indiceImage = 0;
 
-	
+
 	public ProcessImageSegmentaion(){}
-	
+
 	/**
 	 * 
 	 * @param nucleusSegmentationAndAnalysisBatchPlugin
@@ -37,9 +37,9 @@ public class ProcessImageSegmentaion
 		calibration.setUnit(nucleusSegmentationAndAnalysisBatchPlugin.getUnit());
 		_nbLance = 0;
 		ArrayList<Thread> arrayListImageThread = new ArrayList<Thread>() ;
-		int j = 0;
-		IJ.log("Number processor used "+nucleusSegmentationAndAnalysisBatchPlugin.getNbCpu());
-		for (int i = 0; i <tInputFile.length; ++i)
+		int nbCpu = nucleusSegmentationAndAnalysisBatchPlugin.getNbCpu();
+		
+		for (int i = 0; i < tInputFile.length; ++i)
 		{
 			IJ.log("Image processed "+tInputFile[i] +" "+i);
 			_continuer = false;
@@ -50,18 +50,18 @@ public class ProcessImageSegmentaion
 			arrayListImageThread.add(new RunnableImageSegmentation(imagePlusInput,nucleusSegmentationAndAnalysisBatchPlugin.getMinVolume(),nucleusSegmentationAndAnalysisBatchPlugin.getMaxVolume()
 					,nucleusSegmentationAndAnalysisBatchPlugin.getWorkDirectory(),nucleusSegmentationAndAnalysisBatchPlugin.is2D3DAnalysis(),
 					nucleusSegmentationAndAnalysisBatchPlugin.is3DAnalysis(),doAnalysis));
-			arrayListImageThread.get(j).start();
+			arrayListImageThread.get(i).start();
+			
 			while (_continuer == false)
 				Thread.sleep(10);
-			while (_nbLance >= nucleusSegmentationAndAnalysisBatchPlugin.getNbCpu())
+			while (_nbLance >=nbCpu)
 				Thread.sleep(10);
-			++j;
 		}
 		for (int i = 0; i < arrayListImageThread.size(); ++i)
 			while(arrayListImageThread.get(i).isAlive())
 				Thread.sleep(10);
 	}
-	
+
 	/**
 	 * 
 	 * @param nucleusSegmentationBatchPlugin
@@ -78,8 +78,8 @@ public class ProcessImageSegmentaion
 		calibration.setUnit(nucleusSegmentationBatchPlugin.getUnit());
 		_nbLance = 0;
 		ArrayList<Thread> arrayListImageThread = new ArrayList<Thread>() ;
-		int j = 0;
-		IJ.log("Number processor used "+nucleusSegmentationBatchPlugin.getNbCpu());
+		int nbCpu =nucleusSegmentationBatchPlugin.getNbCpu();
+		IJ.log("Number processor used "+nbCpu);
 		for (int i = 0; i <tInputFile.length; ++i)
 		{
 			IJ.log("Image processed "+tInputFile[i] +" "+i);
@@ -90,12 +90,11 @@ public class ProcessImageSegmentaion
 			imagePlusInput.setCalibration(calibration);
 			arrayListImageThread.add(new RunnableImageSegmentation(imagePlusInput,nucleusSegmentationBatchPlugin.getMinVolume(),nucleusSegmentationBatchPlugin.getMaxVolume()
 					,nucleusSegmentationBatchPlugin.getWorkDirectory(),false, false ,doAnalysis));
-			arrayListImageThread.get(j).start();
+			arrayListImageThread.get(i).start();
 			while (_continuer == false)
 				Thread.sleep(10);
-			while (_nbLance >= nucleusSegmentationBatchPlugin.getNbCpu())
+			while (_nbLance > nbCpu)
 				Thread.sleep(10);
-			++j;
 		}
 		for (int i = 0; i < arrayListImageThread.size(); ++i)
 			while(arrayListImageThread.get(i).isAlive())

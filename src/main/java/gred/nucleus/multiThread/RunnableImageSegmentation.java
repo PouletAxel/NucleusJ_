@@ -51,22 +51,25 @@ public class RunnableImageSegmentation extends Thread implements Runnable
 		nucleusSegmentation.setLogErrorSegmentationFile(_workDirectory+File.separator+"logErrorSeg.txt");
 		nucleusSegmentation.setVolumeRange(_volumeMin, _volumeMax);
 		ImagePlus impagePlusSegmented = nucleusSegmentation.run(_imagePlusInput);
-		impagePlusSegmented.setTitle(_imagePlusInput.getTitle());
-		saveFile(impagePlusSegmented,_workDirectory+File.separator+"SegmentedDataNucleus");
-		NucleusAnalysis nucleusAnalysis = new NucleusAnalysis();
-		if(_doAnalysis)
+		if (nucleusSegmentation.getBestThreshold()> 0)
 		{
-			try
+			impagePlusSegmented.setTitle(_imagePlusInput.getTitle());
+			saveFile(impagePlusSegmented,_workDirectory+File.separator+"SegmentedDataNucleus");
+			NucleusAnalysis nucleusAnalysis = new NucleusAnalysis();
+			if(_doAnalysis)
 			{
-				if(_isanalysis2D3D)
+				try
 				{
-					nucleusAnalysis.nucleusParameter3D(_workDirectory+File.separator+"3DNucleiParameters.tab",impagePlusSegmented);
-					nucleusAnalysis.nucleusParameter2D(_workDirectory+File.separator+"2DNucleiParameters.tab",impagePlusSegmented);
+					if(_isanalysis2D3D)
+					{
+						nucleusAnalysis.nucleusParameter3D(_workDirectory+File.separator+"3DNucleiParameters.tab",impagePlusSegmented);
+						nucleusAnalysis.nucleusParameter2D(_workDirectory+File.separator+"2DNucleiParameters.tab",impagePlusSegmented);
+					}
+					else if(_isanalysis3D)  nucleusAnalysis.nucleusParameter3D(_workDirectory+File.separator+"3DNucleiParameters.tab",impagePlusSegmented);
+					else nucleusAnalysis.nucleusParameter2D(_workDirectory+File.separator+"2DNucleiParameters.tab",impagePlusSegmented);
 				}
-				else if(_isanalysis3D)  nucleusAnalysis.nucleusParameter3D(_workDirectory+File.separator+"3DNucleiParameters.tab",impagePlusSegmented);
-				else nucleusAnalysis.nucleusParameter2D(_workDirectory+File.separator+"2DNucleiParameters.tab",impagePlusSegmented);
+				catch (IOException e) {	e.printStackTrace();	}
 			}
-			catch (IOException e) {	e.printStackTrace();	}
 		}
 		ProcessImageSegmentaion._nbLance--;
 	}

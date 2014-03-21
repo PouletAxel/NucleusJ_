@@ -4,6 +4,7 @@ import java.io.File;
 import gred.nucleus.dialogs.NucleusSegmentationAndAnalysisBatchDialog;
 import gred.nucleus.multiThread.*;
 import gred.nucleus.utils.FileList;
+import ij.IJ;
 import ij.plugin.PlugIn;
 
 /**
@@ -27,11 +28,13 @@ public class NucleusSegmentationAndAnalysisBatchPlugin_ implements PlugIn
 	    }	
 		if (_nucleusPipelineBatchDialog.isStart())
 		{
+			IJ.log("Begining of the segmentation of nuclei, the data are in "+_nucleusPipelineBatchDialog.getRawDataDirectory());
 			FileList fileList = new FileList ();
 			File[] tFileRawImage = fileList.run(_nucleusPipelineBatchDialog.getRawDataDirectory());
 			ProcessImageSegmentaion processImageSegmentation = new ProcessImageSegmentaion();
 			try {	processImageSegmentation.go(this, tFileRawImage,true); } 
 			catch (InterruptedException e) { e.printStackTrace(); }
+			IJ.log("End of the segmentation the nuclei, the results are in "+_nucleusPipelineBatchDialog.getWorkDirectory());
 			
 		}
 	}

@@ -49,7 +49,7 @@ public class NucleusSegmentation
 	{
 		IJ.log("Begin segmentation "+imagePlusInput.getTitle());
 		ImagePlus imagePlusSegmented = applySegmentation (imagePlusInput);
-		IJ.log("End segmentation "+imagePlusInput.getTitle());
+		IJ.log("End segmentation "+imagePlusInput.getTitle()+" "+_bestThreshold);
 		if (_bestThreshold == 0)
 		{
 			if (_logErrorSeg.length()==0)
@@ -106,21 +106,27 @@ public class NucleusSegmentation
 		for (int t = arrayListThreshold.get(0) ; t <= arrayListThreshold.get(1); ++t)
 		{
 			ImagePlus imagePlusSegmentedTemp = generateSegmentedImage(imagePlusInput,t);
-			morphologicalCorrection (imagePlusSegmentedTemp);
-			imagePlusSegmentedTemp = ConnectedComponents.computeLabels(imagePlusSegmentedTemp, 26, 8);
-			deleteArtefact(imagePlusSegmentedTemp);
-			imagePlusSegmentedTemp.setCalibration(calibration);
 			Measure3D measure3D = new Measure3D();
 			volume = measure3D.computeVolumeObject(imagePlusSegmentedTemp,255);
-			sphericity = measure3D.computeSphericity(volume,measure3D.computeSurfaceObject(imagePlusSegmentedTemp, 255));
-			if (sphericity > sphericityMax && volume >= _volumeMin && volume <= _volumeMax && testRelativeObjectVolume(volume,imageVolume))
-			{
-				_bestThreshold=t;
-				sphericityMax = sphericity;
-				imagePlusSegmented= imagePlusSegmentedTemp.duplicate();			
+			if (testRelativeObjectVolume(volume,imageVolume) && isVoxelThresholded(imagePlusSegmentedTemp,255,0)==false
+					&& isVoxelThresholded(imagePlusSegmentedTemp,255,imagePlusSegmentedTemp.getStackSize())==false)
+			{	
+				morphologicalCorrection (imagePlusSegmentedTemp);
+				imagePlusSegmentedTemp = ConnectedComponents.computeLabels(imagePlusSegmentedTemp, 26, 32);
+				deleteArtefact(imagePlusSegmentedTemp);
+				imagePlusSegmentedTemp.setCalibration(calibration);
+				volume = measure3D.computeVolumeObject(imagePlusSegmentedTemp,255);
+				sphericity = measure3D.computeSphericity(volume,measure3D.computeSurfaceObject(imagePlusSegmentedTemp, 255));
+				if (sphericity > sphericityMax && volume >= _volumeMin && volume <= _volumeMax)
+				{
+					_bestThreshold=t;
+					sphericityMax = sphericity;
+					StackConverter stackConverter = new StackConverter( imagePlusSegmentedTemp );
+					stackConverter.convertToGray8();
+					imagePlusSegmented= imagePlusSegmentedTemp.duplicate();			
+				}
 			}
 		}
-		IJ.log ("end of the segmentation "+imagePlusInput.getTitle()+" "+_bestThreshold);
 		imagePlusSegmented.setCalibration(calibration);
 		return imagePlusSegmented;
 	}
@@ -139,6 +145,7 @@ public class NucleusSegmentation
 		return autoThresholder.getThreshold(Method.Otsu,tHisto);
 	}
 
+	
 	
 	/**
 	 * 
@@ -226,8 +233,32 @@ public class NucleusSegmentation
 		return arrayListMinMaxThreshold;
 	
 	}
-
 	
+	/**
+	 * 
+	 * @param imagePlusSegmented
+	 * @param threshold
+	 * @param stackIndice
+	 * @return
+	 */
+	private boolean isVoxelThresholded (ImagePlus imagePlusSegmented, int threshold, int stackIndice)
+	{
+		boolean voxelThresolded = false;
+		int nbVoxelThresholded =0;
+		ImageStack imageStackSegmented = imagePlusSegmented.getStack();
+		for (int i = 0; i < imagePlusSegmented.getWidth(); ++i )
+		{	
+			for (int j = 0; j < imagePlusSegmented.getHeight(); ++j )
+			{
+				if ( imageStackSegmented.getVoxel(i,j,stackIndice) >= threshold)
+				{
+					nbVoxelThresholded++;
+				}
+			}
+		}
+		if (nbVoxelThresholded >= 50) voxelThresolded=true;
+		return voxelThresolded;
+	}
 	/**
 	 * 	 
 	 * @param imagePlusSegmented image to be correct
@@ -280,7 +311,7 @@ public class NucleusSegmentation
 	private boolean testRelativeObjectVolume(double objectVolume,double imageVolume)
 	{
 		final double ratio = (objectVolume/imageVolume)*100;
-		if (ratio >= 70) return false;
+		if (ratio >= 50) return false;
 		else return true;
 	}
 	
@@ -346,4 +377,5 @@ public class NucleusSegmentation
 	    }
 	    return indiceNbVoxelMax;
 	}
+	
 }
