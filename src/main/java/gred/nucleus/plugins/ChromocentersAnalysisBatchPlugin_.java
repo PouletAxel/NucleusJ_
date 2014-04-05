@@ -56,7 +56,7 @@ public class ChromocentersAnalysisBatchPlugin_ implements PlugIn
 				String nameFileChromocenter = workDirectory+File.separator+"CcParameters.tab";
 				for (int i = 0; i < arrayListImageChromocenter.size(); ++i)
 				{
-					IJ.log("image"+(i+1)+" / "+(arrayListImageChromocenter.size())+"   "+arrayListImageChromocenter.get(i));
+					IJ.log("image"+(i+1)+" / "+arrayListImageChromocenter.size());
 					String pathImageChromocenter = arrayListImageChromocenter.get(i);
 					String pathNucleusRaw = pathImageChromocenter.replaceAll("SegmentedDataCc", "RawDataNucleus");
 					String pathNucleusSegmented= pathImageChromocenter.replaceAll("SegmentedDataCc", "SegmentedDataNucleus");
@@ -105,7 +105,7 @@ public class ChromocentersAnalysisBatchPlugin_ implements PlugIn
 						BufferedWriter bufferedWriterLogFile;
 					    try
 					    {
-					    	 bufferedWriterLogFile = new BufferedWriter(new FileWriter(workDirectory+File.separator+"nameProblem.txt", true));
+					    	 bufferedWriterLogFile = new BufferedWriter(new FileWriter(workDirectory+File.separator+"logNameProblem.log", true));
 					    	 bufferedWriterLogFile.write(pathImageChromocenter+"\n");
 					    	 bufferedWriterLogFile.flush();
 					    	 bufferedWriterLogFile.close();  

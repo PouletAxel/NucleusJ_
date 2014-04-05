@@ -44,7 +44,7 @@ public class ChromocenterSegmentationBatchPlugin_ implements PlugIn
 				String workDirectory = _chromocenterSegmentationPipelineBatchDialog.getWorkDirectory();
 				for (int i = 0; i < arrayListImageSegmenetedDataNucleus.size(); ++i)
 				{
-					IJ.log("image"+(i+1)+" / "+(arrayListImageSegmenetedDataNucleus.size())+"   "+arrayListImageSegmenetedDataNucleus.get(i));
+					IJ.log("image"+(i+1)+" / "+arrayListImageSegmenetedDataNucleus.size());
 					String pathImageSegmentedNucleus = arrayListImageSegmenetedDataNucleus.get(i);
 					String pathNucleusRaw = pathImageSegmentedNucleus.replaceAll("SegmentedDataNucleus", "RawDataNucleus");
 					IJ.log(pathNucleusRaw);

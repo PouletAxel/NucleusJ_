@@ -48,7 +48,7 @@ public class RunnableImageSegmentation extends Thread implements Runnable
 		ProcessImageSegmentaion._nbLance++;
 		ProcessImageSegmentaion._continuer = true;
 		NucleusSegmentation nucleusSegmentation = new NucleusSegmentation();
-		nucleusSegmentation.setLogErrorSegmentationFile(_workDirectory+File.separator+"logErrorSeg.txt");
+		nucleusSegmentation.setLogErrorSegmentationFile(_workDirectory+File.separator+"logErrorSegmentation.txt");
 		nucleusSegmentation.setVolumeRange(_volumeMin, _volumeMax);
 		ImagePlus impagePlusSegmented = nucleusSegmentation.run(_imagePlusInput);
 		if (nucleusSegmentation.getBestThreshold()> 0)

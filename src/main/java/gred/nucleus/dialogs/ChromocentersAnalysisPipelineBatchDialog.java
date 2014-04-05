@@ -84,7 +84,7 @@ public class ChromocentersAnalysisPipelineBatchDialog extends JFrame
 	   	_jLabelWorkDirectory.setText("Work directory and data directory choice : ");
 
 	   	JTextPane jTextPane = new JTextPane();
-	   	jTextPane.setText("The Raw Data directory must contain 3 subdirectories."
+	   	jTextPane.setText("The Raw Data directory must contain 3 subdirectories:"
 	   			+ "\n1. for raw nuclei images, named RawDataNucleus. "
 	   			+ "\n2. for segmented nuclei images, named SegmentedDataNucleus."
 	   			+ "\n3. for segmented images of chromocenters, named SegmentedDataCc."

@@ -29,9 +29,10 @@ public class ChromocenterAnalysis
 		  IJ.log("CHROMOCENTER PARAMETERS");
 		  double tBorderToBorderDistanceTable [] = radialDistance.computeBorderToBorderDistances(imagePlusSegmented,imagePlusChromocenter);
 		  double tBarycenterToBorderDistanceTable [] = radialDistance.computeBarycenterToBorderDistances (imagePlusSegmented,imagePlusChromocenter);
-		  IJ.log("Titre Volume BorderToBorderDistance BarycenterToBorderDistanceTable");
+		  double [] tBarycenterToBorderDistanceTableNucleus = radialDistance.computeBarycenterToBorderDistances (imagePlusSegmented,imagePlusSegmented);
+		  IJ.log("Titre Volume BorderToBorderDistance BarycenterToBorderDistance BarycenterToBorderDistanceNucleus");
 		  for (int i = 0; i < tBorderToBorderDistanceTable.length;++i )
-			  IJ.log(imagePlusChromocenter.getTitle()+"_"+i+" "+tVolume[i]+" "+tBorderToBorderDistanceTable[i]+" "+tBarycenterToBorderDistanceTable[i]);
+			  IJ.log(imagePlusChromocenter.getTitle()+"_"+i+" "+tVolume[i]+" "+tBorderToBorderDistanceTable[i]+" "+tBarycenterToBorderDistanceTable[i]+" "+tBarycenterToBorderDistanceTableNucleus[0]);
 	   }
 	   
 	   /**
@@ -48,8 +49,9 @@ public class ChromocenterAnalysis
 		    double [] tVolume =  measure3D.computeVolumeofAllObjects(imagePlusChromocenter);
 		    RadialDistance radialDistance = new RadialDistance();
 		    double [] tBorderToBorderDistanceTable = radialDistance.computeBorderToBorderDistances(imagePlusSegmented,imagePlusChromocenter);
-			double [] tBarycenterToBorderDistanceTable = radialDistance.computeBarycenterToBorderDistances (imagePlusSegmented,imagePlusChromocenter);
-		    File fileResults = new File (pathResultsFile);
+			double [] tBarycenterToBorderDistanceTableCc = radialDistance.computeBarycenterToBorderDistances (imagePlusSegmented,imagePlusChromocenter);
+			double [] tBarycenterToBorderDistanceTableNucleus = radialDistance.computeBarycenterToBorderDistances (imagePlusSegmented,imagePlusSegmented);
+			File fileResults = new File (pathResultsFile);
 		    boolean exist = fileResults.exists();
 		    BufferedWriter bufferedWirterOutput;	
 		    if (exist) 
@@ -57,15 +59,15 @@ public class ChromocenterAnalysis
 		    	FileWriter fileWriter = new FileWriter(fileResults, true);
 		    	bufferedWirterOutput = new BufferedWriter(fileWriter);
 		    	for (int i = 0; i < tBorderToBorderDistanceTable.length;++i )
-		    		bufferedWirterOutput.write(imagePlusChromocenter.getTitle()+"_"+i+"\t"+tVolume[i]+"\t"+tBorderToBorderDistanceTable[i]+"\t"+tBarycenterToBorderDistanceTable[i]+"\n");
+		    		bufferedWirterOutput.write(imagePlusChromocenter.getTitle()+"_"+i+"\t"+tVolume[i]+"\t"+tBorderToBorderDistanceTable[i]+"\t"+tBarycenterToBorderDistanceTableCc[i]+"\t"+tBarycenterToBorderDistanceTableNucleus[0]+"\n");
 		    }
 		    else
 		    {
 		    	FileWriter fileWriter = new FileWriter(fileResults, true);
 		    	bufferedWirterOutput = new BufferedWriter(fileWriter);
-		    	bufferedWirterOutput.write("Titre\tVolume\tBorderToBorderDistance\tBarycenterToBorderDistanceTable\n");
+		    	bufferedWirterOutput.write("Titre\tVolume\tBorderToBorderDistance\tBarycenterToBorderDistance\ttBarycenterToBorderDistanceNucleus\n");
 		    	for (int i = 0; i < tBorderToBorderDistanceTable.length;++i )
-		    		bufferedWirterOutput.write(imagePlusChromocenter.getTitle()+"_"+i+"\t"+tVolume[i]+"\t"+tBorderToBorderDistanceTable[i]+"\t"+tBarycenterToBorderDistanceTable[i]+"\n");
+		    		bufferedWirterOutput.write(imagePlusChromocenter.getTitle()+"_"+i+"\t"+tVolume[i]+"\t"+tBorderToBorderDistanceTable[i]+"\t"+tBarycenterToBorderDistanceTableCc[i]+"\t"+tBarycenterToBorderDistanceTableNucleus[0]+"\n");
 		    }
 		    bufferedWirterOutput.flush();
 		    bufferedWirterOutput.close();

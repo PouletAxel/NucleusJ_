@@ -151,7 +151,6 @@ public class FileList
  	public boolean isDirectoryOrFileExist (String regex, File[] tFile)
     {
     	boolean testFile = false;
-    	IJ.log("taille "+ tFile.length);
         for(int i = 0; i < tFile.length; ++i)
  		{
         	if(tFile[i].toString().matches((regex)))	{	testFile = true; break;}
