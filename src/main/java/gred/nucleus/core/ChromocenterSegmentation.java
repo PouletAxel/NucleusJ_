@@ -5,7 +5,8 @@ import ij.measure.*;
 import ij.*;
 import ij.process.*;
 import inra.ijpb.binary.ConnectedComponents;
-import inra.ijpb.watershed.Watershed;;;
+import inra.ijpb.watershed.Watershed;
+
 
 /**
  *
@@ -48,7 +49,14 @@ public class ChromocenterSegmentation
 	 */
 	public double [][] getRegionAdjacencyGraph (ImagePlus imagePlusWatershed)
 	{
-		int i, j, k, ii, jj, kk, voxelValue, neighborVoxelValue;
+		int i;
+		int j;
+		int k;
+		int ii;
+		int jj;
+		int kk;
+		int voxelValue;
+		int neighborVoxelValue;
 		ImageStatistics imageStatistics = new StackStatistics(imagePlusWatershed);
 		double [][] tRegionAdjacencyGraph = new double [(int)imageStatistics.histMax + 1] [(int)imageStatistics.histMax + 1];
 		Calibration calibration = imagePlusWatershed.getCalibration();
@@ -95,7 +103,8 @@ public class ChromocenterSegmentation
 		double [] tMean = computeMeanIntensity (imagePlusRaw,imagePlusWatershed);
 		double [] tContrast= new double [tRegionAdjacencyGraph.length+1];
 		double neighborVolumeTotal;
-		int i,j;
+		int i;
+		int j;
 		for(i = 1; i < tRegionAdjacencyGraph.length; ++i)
 		{
 			neighborVolumeTotal = 0;
@@ -145,7 +154,8 @@ public class ChromocenterSegmentation
 	{
 		double [] tOutput = new double [tRegionAdjacencyGraph.length];
 		double max;
-		int i,j;
+		int i;
+		int j;
 		for(i = 1; i < tRegionAdjacencyGraph.length; ++i)
 		{
 			max = tMeanIntensity[i];
@@ -166,7 +176,8 @@ public class ChromocenterSegmentation
 	{
 		double tOutput[] = new double [tRegionAdjacencyGraph.length];
 		double min;
-		int i,j;
+		int i;
+		int j;
 		for(i = 1; i < tRegionAdjacencyGraph.length; ++i)
 		{
 			min = tMeanIntensity[i];
@@ -226,7 +237,10 @@ public class ChromocenterSegmentation
 		double [] tIntensityTotal = new double [(int)imageStatistics.histMax + 1];
 		double [] tIntensityMean = new double [(int)imageStatistics.histMax + 1];
 		int [] tNbVoxelInEachRegion = new int [(int)imageStatistics.histMax + 1];
-		int i, j, k, voxelValue;
+		int i;
+		int j;
+		int k;
+		int voxelValue;
 		for (k = 0; k < imagePlusWatershed.getNSlices(); ++k)
 			for (i = 0; i < imagePlusWatershed.getWidth(); ++i)
 				for (j = 0; j < imagePlusWatershed.getHeight(); ++j)
@@ -250,7 +264,9 @@ public class ChromocenterSegmentation
 	 */
 	public ImagePlus computeImage (ImagePlus imagePlusInput, double [] tVoxelValue)
 	{
-		int i, j, k;
+		int i;
+		int j;
+		int k;
 		double voxelValue;
 		ImagePlus imagePlusContrast = imagePlusInput.duplicate();
 		ImageStack imageStackConstrast = imagePlusContrast.getStack();

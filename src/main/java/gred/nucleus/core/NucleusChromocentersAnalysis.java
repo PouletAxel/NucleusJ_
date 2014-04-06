@@ -34,30 +34,69 @@ public class NucleusChromocentersAnalysis
 		double [] tBarycenterToBorderDistance = radialDistance.computeBarycenterToBorderDistances (imagePlusSegmented,imagePlusChromocenter);
 		IJ.log("3D PARAMETERS ");
 		double volume = measure3D.computeVolumeObject(imagePlusSegmented,255);
-		double surfacicArea = measure3D.computeSurfaceObject(imagePlusSegmented,255);
+		double surfaceArea = measure3D.computeSurfaceObject(imagePlusSegmented,255);
 		double volumeCcMean = computeMeanOfTable(tVolumesObjects);
 		int nbCc = measure3D.getNumberOfObject(imagePlusChromocenter);
 		if (rhfChoice.equals("Volume and intensity"))
 		{	
 			IJ.log("ImageTitle Volume ESR SurfacicArea NbCc VCcMean VCcTotal DistanceBorderToBorderMean DistanceBarycenterToBorderMean Flatness Elongation Sphericity IntensityRHF VolumeRHF VoxelVolume");
-			IJ.log(imagePlusSegmented.getTitle()+" "+volume+" "+measure3D.equivalentSphericalRadius(imagePlusSegmented,255)+" "+surfacicArea  +" " +nbCc+" "+ volumeCcMean+" "+volumeCcMean*nbCc+" "+computeMeanOfTable(tBorderToBorderDistance)
-			  +" "+computeMeanOfTable(tBarycenterToBorderDistance)+" "+measure3D.computeFlatnessObject(imagePlusSegmented,255)+" "+measure3D.computeElongationObject(imagePlusSegmented,255)+
-			  " "+measure3D.computeSphericity(volume,surfacicArea)+" "+measure3D.computeRhfIntensite(imagePlusInput,imagePlusSegmented, imagePlusChromocenter)
-			 +" "+measure3D.computeRhfVolume(imagePlusSegmented, imagePlusChromocenter)+" "+voxelVolume);
+			IJ.log
+			(
+					imagePlusSegmented.getTitle()+" "
+					+volume+" "
+					+measure3D.equivalentSphericalRadius(imagePlusSegmented,255)+" "
+					+surfaceArea +" "
+					+nbCc+" "
+					+volumeCcMean+" "
+					+volumeCcMean*nbCc+" "
+					+computeMeanOfTable(tBorderToBorderDistance)+" "
+					+computeMeanOfTable(tBarycenterToBorderDistance)+" "
+					+measure3D.computeFlatnessObject(imagePlusSegmented,255)+" "
+					+measure3D.computeElongationObject(imagePlusSegmented,255)+" "
+					+measure3D.computeSphericity(volume,surfaceArea)+" "
+					+measure3D.computeRhfIntensite(imagePlusInput,imagePlusSegmented,imagePlusChromocenter)+" "
+					+measure3D.computeRhfVolume(imagePlusSegmented, imagePlusChromocenter)+" "
+					+voxelVolume
+			);
 		}
 		else if (rhfChoice.equals("Volume"))
 		{
 			IJ.log("ImageTitle Volume ESR SurfacicArea NbCc VCcMean VCcTotal DistanceBorderToBorderMean DistanceBarycenterToBorderMean Flatness Elongation Sphericity VolumeRHF VoxelVolume");
-			IJ.log(imagePlusSegmented.getTitle()+" "+volume+" "+measure3D.equivalentSphericalRadius(imagePlusSegmented,255)+" "+surfacicArea
-			+" " +nbCc+" "+ volumeCcMean+" "+volumeCcMean*nbCc+" "+computeMeanOfTable(tBorderToBorderDistance)
-			+" "+computeMeanOfTable(tBarycenterToBorderDistance)+" "+measure3D.computeFlatnessObject(imagePlusSegmented,255)+" "+measure3D.computeElongationObject(imagePlusSegmented,255)+
-			" "+measure3D.computeSphericity(volume,surfacicArea)+" "+measure3D.computeRhfVolume(imagePlusSegmented, imagePlusChromocenter)+" "+voxelVolume);
+			IJ.log
+			(
+					imagePlusSegmented.getTitle()+" "
+					+volume+" "
+					+measure3D.equivalentSphericalRadius(imagePlusSegmented,255)+" "
+					+surfaceArea+" "
+					+nbCc+" "
+					+volumeCcMean+" "
+					+volumeCcMean*nbCc+" "
+					+computeMeanOfTable(tBorderToBorderDistance)+" "
+					+computeMeanOfTable(tBarycenterToBorderDistance)+" "
+					+measure3D.computeFlatnessObject(imagePlusSegmented,255)+" "
+					+measure3D.computeElongationObject(imagePlusSegmented,255)+" "
+					+measure3D.computeSphericity(volume,surfaceArea)+" "
+					+measure3D.computeRhfVolume(imagePlusSegmented, imagePlusChromocenter)+" "
+					+voxelVolume
+			);
 		}
 		else  
 		{
 			IJ.log("ImageTitle Volume ESR SurfacicArea NbCc VCcMean VCcTotal DistanceBorderToBorderMean DistanceBarycenterToBorderMean Flatness Elongation Sphericity IntensityRHF VoxelVolume");
-			IJ.log(imagePlusSegmented.getTitle()+" "+volume+" "+measure3D.equivalentSphericalRadius(imagePlusSegmented,255)+" "+surfacicArea
-			+" " +nbCc+" "+ volumeCcMean+" "+volumeCcMean*nbCc+" "+computeMeanOfTable(tBorderToBorderDistance)+" "+measure3D.computeSphericity(volume,surfacicArea)+" "+measure3D.computeRhfIntensite(imagePlusInput,imagePlusSegmented, imagePlusChromocenter)+" "+voxelVolume);
+			IJ.log
+			(
+					imagePlusSegmented.getTitle()+" "
+					+volume+" "
+					+measure3D.equivalentSphericalRadius(imagePlusSegmented,255)+" "
+					+surfaceArea+" "
+					+nbCc+" "
+					+volumeCcMean+" "
+					+volumeCcMean*nbCc+" "
+					+computeMeanOfTable(tBorderToBorderDistance)+" "
+					+measure3D.computeSphericity(volume,surfaceArea)+" "
+					+measure3D.computeRhfIntensite(imagePlusInput,imagePlusSegmented, imagePlusChromocenter)+" "
+					+voxelVolume
+			);
 		}
 	}
 	   
@@ -83,7 +122,7 @@ public class NucleusChromocentersAnalysis
 		double [] tBorderToBorderDistance = radialDistance.computeBorderToBorderDistances(imagePlusSegmented,imagePlusChromocenter);
 		double [] tBarycenterToBorderDistance = radialDistance.computeBarycenterToBorderDistances (imagePlusSegmented,imagePlusChromocenter);
 		double volume = measure3D.computeVolumeObject(imagePlusSegmented,255);
-		double surfacicArea = measure3D.computeSurfaceObject(imagePlusSegmented,255);
+		double surfaceArea = measure3D.computeSurfaceObject(imagePlusSegmented,255);
 		double volumeCcMean = computeMeanOfTable(tVolumesObjects);
 		int nbCc = measure3D.getNumberOfObject(imagePlusChromocenter);
 		File fileResults = new File(pathResultsFile);
@@ -95,27 +134,70 @@ public class NucleusChromocentersAnalysis
 			bufferedWriterOutput = new BufferedWriter(fileWriter);
 			if (rhfChoice.equals("Volume and intensity"))
 			{
-				bufferedWriterOutput.write(imagePlusSegmented.getTitle()+"\t"+volume+"\t"+measure3D.equivalentSphericalRadius(imagePlusSegmented,255)+"\t"+surfacicArea
-				+"\t" +nbCc+"\t"+ volumeCcMean+"\t"+volumeCcMean*nbCc+"\t"+computeMeanOfTable(tBorderToBorderDistance)
-				+"\t"+computeMeanOfTable(tBarycenterToBorderDistance)+"\t"+measure3D.computeFlatnessObject(imagePlusSegmented,255)+"\t"+measure3D.computeElongationObject(imagePlusSegmented,255)+
-				"\t"+measure3D.computeSphericity(volume,surfacicArea)+"\t"+measure3D.computeRhfIntensite(imagePlusInput,imagePlusSegmented, imagePlusChromocenter)
-				+"\t"+measure3D.computeRhfVolume(imagePlusSegmented, imagePlusChromocenter)+"\t"+measure2D.getAspectRatio()+"\t"+measure2D.getCirculairty()+"\t"+voxelVolume+"\n");
+				bufferedWriterOutput.write
+				(
+						imagePlusSegmented.getTitle()+"\t"
+						+volume+"\t"
+						+measure3D.equivalentSphericalRadius(imagePlusSegmented,255)+"\t"
+						+surfaceArea+"\t"
+						+nbCc+"\t"
+						+volumeCcMean+"\t"
+						+volumeCcMean*nbCc+"\t"
+						+computeMeanOfTable(tBorderToBorderDistance)+"\t"
+						+computeMeanOfTable(tBarycenterToBorderDistance)+"\t"
+						+measure3D.computeFlatnessObject(imagePlusSegmented,255)+"\t"
+						+measure3D.computeElongationObject(imagePlusSegmented,255)+"\t"
+						+measure3D.computeSphericity(volume,surfaceArea)+"\t"
+						+measure3D.computeRhfIntensite(imagePlusInput,imagePlusSegmented, imagePlusChromocenter)+"\t"
+						+measure3D.computeRhfVolume(imagePlusSegmented, imagePlusChromocenter)+"\t"
+						+measure2D.getAspectRatio()+"\t"
+						+measure2D.getCirculairty()+"\t"
+						+voxelVolume+"\n"
+				);
 			}
 			else if (rhfChoice.equals("Volume"))
 			{
-				bufferedWriterOutput.write(imagePlusSegmented.getTitle()+"\t"+volume+"\t"+measure3D.equivalentSphericalRadius(imagePlusSegmented,255)+"\t"+surfacicArea
-				+"\t" +nbCc+"\t"+ volumeCcMean+"\t"+volumeCcMean*nbCc+"\t"+computeMeanOfTable(tBorderToBorderDistance)
-				+"\t"+computeMeanOfTable(tBarycenterToBorderDistance)+"\t"+measure3D.computeFlatnessObject(imagePlusSegmented,255)+"\t"+measure3D.computeElongationObject(imagePlusSegmented,255)+
-				"\t"+measure3D.computeSphericity(volume,surfacicArea)+"\t"+measure3D.computeRhfVolume(imagePlusSegmented, imagePlusChromocenter)
-				+"\t"+measure2D.getAspectRatio()+"\t"+measure2D.getCirculairty()+"\t"+voxelVolume+"\n");
+				bufferedWriterOutput.write
+				(
+						imagePlusSegmented.getTitle()+"\t"
+						+volume+"\t"
+						+measure3D.equivalentSphericalRadius(imagePlusSegmented,255)+"\t"
+						+surfaceArea+"\t"
+						+nbCc+"\t"
+						+volumeCcMean+"\t"
+						+volumeCcMean*nbCc+"\t"
+						+computeMeanOfTable(tBorderToBorderDistance)+"\t"
+						+computeMeanOfTable(tBarycenterToBorderDistance)+"\t"
+						+measure3D.computeFlatnessObject(imagePlusSegmented,255)+"\t"
+						+measure3D.computeElongationObject(imagePlusSegmented,255)+"\t"
+						+measure3D.computeSphericity(volume,surfaceArea)+"\t"
+						+measure3D.computeRhfVolume(imagePlusSegmented, imagePlusChromocenter)+"\t"
+						+measure2D.getAspectRatio()+"\t"
+						+measure2D.getCirculairty()+"\t"
+						+voxelVolume+"\n"
+				);
 			}
 			else  
 			{
-				bufferedWriterOutput.write(imagePlusSegmented.getTitle()+"\t"+volume+"\t"+measure3D.equivalentSphericalRadius(imagePlusSegmented,255)+"\t"+surfacicArea
-				+"\t" +nbCc+"\t"+ volumeCcMean+"\t"+volumeCcMean*nbCc+"\t"+computeMeanOfTable(tBorderToBorderDistance)
-				+"\t"+computeMeanOfTable(tBarycenterToBorderDistance)+"\t"+measure3D.computeFlatnessObject(imagePlusSegmented,255)+"\t"+measure3D.computeElongationObject(imagePlusSegmented,255)+
-				"\t"+measure3D.computeSphericity(volume,surfacicArea)+"\t"+measure3D.computeRhfIntensite(imagePlusInput,imagePlusSegmented, imagePlusChromocenter)
-				+"\t"+measure2D.getAspectRatio()+"\t"+measure2D.getCirculairty()+"\t"+voxelVolume+"\n");
+				bufferedWriterOutput.write
+				(
+						imagePlusSegmented.getTitle()+"\t"
+						+volume+"\t"
+						+measure3D.equivalentSphericalRadius(imagePlusSegmented,255)+"\t"
+						+surfaceArea+"\t"
+						+nbCc+"\t"
+						+volumeCcMean+"\t"
+						+volumeCcMean*nbCc+"\t"
+						+computeMeanOfTable(tBorderToBorderDistance)+"\t"
+						+computeMeanOfTable(tBarycenterToBorderDistance)+"\t"
+						+measure3D.computeFlatnessObject(imagePlusSegmented,255)+"\t"
+						+measure3D.computeElongationObject(imagePlusSegmented,255)+"\t"
+						+measure3D.computeSphericity(volume,surfaceArea)+"\t"
+						+measure3D.computeRhfIntensite(imagePlusInput,imagePlusSegmented, imagePlusChromocenter)+"\t"
+						+measure2D.getAspectRatio()+"\t"
+						+measure2D.getCirculairty()+"\t"
+						+voxelVolume+"\n"
+				);
 			}
 		}
 		else
@@ -125,29 +207,73 @@ public class NucleusChromocentersAnalysis
 			if (rhfChoice.equals("Volume and intensity"))
 			{
 				
-				bufferedWriterOutput.write("ImageTitle\tVolume\tESR\tSurfacicArea\tNbCc\tVCcMean\tVCcTotal\tDistanceBorderToBorderMean\tDistanceBarycenterToBorderMean\tFlatness\tElongation\tSphericity\tIntensityRHF\tVolumeRHF\tAspectRatio\tCircularity\tVoxelVolume\n"
-				+imagePlusSegmented.getTitle()+"\t"+volume+"\t"+measure3D.equivalentSphericalRadius(imagePlusSegmented,255)+"\t"+surfacicArea
-				+"\t" +nbCc+"\t"+ volumeCcMean+"\t"+volumeCcMean*nbCc+"\t"+computeMeanOfTable(tBorderToBorderDistance)
-				+"\t"+computeMeanOfTable(tBarycenterToBorderDistance)+"\t"+measure3D.computeFlatnessObject(imagePlusSegmented,255)+"\t"+measure3D.computeElongationObject(imagePlusSegmented,255)+
-				"\t"+measure3D.computeSphericity(volume,surfacicArea)+"\t"+measure3D.computeRhfIntensite(imagePlusInput,imagePlusSegmented, imagePlusChromocenter)
-				+"\t"+measure3D.computeRhfVolume(imagePlusSegmented, imagePlusChromocenter)+"\t"+measure2D.getAspectRatio()+"\t"+measure2D.getCirculairty()+"\t"+voxelVolume+"\n");
+				bufferedWriterOutput.write
+				(
+						"ImageTitle\tVolume\tESR\tSurfacicArea\tNbCc\tVCcMean\tVCcTotal\tDistanceBorderToBorderMean\tDistanceBarycenterToBorderMean\tFlatness\tElongation\tSphericity\tIntensityRHF\tVolumeRHF\tAspectRatio\tCircularity\tVoxelVolume\n"
+						+imagePlusSegmented.getTitle()+"\t"
+						+volume+"\t"
+						+measure3D.equivalentSphericalRadius(imagePlusSegmented,255)+"\t"
+						+surfaceArea+"\t"
+						+nbCc+"\t"
+						+volumeCcMean+"\t"
+						+volumeCcMean*nbCc+"\t"
+						+computeMeanOfTable(tBorderToBorderDistance)+"\t"
+						+computeMeanOfTable(tBarycenterToBorderDistance)+"\t"
+						+measure3D.computeFlatnessObject(imagePlusSegmented,255)+"\t"
+						+measure3D.computeElongationObject(imagePlusSegmented,255)+"\t"
+						+measure3D.computeSphericity(volume,surfaceArea)+"\t"
+						+measure3D.computeRhfIntensite(imagePlusInput,imagePlusSegmented, imagePlusChromocenter)+"\t"
+						+measure3D.computeRhfVolume(imagePlusSegmented, imagePlusChromocenter)+"\t"
+						+measure2D.getAspectRatio()+"\t"
+						+measure2D.getCirculairty()+"\t"
+						+voxelVolume+"\n"
+				);
 			}
 			else if (rhfChoice.equals("Volume"))
 			{
-				bufferedWriterOutput.write("ImageTitle\tVolume\tESR\tSurfacicArea\tNbCc\tVCcMean\tVCcTotal\tDistanceBorderToBorderMean\tDistanceBarycenterToBorderMean\tFlatness\tElongation\tSphericity\tVolumeRHF\tAspectRatio\tCircularity\tVoxelVolume\n"
-				+imagePlusSegmented.getTitle()+"\t"+volume+"\t"+measure3D.equivalentSphericalRadius(imagePlusSegmented,255)+"\t"+surfacicArea
-				+"\t" +nbCc+"\t"+ volumeCcMean+"\t"+volumeCcMean*nbCc+"\t"+computeMeanOfTable(tBorderToBorderDistance)
-				+"\t"+computeMeanOfTable(tBarycenterToBorderDistance)+"\t"+measure3D.computeFlatnessObject(imagePlusSegmented,255)+"\t"+measure3D.computeElongationObject(imagePlusSegmented,255)+
-				"\t"+measure3D.computeSphericity(volume,surfacicArea)+"\t"+measure3D.computeRhfVolume(imagePlusSegmented, imagePlusChromocenter)+"\t"+measure2D.getAspectRatio()+"\t"+measure2D.getCirculairty()+"\t"+voxelVolume+"\n");
+				bufferedWriterOutput.write
+				(
+						"ImageTitle\tVolume\tESR\tSurfacicArea\tNbCc\tVCcMean\tVCcTotal\tDistanceBorderToBorderMean\tDistanceBarycenterToBorderMean\tFlatness\tElongation\tSphericity\tVolumeRHF\tAspectRatio\tCircularity\tVoxelVolume\n"
+						+imagePlusSegmented.getTitle()+"\t"
+						+volume+"\t"
+						+measure3D.equivalentSphericalRadius(imagePlusSegmented,255)+"\t"
+						+surfaceArea+"\t"
+						+nbCc+"\t"
+						+volumeCcMean+"\t"
+						+volumeCcMean*nbCc+"\t"
+						+computeMeanOfTable(tBorderToBorderDistance)+"\t"
+						+computeMeanOfTable(tBarycenterToBorderDistance)+"\t"
+						+measure3D.computeFlatnessObject(imagePlusSegmented,255)+"\t"
+						+measure3D.computeElongationObject(imagePlusSegmented,255)+"\t"
+						+measure3D.computeSphericity(volume,surfaceArea)+"\t"
+						+measure3D.computeRhfVolume(imagePlusSegmented, imagePlusChromocenter)+"\t"
+						+measure2D.getAspectRatio()+"\t"
+						+measure2D.getCirculairty()+"\t"
+						+voxelVolume+"\n"
+				);
 			}
 			else  
 			{
-				bufferedWriterOutput.write("ImageTitle\tVolume\tESR\tSurfacicArea\tNbCc\tVCcMean\tVCcTotal\tDistanceBorderToBorderMean\tDistanceBarycenterToBorderMean\tFlatness\tElongation\tSphericity\tIntensityRHF\tAspectRatio\tCircularity\tVoxelVolume\n"
-				+imagePlusSegmented.getTitle()+"\t"+volume+"\t"+measure3D.equivalentSphericalRadius(imagePlusSegmented,255)+"\t"+surfacicArea
-				+"\t" +nbCc+"\t"+ volumeCcMean+"\t"+volumeCcMean*nbCc+"\t"+computeMeanOfTable(tBorderToBorderDistance)
-				+"\t"+computeMeanOfTable(tBarycenterToBorderDistance)+"\t"+measure3D.computeFlatnessObject(imagePlusSegmented,255)+"\t"+measure3D.computeElongationObject(imagePlusSegmented,255)+
-				"\t"+measure3D.computeSphericity(volume,surfacicArea)+"\t"+measure3D.computeRhfIntensite(imagePlusInput,imagePlusSegmented, imagePlusChromocenter)
-				+"\t"+measure2D.getAspectRatio()+"\t"+measure2D.getCirculairty()+"\t"+voxelVolume+"\n");
+				bufferedWriterOutput.write
+				(
+						"ImageTitle\tVolume\tESR\tSurfacicArea\tNbCc\tVCcMean\tVCcTotal\tDistanceBorderToBorderMean\tDistanceBarycenterToBorderMean\tFlatness\tElongation\tSphericity\tIntensityRHF\tAspectRatio\tCircularity\tVoxelVolume\n"
+						+imagePlusSegmented.getTitle()+"\t"
+						+volume+"\t"
+						+measure3D.equivalentSphericalRadius(imagePlusSegmented,255)+"\t"
+						+surfaceArea+"\t"
+						+nbCc+"\t"
+						+volumeCcMean+"\t"
+						+volumeCcMean*nbCc+"\t"
+						+computeMeanOfTable(tBorderToBorderDistance)+"\t"
+						+computeMeanOfTable(tBarycenterToBorderDistance)+"\t"
+						+measure3D.computeFlatnessObject(imagePlusSegmented,255)+"\t"
+						+measure3D.computeElongationObject(imagePlusSegmented,255)+"\t"
+						+measure3D.computeSphericity(volume,surfaceArea)+"\t"
+						+measure3D.computeRhfIntensite(imagePlusInput,imagePlusSegmented, imagePlusChromocenter)+"\t"
+						+measure2D.getAspectRatio()+"\t"
+						+measure2D.getCirculairty()+"\t"
+						+voxelVolume+"\n"
+				);
 			}
 		} 
 		bufferedWriterOutput.flush();

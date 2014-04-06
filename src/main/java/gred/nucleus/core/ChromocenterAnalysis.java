@@ -32,7 +32,14 @@ public class ChromocenterAnalysis
 		  double [] tBarycenterToBorderDistanceTableNucleus = radialDistance.computeBarycenterToBorderDistances (imagePlusSegmented,imagePlusSegmented);
 		  IJ.log("Titre Volume BorderToBorderDistance BarycenterToBorderDistance BarycenterToBorderDistanceNucleus");
 		  for (int i = 0; i < tBorderToBorderDistanceTable.length;++i )
-			  IJ.log(imagePlusChromocenter.getTitle()+"_"+i+" "+tVolume[i]+" "+tBorderToBorderDistanceTable[i]+" "+tBarycenterToBorderDistanceTable[i]+" "+tBarycenterToBorderDistanceTableNucleus[0]);
+			  IJ.log
+			  (
+				 imagePlusChromocenter.getTitle()+"_"+i+" "
+				 +tVolume[i]+" "
+				 +tBorderToBorderDistanceTable[i]+" "
+				 +tBarycenterToBorderDistanceTable[i]+" "
+			     +tBarycenterToBorderDistanceTableNucleus[0]
+			  );
 	   }
 	   
 	   /**
@@ -59,7 +66,16 @@ public class ChromocenterAnalysis
 		    	FileWriter fileWriter = new FileWriter(fileResults, true);
 		    	bufferedWirterOutput = new BufferedWriter(fileWriter);
 		    	for (int i = 0; i < tBorderToBorderDistanceTable.length;++i )
-		    		bufferedWirterOutput.write(imagePlusChromocenter.getTitle()+"_"+i+"\t"+tVolume[i]+"\t"+tBorderToBorderDistanceTable[i]+"\t"+tBarycenterToBorderDistanceTableCc[i]+"\t"+tBarycenterToBorderDistanceTableNucleus[0]+"\n");
+		    	{
+		    		bufferedWirterOutput.write
+		    		(
+		    			imagePlusChromocenter.getTitle()+"_"+i+"\t"
+		    			+tVolume[i]+"\t"
+		    			+tBorderToBorderDistanceTable[i]+"\t"
+		    			+tBarycenterToBorderDistanceTableCc[i]+"\t"
+		    			+tBarycenterToBorderDistanceTableNucleus[0]+"\n"
+		    		);
+		    	}
 		    }
 		    else
 		    {
@@ -67,7 +83,16 @@ public class ChromocenterAnalysis
 		    	bufferedWirterOutput = new BufferedWriter(fileWriter);
 		    	bufferedWirterOutput.write("Titre\tVolume\tBorderToBorderDistance\tBarycenterToBorderDistance\ttBarycenterToBorderDistanceNucleus\n");
 		    	for (int i = 0; i < tBorderToBorderDistanceTable.length;++i )
-		    		bufferedWirterOutput.write(imagePlusChromocenter.getTitle()+"_"+i+"\t"+tVolume[i]+"\t"+tBorderToBorderDistanceTable[i]+"\t"+tBarycenterToBorderDistanceTableCc[i]+"\t"+tBarycenterToBorderDistanceTableNucleus[0]+"\n");
+		    	{
+		    		bufferedWirterOutput.write
+		    		(
+		    			imagePlusChromocenter.getTitle()+"_"+i+"\t"
+		    		    +tVolume[i]+"\t"
+		    			+tBorderToBorderDistanceTable[i]+"\t"
+		    		    +tBarycenterToBorderDistanceTableCc[i]+"\t"
+		    			+tBarycenterToBorderDistanceTableNucleus[0]+"\n"
+		    		);
+		    	}
 		    }
 		    bufferedWirterOutput.flush();
 		    bufferedWirterOutput.close();

@@ -34,13 +34,18 @@ public class Measure3D
 
 	public double computeSurfaceObject (ImagePlus imagePlusInput, double label)
 	{
-		int i,j,k,ii,jj,kk;
+		int i;
+		int j; 
+		int k;
+		int ii;
+		int jj;
+		int kk;
 		Calibration calibration= imagePlusInput.getCalibration();
 		ImageStack imageStakInput = imagePlusInput.getStack();
 		double xCalibration = calibration.pixelWidth;
 		double yCalibration = calibration.pixelHeight;
 		double zCalibration = calibration.pixelDepth;
-		double surface = 0, voxelValue, neighborVoxelValue;
+		double surfaceArea = 0,voxelValue, neighborVoxelValue;
 		for (k = 0; k < imagePlusInput.getStackSize(); ++k)
 			for (i = 0; i < imagePlusInput.getWidth(); ++i)
 				for (j = 0; j < imagePlusInput.getHeight(); ++j)
@@ -51,21 +56,21 @@ public class Measure3D
 						for (kk = k-1; kk <= k+1; ++kk)
 						{
 							neighborVoxelValue = imageStakInput.getVoxel(i, j, kk);
-							if (voxelValue != neighborVoxelValue) { surface = surface + xCalibration * yCalibration; }
+							if (voxelValue != neighborVoxelValue) { surfaceArea = surfaceArea + xCalibration * yCalibration; }
 						}
 						for (ii=i-1; ii<=i+1; ++ii)
 						{
 							neighborVoxelValue =  imageStakInput.getVoxel(ii, j, k);
-							if (voxelValue != neighborVoxelValue) { surface = surface + xCalibration * zCalibration; }
+							if (voxelValue != neighborVoxelValue) { surfaceArea = surfaceArea + xCalibration * zCalibration; }
 						}
 						for (jj = j-1; jj <= j+1; ++jj)
 						{
 							neighborVoxelValue = imageStakInput.getVoxel(i, jj, k);
-							if (voxelValue != neighborVoxelValue) { surface = surface + yCalibration * zCalibration; }
+							if (voxelValue != neighborVoxelValue) { surfaceArea = surfaceArea + yCalibration * zCalibration; }
 						}
 					}
 				}
-		return surface;
+		return surfaceArea;
 	}
 
 
@@ -168,9 +173,16 @@ public class Measure3D
 		double xCalibration = calibration.pixelWidth;
 		double yCalibration = calibration.pixelHeight;
 		double zCalibration = calibration.pixelDepth;
-		double xx = 0, xy = 0, xz = 0, yy = 0, yz = 0, zz = 0;
+		double xx = 0;
+		double xy = 0;
+		double xz = 0;
+		double yy = 0;
+		double yz = 0;
+		double zz = 0;
 		int compteur = 0;
-		int i,j,k;
+		int i;
+		int j;
+		int k;
 		double voxelValue;
 		for (k = 0; k < imagePlusInput.getStackSize(); ++k)
 			for (i = 0; i < imagePlusInput.getWidth(); ++i)
@@ -236,7 +248,9 @@ public class Measure3D
 		VoxelRecord voxelRecordBarycenter = new VoxelRecord ();
 		int compteur = 0;
 		double voxelValue;
-		int i,j,k;
+		int i;
+		int j;
+		int k;
 		for (k = 0; k < imagePlusInput.getStackSize(); ++k)
 			for (i = 0; i < imagePlusInput.getWidth(); ++i)
 				for (j = 0; j < imagePlusInput.getHeight(); ++j)
@@ -247,7 +261,7 @@ public class Measure3D
 						VoxelRecord voxelRecord = new VoxelRecord();
 						voxelRecord.setLocation((double)i,(double)j,(double)k);
 						voxelRecordBarycenter.shiftCoordinates(voxelRecord);
-						compteur++;
+						++compteur;
 					}
 				}
 		voxelRecordBarycenter.Multiplie(1 / (double)compteur);
@@ -290,7 +304,9 @@ public class Measure3D
 	  {
 	    double chromocenterIntensity = 0, nucleusIntensity = 0;
 	    double voxelValueChromocenter, voxelValueInput, voxelValueSegmented;
-	    int i,j,k;
+	    int i;
+	    int j;
+	    int k;
 	    ImageStack imageStackChromocenter =  imagePlusChromocenter.getStack();
 	    ImageStack imageStackSegmented = imagePlusSegmented.getStack();
 	    ImageStack imageStackInput = imagePlusInput.getStack();
@@ -324,7 +340,8 @@ public class Measure3D
 	    int i;
 	    double volumeCc = 0;
 	    double [] tVolumeChromocenter = computeVolumeofAllObjects(imagePlusChomocenters);
-	    for (i = 0; i < tVolumeChromocenter.length; ++i) volumeCc += tVolumeChromocenter[i];
+	    for (i = 0; i < tVolumeChromocenter.length; ++i) 
+	    	volumeCc += tVolumeChromocenter[i];
 	    double []tVolumeSegmented = computeVolumeofAllObjects(imagePlusSegmented);
 	    return volumeCc / tVolumeSegmented[0];
 	  } 

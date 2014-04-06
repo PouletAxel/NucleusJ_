@@ -42,7 +42,8 @@ public class Measure2D
     	double xCalibration = calibration.pixelWidth;
     	double yCalibration = calibration.pixelHeight;
         ImageStack imageStackSegmented = imagePlusSegmented.getStack();
-        double areaMax = 0, area = 0;
+        double areaMax = 0;
+        double area = 0;
         for (int k = 0; k < imagePlusSegmented.getNSlices(); ++k)
         {
             int nbVoxel = 0;
