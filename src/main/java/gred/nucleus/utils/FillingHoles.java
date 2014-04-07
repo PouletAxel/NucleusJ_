@@ -23,14 +23,15 @@ public class FillingHoles
 		// image inversion (0 became 255 and 255 became 0)
 		ImagePlus imagePlusCorrected = imagePlusInput;
 		ImageStack imageStackCorrected = imagePlusCorrected.getStack();
-		int i, j, k;
-		for (k = 0; k < imageStackCorrected.getSize(); ++k)
-			for (i = 0; i < imageStackCorrected.getWidth(); ++i)
-				for (j = 0; j < imageStackCorrected.getHeight(); ++j)
+		for (int k = 0; k < imageStackCorrected.getSize(); ++k)
+			for (int i = 0; i < imageStackCorrected.getWidth(); ++i)
+				for (int j = 0; j < imageStackCorrected.getHeight(); ++j)
 				{
 					double voxelCurrent = imageStackCorrected.getVoxel(i, j, k);
-					if (voxelCurrent > 0) imageStackCorrected.setVoxel(i, j, k, 0);
-					else imageStackCorrected.setVoxel(i, j, k, 255);
+					if (voxelCurrent > 0)
+						imageStackCorrected.setVoxel(i, j, k, 0);
+					else
+						imageStackCorrected.setVoxel(i, j, k, 255);
         		}
 		imagePlusCorrected = ConnectedComponents.computeLabels(imagePlusCorrected, 26, 32);
 		int label;
@@ -38,8 +39,8 @@ public class FillingHoles
 		imageStackCorrected = imagePlusCorrected.getImageStack();
 		for (int a = 0; a < tEdgeFlags.length;++a)  tEdgeFlags[a] = false;
 		// Analyse of plans extreme in the dim x
-		for (k = 0; k < imageStackCorrected.getSize(); ++k)
-			for (j = 0; j < imageStackCorrected.getHeight(); ++j)
+		for (int k = 0; k < imageStackCorrected.getSize(); ++k)
+			for (int j = 0; j < imageStackCorrected.getHeight(); ++j)
 			{
 				label = (int) imageStackCorrected.getVoxel(0, j, k);
 				tEdgeFlags[label] = true;
@@ -48,8 +49,8 @@ public class FillingHoles
 			}
 
 		// Analyse of plans extreme in the dim y
-		for (k = 0; k < imageStackCorrected.getSize(); ++k)
-			for (i = 0; i < imageStackCorrected.getWidth(); ++i)
+		for (int k = 0; k < imageStackCorrected.getSize(); ++k)
+			for (int i = 0; i < imageStackCorrected.getWidth(); ++i)
 			{
 				label = (int) imageStackCorrected.getVoxel(i, 0, k);
 				tEdgeFlags[label] = true;
@@ -58,8 +59,8 @@ public class FillingHoles
 			}
 
 		// Analyse of plans extreme in the dim z
-		for (i = 0; i < imageStackCorrected.getSize(); ++i)
-			for (j = 0; j < imageStackCorrected.getWidth(); ++j)
+		for (int i = 0; i < imageStackCorrected.getSize(); ++i)
+			for (int j = 0; j < imageStackCorrected.getWidth(); ++j)
 			{
 				label = (int) imageStackCorrected.getVoxel(i, j, 0);
 				tEdgeFlags[label] = true;
@@ -68,13 +69,15 @@ public class FillingHoles
 			}
     
 		//Creation of the image results
-		for (k = 0; k < imageStackCorrected.getSize(); ++k)
-			for (i = 0; i < imageStackCorrected.getWidth(); ++i)
-				for (j = 0; j < imageStackCorrected.getHeight(); ++j)
+		for (int k = 0; k < imageStackCorrected.getSize(); ++k)
+			for (int i = 0; i < imageStackCorrected.getWidth(); ++i)
+				for (int j = 0; j < imageStackCorrected.getHeight(); ++j)
 				{
 					label = (int) imageStackCorrected.getVoxel(i, j, k);
-					if (label == 0 || tEdgeFlags[label] == false)	imageStackCorrected.setVoxel(i, j, k, 255);
-					else   imageStackCorrected.setVoxel(i, j, k, 0);
+					if (label == 0 || tEdgeFlags[label] == false)
+						imageStackCorrected.setVoxel(i, j, k, 255);
+					else
+						imageStackCorrected.setVoxel(i, j, k, 0);
 				}
     
 		imagePlusCorrected.setStack(imageStackCorrected);
@@ -91,24 +94,25 @@ public class FillingHoles
 		ImagePlus imagePlusCorrected = imagePlusInput;
 		ImageStack imageStackCorrected = imagePlusCorrected.getStack();
 		double voxelValue;
-		int i, j, k;
 		ImageStack imageStackOutput = new ImageStack(imageStackCorrected.getWidth(),imageStackCorrected.getHeight());
-		for (k = 1; k <= imageStackCorrected.getSize(); ++k)
+		for (int k = 1; k <= imageStackCorrected.getSize(); ++k)
 		{
 			ImageProcessor imageProcessorLabellised = imageStackCorrected.getProcessor(k);
-			for (i = 0; i < imageStackCorrected.getWidth(); ++i)
-				for (j = 0; j < imageStackCorrected.getHeight(); ++j)
+			for (int i = 0; i < imageStackCorrected.getWidth(); ++i)
+				for (int j = 0; j < imageStackCorrected.getHeight(); ++j)
 				{
 					voxelValue = imageProcessorLabellised.getPixel(i, j);
-					if (voxelValue > 0)      imageProcessorLabellised.putPixelValue(i, j, 0);
-					else        imageProcessorLabellised.putPixelValue(i, j, 255);
+					if (voxelValue > 0)
+						imageProcessorLabellised.putPixelValue(i, j, 0);
+					else
+						imageProcessorLabellised.putPixelValue(i, j, 255);
 				}
 			imageProcessorLabellised = ConnectedComponents.computeLabels(imageProcessorLabellised, 26, 32);
 			int label;
 			boolean [] tEdgeFlags = new boolean [(int)imageProcessorLabellised.getMax()+1];
 			for (int a = 0; a < tEdgeFlags.length; ++a)  tEdgeFlags[a] = false;
 			// Analyse des plans extremes selon la dim x
-			for (j = 0; j < imageStackCorrected.getHeight(); ++j)
+			for (int j = 0; j < imageStackCorrected.getHeight(); ++j)
 			{
 				label = (int) imageProcessorLabellised.getf(0, j);
 				tEdgeFlags[label] = true;
@@ -116,7 +120,7 @@ public class FillingHoles
 				tEdgeFlags[label] = true;
 			}
 			// Analyse des plans extremes selon la dim y
-			for (i = 0; i < imageStackCorrected.getWidth(); ++i)
+			for (int i = 0; i < imageStackCorrected.getWidth(); ++i)
 			{
 				label = (int)imageProcessorLabellised.getf(i, 0);
 				tEdgeFlags[label] = true;
@@ -124,12 +128,14 @@ public class FillingHoles
 				tEdgeFlags[label] = true;
 			}
       
-			for (i = 0; i < imageStackCorrected.getWidth(); ++i)
-				for (j = 0; j < imageStackCorrected.getHeight(); ++j)
+			for (int i = 0; i < imageStackCorrected.getWidth(); ++i)
+				for (int j = 0; j < imageStackCorrected.getHeight(); ++j)
 				{
 					label = (int)  imageProcessorLabellised.getf(i, j);
-					if (label == 0 || tEdgeFlags[label] == false) imageProcessorLabellised.putPixelValue(i,j,255);
-					else    imageProcessorLabellised.putPixelValue(i, j, 0);
+					if (label == 0 || tEdgeFlags[label] == false)
+						imageProcessorLabellised.putPixelValue(i,j,255);
+					else
+						imageProcessorLabellised.putPixelValue(i, j, 0);
 				}
 			imageStackOutput.addSlice(imageProcessorLabellised);
 		}

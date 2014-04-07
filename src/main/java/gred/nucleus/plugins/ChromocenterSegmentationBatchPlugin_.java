@@ -34,7 +34,7 @@ public class ChromocenterSegmentationBatchPlugin_ implements PlugIn
 			FileList fileList = new FileList ();
 			File[] tFileRawData =fileList.run(_chromocenterSegmentationPipelineBatchDialog.getRawDataDirectory());
 			if (fileList.isDirectoryOrFileExist(".+RawDataNucleus.+",tFileRawData) &&
-					fileList.isDirectoryOrFileExist(".+SegmentedDataNucleus.+",tFileRawData))
+				fileList.isDirectoryOrFileExist(".+SegmentedDataNucleus.+",tFileRawData))
 			{
 				double xCalibration =_chromocenterSegmentationPipelineBatchDialog.getXCalibration();
 				double yCalibration = _chromocenterSegmentationPipelineBatchDialog.getYCalibration();
@@ -79,7 +79,8 @@ public class ChromocenterSegmentationBatchPlugin_ implements PlugIn
 	{
 		FileSaver fileSaver = new FileSaver(imagePlus);
 	    File file = new File(pathFile);
-	    if (file.exists()) fileSaver.saveAsTiffStack( pathFile+File.separator+imagePlus.getTitle());
+	    if (file.exists())
+	    	fileSaver.saveAsTiffStack( pathFile+File.separator+imagePlus.getTitle());
 	    else
 	    {
 	    	file.mkdir();

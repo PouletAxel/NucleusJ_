@@ -72,9 +72,12 @@ public class VoxelRecord implements Comparable
   {
     VoxelRecord voxelRecord = (VoxelRecord)object;
 
-    if ( _value == voxelRecord._value )  return 0;
-    else if ( _value < voxelRecord._value ) return -1;
-    else      return 1;
+    if ( _value == voxelRecord._value )
+    	return 0;
+    else if ( _value < voxelRecord._value )
+    	return -1;
+    else
+    	return 1;
   }
 
   /**

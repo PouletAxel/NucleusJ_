@@ -38,22 +38,28 @@ public class ChromocentersAnalysisBatchPlugin_ implements PlugIn
 		{
 			FileList fileList = new FileList ();
 			File[] tFileRawImage = fileList.run(chromocentersPipelineBatchDialog.getRawDataDirectory());
-			if (fileList.isDirectoryOrFileExist(".+RawDataNucleus.+",tFileRawImage) && fileList.isDirectoryOrFileExist(".+SegmentedDataNucleus.+",tFileRawImage)
-					&& fileList.isDirectoryOrFileExist(".+SegmentedDataCc.+",tFileRawImage))
+			
+			if(	fileList.isDirectoryOrFileExist(".+RawDataNucleus.+",tFileRawImage) && 
+				fileList.isDirectoryOrFileExist(".+SegmentedDataNucleus.+",tFileRawImage)&&
+				fileList.isDirectoryOrFileExist(".+SegmentedDataCc.+",tFileRawImage))
 			{
 				double xCalibration = chromocentersPipelineBatchDialog.getXCalibration();
 				double yCalibration = chromocentersPipelineBatchDialog.getYCalibration();
 				double zCalibration = chromocentersPipelineBatchDialog.getZCalibration();
 				String unit = chromocentersPipelineBatchDialog.getUnit();
 				String rhfChoice;
-				if (chromocentersPipelineBatchDialog.isRHFVolumeAndIntensity())	rhfChoice = "Volume and intensity";
-				else if (chromocentersPipelineBatchDialog.isRhfVolume())	rhfChoice = "Volume";
-				else rhfChoice = "Intensity";
+				if (chromocentersPipelineBatchDialog.isRHFVolumeAndIntensity())
+					rhfChoice = "Volume and intensity";
+				else if (chromocentersPipelineBatchDialog.isRhfVolume())
+					rhfChoice = "Volume";
+				else
+					rhfChoice = "Intensity";
 				
 				ArrayList<String> arrayListImageChromocenter = fileList.fileSearchList(".+SegmentedDataCc.+",tFileRawImage);
 				String workDirectory = chromocentersPipelineBatchDialog.getWorkDirectory();
 				String nameFileChromocenterAndNucleus = workDirectory+File.separator+"NucAndCcParameters.tab";
 				String nameFileChromocenter = workDirectory+File.separator+"CcParameters.tab";
+				
 				for (int i = 0; i < arrayListImageChromocenter.size(); ++i)
 				{
 					IJ.log("image"+(i+1)+" / "+arrayListImageChromocenter.size());
@@ -62,7 +68,8 @@ public class ChromocentersAnalysisBatchPlugin_ implements PlugIn
 					String pathNucleusSegmented= pathImageChromocenter.replaceAll("SegmentedDataCc", "SegmentedDataNucleus");
 					IJ.log(pathNucleusRaw);
 					IJ.log(pathNucleusSegmented);
-					if (fileList.isDirectoryOrFileExist(pathNucleusRaw,tFileRawImage) && fileList.isDirectoryOrFileExist(pathNucleusSegmented,tFileRawImage))
+					if (fileList.isDirectoryOrFileExist(pathNucleusRaw,tFileRawImage) &&
+						fileList.isDirectoryOrFileExist(pathNucleusSegmented,tFileRawImage))
 					{
 						ImagePlus imagePlusChromocenter = IJ.openImage(arrayListImageChromocenter.get(i));
 						ImagePlus imagePlusSegmented = IJ.openImage(pathNucleusSegmented);
@@ -80,28 +87,54 @@ public class ChromocentersAnalysisBatchPlugin_ implements PlugIn
 							if (chromocentersPipelineBatchDialog.isNucAndCcAnalysis())
 							{
 								ChromocenterAnalysis chromocenterAnalysis = new ChromocenterAnalysis();
-								chromocenterAnalysis.computeParametersChromocenter(nameFileChromocenter,imagePlusSegmented,imagePlusChromocenter);
+								chromocenterAnalysis.computeParametersChromocenter
+								(
+									nameFileChromocenter,
+									imagePlusSegmented,
+									imagePlusChromocenter
+								);
 								IJ.log("chromocenterAnalysis is computing ...");
 								NucleusChromocentersAnalysis nucleusChromocenterAnalysis = new NucleusChromocentersAnalysis(); 
 								IJ.log("nucleusChromocenterAnalysis is computing...");
-								nucleusChromocenterAnalysis.computeParameters(nameFileChromocenterAndNucleus,rhfChoice, imagePlusInput, imagePlusSegmented, imagePlusChromocenter);
+								nucleusChromocenterAnalysis.computeParameters
+								(
+									nameFileChromocenterAndNucleus,
+									rhfChoice,
+									imagePlusInput,
+									imagePlusSegmented,
+									imagePlusChromocenter
+								);
 							}
 							else if (chromocentersPipelineBatchDialog.isCcAnalysis())
 							{
 								ChromocenterAnalysis chromocenterAnalysis = new ChromocenterAnalysis();
-								chromocenterAnalysis.computeParametersChromocenter(nameFileChromocenter,imagePlusSegmented,imagePlusChromocenter);
+								chromocenterAnalysis.computeParametersChromocenter
+								(
+									nameFileChromocenter,
+									imagePlusSegmented,
+									imagePlusChromocenter
+								);
 							}
 							else
 							{
 								NucleusChromocentersAnalysis nucleusChromocenterAnalysis = new NucleusChromocentersAnalysis(); 
-								nucleusChromocenterAnalysis.computeParameters(nameFileChromocenterAndNucleus,rhfChoice, imagePlusInput, imagePlusSegmented, imagePlusChromocenter);
+								nucleusChromocenterAnalysis.computeParameters
+								(
+									nameFileChromocenterAndNucleus,
+									rhfChoice,
+									imagePlusInput,
+									imagePlusSegmented,
+									imagePlusChromocenter
+								);
 							}
 						}
 						catch (IOException e) {	e.printStackTrace(); }
 					}
 					else
 					{
-						IJ.log("Image name problem :  the image "+pathImageChromocenter+" is not find in the directory SegmentedDataNucleus or RawDataNucleus, see nameProblem.txt in "+workDirectory);
+						IJ.log("Image name problem :  the image "+pathImageChromocenter
+							+" is not find in the directory SegmentedDataNucleus or RawDataNucleus, see nameProblem.txt in "
+							+workDirectory);
 						BufferedWriter bufferedWriterLogFile;
 					    try
 					    {

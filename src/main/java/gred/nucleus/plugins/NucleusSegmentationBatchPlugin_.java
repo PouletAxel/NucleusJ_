@@ -29,7 +29,10 @@ public class NucleusSegmentationBatchPlugin_ implements PlugIn
 			FileList fileList = new FileList ();
 			File[] tRawImageFile = fileList.run(_nucleusSegmentationBatchDialog.getRawDataDirectory());
 			ProcessImageSegmentaion processImageSegmentation = new ProcessImageSegmentaion();
-			try {	processImageSegmentation.go(this, tRawImageFile,false); } 
+			try 
+			{	
+				processImageSegmentation.go(this, tRawImageFile,false);
+			} 
 			catch (InterruptedException e) { e.printStackTrace(); }
 		}
 	}

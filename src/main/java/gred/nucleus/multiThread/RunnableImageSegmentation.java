@@ -65,8 +65,10 @@ public class RunnableImageSegmentation extends Thread implements Runnable
 						nucleusAnalysis.nucleusParameter3D(_workDirectory+File.separator+"3DNucleiParameters.tab",impagePlusSegmented);
 						nucleusAnalysis.nucleusParameter2D(_workDirectory+File.separator+"2DNucleiParameters.tab",impagePlusSegmented);
 					}
-					else if(_isanalysis3D)  nucleusAnalysis.nucleusParameter3D(_workDirectory+File.separator+"3DNucleiParameters.tab",impagePlusSegmented);
-					else nucleusAnalysis.nucleusParameter2D(_workDirectory+File.separator+"2DNucleiParameters.tab",impagePlusSegmented);
+					else if(_isanalysis3D)
+						nucleusAnalysis.nucleusParameter3D(_workDirectory+File.separator+"3DNucleiParameters.tab",impagePlusSegmented);
+					else
+						nucleusAnalysis.nucleusParameter2D(_workDirectory+File.separator+"2DNucleiParameters.tab",impagePlusSegmented);
 				}
 				catch (IOException e) {	e.printStackTrace();	}
 			}
@@ -85,7 +87,8 @@ public class RunnableImageSegmentation extends Thread implements Runnable
 	{
 		FileSaver fileSaver = new FileSaver(imagePlusInput);
 	    File file = new File(pathFile);
-	    if (file.exists()) fileSaver.saveAsTiffStack( pathFile+File.separator+imagePlusInput.getTitle());
+	    if (file.exists())
+	    	fileSaver.saveAsTiffStack( pathFile+File.separator+imagePlusInput.getTitle());
 	    else
 	    {
 	      file.mkdir();

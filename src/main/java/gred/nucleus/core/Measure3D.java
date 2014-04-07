@@ -34,39 +34,36 @@ public class Measure3D
 
 	public double computeSurfaceObject (ImagePlus imagePlusInput, double label)
 	{
-		int i;
-		int j; 
-		int k;
-		int ii;
-		int jj;
-		int kk;
 		Calibration calibration= imagePlusInput.getCalibration();
 		ImageStack imageStakInput = imagePlusInput.getStack();
 		double xCalibration = calibration.pixelWidth;
 		double yCalibration = calibration.pixelHeight;
 		double zCalibration = calibration.pixelDepth;
 		double surfaceArea = 0,voxelValue, neighborVoxelValue;
-		for (k = 0; k < imagePlusInput.getStackSize(); ++k)
-			for (i = 0; i < imagePlusInput.getWidth(); ++i)
-				for (j = 0; j < imagePlusInput.getHeight(); ++j)
+		for (int k = 0; k < imagePlusInput.getStackSize(); ++k)
+			for (int i = 0; i < imagePlusInput.getWidth(); ++i)
+				for (int j = 0; j < imagePlusInput.getHeight(); ++j)
 				{
 					voxelValue = imageStakInput.getVoxel(i, j, k);
 					if (voxelValue == label)
 					{
-						for (kk = k-1; kk <= k+1; ++kk)
+						for (int kk = k-1; kk <= k+1; ++kk)
 						{
 							neighborVoxelValue = imageStakInput.getVoxel(i, j, kk);
-							if (voxelValue != neighborVoxelValue) { surfaceArea = surfaceArea + xCalibration * yCalibration; }
+							if (voxelValue != neighborVoxelValue)
+								surfaceArea = surfaceArea + xCalibration * yCalibration;
 						}
-						for (ii=i-1; ii<=i+1; ++ii)
+						for (int ii=i-1; ii<=i+1; ++ii)
 						{
 							neighborVoxelValue =  imageStakInput.getVoxel(ii, j, k);
-							if (voxelValue != neighborVoxelValue) { surfaceArea = surfaceArea + xCalibration * zCalibration; }
+							if (voxelValue != neighborVoxelValue)
+								surfaceArea = surfaceArea + xCalibration * zCalibration;
 						}
-						for (jj = j-1; jj <= j+1; ++jj)
+						for (int jj = j-1; jj <= j+1; ++jj)
 						{
 							neighborVoxelValue = imageStakInput.getVoxel(i, jj, k);
-							if (voxelValue != neighborVoxelValue) { surfaceArea = surfaceArea + yCalibration * zCalibration; }
+							if (voxelValue != neighborVoxelValue)
+								surfaceArea = surfaceArea + yCalibration * zCalibration;
 						}
 					}
 				}
@@ -180,13 +177,10 @@ public class Measure3D
 		double yz = 0;
 		double zz = 0;
 		int compteur = 0;
-		int i;
-		int j;
-		int k;
 		double voxelValue;
-		for (k = 0; k < imagePlusInput.getStackSize(); ++k)
-			for (i = 0; i < imagePlusInput.getWidth(); ++i)
-				for (j = 0; j < imagePlusInput.getHeight(); ++j)
+		for (int k = 0; k < imagePlusInput.getStackSize(); ++k)
+			for (int i = 0; i < imagePlusInput.getWidth(); ++i)
+				for (int j = 0; j < imagePlusInput.getHeight(); ++j)
 				{
 					voxelValue = imageStackInput.getVoxel(i,j,k);
 					if (voxelValue > 0)
@@ -248,12 +242,9 @@ public class Measure3D
 		VoxelRecord voxelRecordBarycenter = new VoxelRecord ();
 		int compteur = 0;
 		double voxelValue;
-		int i;
-		int j;
-		int k;
-		for (k = 0; k < imagePlusInput.getStackSize(); ++k)
-			for (i = 0; i < imagePlusInput.getWidth(); ++i)
-				for (j = 0; j < imagePlusInput.getHeight(); ++j)
+		for (int k = 0; k < imagePlusInput.getStackSize(); ++k)
+			for (int i = 0; i < imagePlusInput.getWidth(); ++i)
+				for (int j = 0; j < imagePlusInput.getHeight(); ++j)
 				{
 					voxelValue = imageStackInput.getVoxel(i,j,k);
 					if (voxelValue == label )
@@ -302,17 +293,17 @@ public class Measure3D
 	 */
 	public double computeRhfIntensite (ImagePlus imagePlusInput, ImagePlus imagePlusSegmented, ImagePlus imagePlusChromocenter )
 	  {
-	    double chromocenterIntensity = 0, nucleusIntensity = 0;
-	    double voxelValueChromocenter, voxelValueInput, voxelValueSegmented;
-	    int i;
-	    int j;
-	    int k;
+	    double chromocenterIntensity = 0;
+	    double nucleusIntensity = 0;
+	    double voxelValueChromocenter;
+	    double voxelValueInput;
+	    double voxelValueSegmented;
 	    ImageStack imageStackChromocenter =  imagePlusChromocenter.getStack();
 	    ImageStack imageStackSegmented = imagePlusSegmented.getStack();
 	    ImageStack imageStackInput = imagePlusInput.getStack();
-	    for (k = 0; k < imagePlusInput.getNSlices(); ++k)
-	      for (i = 0; i < imagePlusInput.getWidth(); ++i )
-	        for (j = 0; j < imagePlusInput.getHeight(); ++j )
+	    for (int k = 0; k < imagePlusInput.getNSlices(); ++k)
+	      for (int i = 0; i < imagePlusInput.getWidth(); ++i )
+	        for (int j = 0; j < imagePlusInput.getHeight(); ++j )
 	        {
 	          voxelValueSegmented = imageStackSegmented.getVoxel(i, j, k);
 	          voxelValueInput = imageStackInput.getVoxel(i, j, k);
@@ -337,10 +328,9 @@ public class Measure3D
 	   */
 	  public double computeRhfVolume (ImagePlus imagePlusSegmented, ImagePlus imagePlusChomocenters)
 	  {
-	    int i;
 	    double volumeCc = 0;
 	    double [] tVolumeChromocenter = computeVolumeofAllObjects(imagePlusChomocenters);
-	    for (i = 0; i < tVolumeChromocenter.length; ++i) 
+	    for (int i = 0; i < tVolumeChromocenter.length; ++i) 
 	    	volumeCc += tVolumeChromocenter[i];
 	    double []tVolumeSegmented = computeVolumeofAllObjects(imagePlusSegmented);
 	    return volumeCc / tVolumeSegmented[0];

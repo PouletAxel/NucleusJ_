@@ -32,7 +32,8 @@ public class NucleusSegmentationPlugin_ implements PlugIn
 	    	IJ.error("image format", "No images in gray scale 8bits in 3D");
 	        return;
 	    }
-	    if (IJ.versionLessThan("1.32c"))   return;
+	    if (IJ.versionLessThan("1.32c"))
+	    	return;
 	    NucleusSegmentationDialog nucleusSegmentationDialog = new NucleusSegmentationDialog();
 	    while( nucleusSegmentationDialog.isShowing())
 		{
@@ -41,7 +42,6 @@ public class NucleusSegmentationPlugin_ implements PlugIn
 	    }	
 		if (nucleusSegmentationDialog.isStart())
 		{
-			
 			double xCalibration = nucleusSegmentationDialog.getXCalibration();
 			double yCalibration = nucleusSegmentationDialog.getYCalibration();
 			double zCalibration = nucleusSegmentationDialog.getZCalibration();
@@ -59,8 +59,14 @@ public class NucleusSegmentationPlugin_ implements PlugIn
 			nucleusSegmentation.setVolumeRange(volumeMin, volumeMax);
 			imagePlusSegmented = nucleusSegmentation.applySegmentation(imagePlusSegmented);
 			if(nucleusSegmentation.getBestThreshold()==0)
-				IJ.showMessageWithCancel("Segmentation error", "No object is detected between "+nucleusSegmentationDialog.getMinVolume()
-					+"and"+nucleusSegmentationDialog.getMaxVolume()+" "+unit);
+				IJ.showMessageWithCancel
+				(
+					"Segmentation error",
+					"No object is detected between "
+					+nucleusSegmentationDialog.getMinVolume()
+					+"and"+nucleusSegmentationDialog.getMaxVolume()
+					+" "+unit
+				);
 			else
 			{
 				imagePlusSegmented.setTitle("Segmented"+_imagePlusInput.getTitle());

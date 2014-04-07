@@ -1,5 +1,4 @@
 package gred.nucleus.utils;
-import ij.IJ;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -40,7 +39,8 @@ public class FileList
                 File[] tTempBeforeElement = stockFileBefore(i,tFileDirectory);
                 File[] tTempAfterElement = stockFileAfter(i,tFileDirectory);
                 File[] tTempFile = repertoryFileList(tFileDirectory[i].toString());
-                if (tTempFile.length != 0)    tFileDirectory=this.resize(tTempBeforeElement, tTempAfterElement, tTempFile, i);
+                if (tTempFile.length != 0) 
+                	tFileDirectory=this.resize(tTempBeforeElement, tTempAfterElement, tTempFile, i);
             }
         }
          return tFileDirectory;
@@ -61,13 +61,16 @@ public class FileList
         for (int j = 0; j < tFile.length; ++j)
         {
         	//list file before the directory :
-        	if (j < indiceMax)    tFile[j] = tTempBeforeElement[j];
+        	if (j < indiceMax)
+        		tFile[j] = tTempBeforeElement[j];
         	//listed file in the directory :
         	else
         	{
-        		if (j < indiceMax + tTempFile.length)	 tFile[j] = tTempFile[j - indiceMax];
+        		if (j < indiceMax + tTempFile.length)
+        			tFile[j] = tTempFile[j - indiceMax];
         		//listed files after directory :
-        		else  tFile[j] = tTempAfterElement[j - indiceMax - tTempFile.length];
+        		else
+        			tFile[j] = tTempAfterElement[j - indiceMax - tTempFile.length];
         	}
         }
 	return tFile;  
@@ -116,7 +119,11 @@ public class FileList
    		boolean testFile = false;
        	for(int i = 0; i < tableFile.length; ++i)
 		{
-    		if(tableFile[i].toString().equals(filePathway)) {	testFile = true; break;}
+    		if(tableFile[i].toString().equals(filePathway))
+    		{
+    			testFile = true;
+    			break;
+    		}
     	}
        	return testFile;
     }
@@ -153,7 +160,11 @@ public class FileList
     	boolean testFile = false;
         for(int i = 0; i < tFile.length; ++i)
  		{
-        	if(tFile[i].toString().matches((regex)))	{	testFile = true; break;}
+        	if(tFile[i].toString().matches((regex)))
+        	{
+        		testFile = true;
+        		break;
+        	}
      	}
         	return testFile;
      }
@@ -186,7 +197,8 @@ public class FileList
     	if (arrayList.size() > 0)
     	{
     		tTemp = new String [arrayList.size()];
-    		for(int i = 0; i < arrayList.size(); ++i) tTemp[i] = arrayList.get(i);
+    		for(int i = 0; i < arrayList.size(); ++i)
+    			tTemp[i] = arrayList.get(i);
     	}
     	return tTemp;
     }
@@ -202,7 +214,8 @@ public class FileList
 	{
 		ArrayList<String> arrayListFile = new ArrayList<String>();
        	for(int i = 0; i < tFile.length; ++i)
-    		if(tFile[i].toString().matches((regex))) arrayListFile.add(tFile[i].toString());
+    		if(tFile[i].toString().matches((regex)))
+    			arrayListFile.add(tFile[i].toString());
    	
     	return arrayListFile;
 	}   	

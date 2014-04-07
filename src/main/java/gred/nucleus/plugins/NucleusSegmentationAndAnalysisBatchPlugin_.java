@@ -32,12 +32,15 @@ public class NucleusSegmentationAndAnalysisBatchPlugin_ implements PlugIn
 			FileList fileList = new FileList ();
 			File[] tFileRawImage = fileList.run(_nucleusPipelineBatchDialog.getRawDataDirectory());
 			ProcessImageSegmentaion processImageSegmentation = new ProcessImageSegmentaion();
-			try {	processImageSegmentation.go(this, tFileRawImage,true); } 
+			try
+			{
+				processImageSegmentation.go(this, tFileRawImage,true);
+			} 
 			catch (InterruptedException e) { e.printStackTrace(); }
 			IJ.log("End of the segmentation the nuclei, the results are in "+_nucleusPipelineBatchDialog.getWorkDirectory());
-			
 		}
 	}
+	
 	public int getNbCpu(){return _nucleusPipelineBatchDialog.getNbCpu();}
 	public double getZCalibration(){return _nucleusPipelineBatchDialog.getZCalibration();}
 	public double getXCalibration(){return _nucleusPipelineBatchDialog.getXCalibration();}

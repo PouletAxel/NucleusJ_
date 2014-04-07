@@ -64,15 +64,14 @@ public class RadialDistance
 		ImageStack imageStackChromocenter = imagePlusChromocenter.getStack();
 		ImagePlus imagePlusDistanceMap =  computeDistanceMap(imagePlusSegmented);
 		ImageStack imageStackDistanceMap = imagePlusDistanceMap.getStack();
-		int i, j, k, l;
 		double voxelValueMin, voxelValue;
 		double [] tDistanceRadial = new double [tLabel.length];
-		for (l = 0; l < tLabel.length; ++l)
+		for (int l = 0; l < tLabel.length; ++l)
 		{
 			voxelValueMin = Double.MAX_VALUE;
-			for (k = 0; k < imagePlusChromocenter.getNSlices(); ++k)
-				for (i = 0; i < imagePlusChromocenter.getWidth(); ++i)
-					for (j = 0; j < imagePlusChromocenter.getHeight(); ++j)
+			for (int k = 0; k < imagePlusChromocenter.getNSlices(); ++k)
+				for (int i = 0; i < imagePlusChromocenter.getWidth(); ++i)
+					for (int j = 0; j < imagePlusChromocenter.getHeight(); ++j)
 					{
 						voxelValue = imageStackDistanceMap.getVoxel(i, j, k);
 						if (voxelValue < voxelValueMin && tLabel[l] == imageStackChromocenter.getVoxel(i, j, k))
@@ -95,7 +94,6 @@ public class RadialDistance
 	
 	public double[] computeBarycenterToBorderDistances (ImagePlus imagePlusSegmented,ImagePlus imagePlusChromocenter)
 	{
-		int i;
 		Resizer resizer = new Resizer();
 		Calibration calibration = imagePlusSegmented.getCalibration();
 		double xCalibration = calibration.pixelWidth;
@@ -108,7 +106,7 @@ public class RadialDistance
 	    VoxelRecord [] tVoxelRecord = measure3D.computeObjectBarycenter(imagePlusChromocenterRescale,false);
 	    double [] tRadialDistance = new double[tVoxelRecord.length];
 	    double distance =-50;
-	    for (i = 0; i < tVoxelRecord.length; ++i)
+	    for (int i = 0; i < tVoxelRecord.length; ++i)
 	    {
 	    	VoxelRecord voxelRecord = tVoxelRecord[i];
 	    	distance = imageStackDistanceMap.getVoxel((int)voxelRecord._i,(int)voxelRecord._j,(int)voxelRecord._k);

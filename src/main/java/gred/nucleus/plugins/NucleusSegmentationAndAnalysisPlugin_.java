@@ -33,7 +33,8 @@ public class NucleusSegmentationAndAnalysisPlugin_ implements PlugIn
 			IJ.error("image format", "No images in gray scale in 3D");
 			return;
 		}
-		if (IJ.versionLessThan("1.32c"))   return;
+		if (IJ.versionLessThan("1.32c"))
+			return;
 		NucleusSegmentationAndAnalysisDialog nucleusSegmentationAndAnalysisDialog = new NucleusSegmentationAndAnalysisDialog();
 		while( nucleusSegmentationAndAnalysisDialog.isShowing())
 		{
@@ -68,8 +69,10 @@ public class NucleusSegmentationAndAnalysisPlugin_ implements PlugIn
 					nucleusAnalysis.nucleusParameter3D(imagePlusSegmented);
 					nucleusAnalysis.nucleusParameter2D(imagePlusSegmented);
 				}
-				else if(nucleusSegmentationAndAnalysisDialog.is3D())  nucleusAnalysis.nucleusParameter3D(imagePlusSegmented);
-				else nucleusAnalysis.nucleusParameter2D(imagePlusSegmented);
+				else if(nucleusSegmentationAndAnalysisDialog.is3D())
+					nucleusAnalysis.nucleusParameter3D(imagePlusSegmented);
+				else
+					nucleusAnalysis.nucleusParameter2D(imagePlusSegmented);
 			}
 		}
 	}

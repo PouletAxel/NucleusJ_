@@ -49,12 +49,6 @@ public class ChromocenterSegmentation
 	 */
 	public double [][] getRegionAdjacencyGraph (ImagePlus imagePlusWatershed)
 	{
-		int i;
-		int j;
-		int k;
-		int ii;
-		int jj;
-		int kk;
 		int voxelValue;
 		int neighborVoxelValue;
 		ImageStatistics imageStatistics = new StackStatistics(imagePlusWatershed);
@@ -62,24 +56,24 @@ public class ChromocenterSegmentation
 		Calibration calibration = imagePlusWatershed.getCalibration();
 		double volumeVoxel = calibration.pixelWidth * calibration.pixelHeight * calibration.pixelDepth;
 		ImageStack imageStackWatershed = imagePlusWatershed.getStack();
-		for (k = 0; k < imagePlusWatershed.getNSlices(); ++k)
-			for (i = 0; i < imagePlusWatershed.getWidth(); ++i)
-				for (j = 0; j < imagePlusWatershed.getHeight(); ++j)
+		for (int k = 0; k < imagePlusWatershed.getNSlices(); ++k)
+			for (int i = 0; i < imagePlusWatershed.getWidth(); ++i)
+				for (int j = 0; j < imagePlusWatershed.getHeight(); ++j)
 				{
 					voxelValue = (int)imageStackWatershed.getVoxel(i,j,k);
-					for (kk = k - 1; kk <= k + 1; kk += 2)
+					for (int kk = k - 1; kk <= k + 1; kk += 2)
 					{
 						neighborVoxelValue = (int) imageStackWatershed.getVoxel(i,j,kk);
 						if (neighborVoxelValue > 0 && voxelValue != neighborVoxelValue)
 							tRegionAdjacencyGraph[voxelValue][neighborVoxelValue] += volumeVoxel;
 					}
-					for (jj = j - 1; jj <= j + 1; jj += 2)
+					for (int jj = j - 1; jj <= j + 1; jj += 2)
 					{
 						neighborVoxelValue = (int) imageStackWatershed.getVoxel(i,jj,k);
 						if (neighborVoxelValue > 0 && voxelValue != neighborVoxelValue)
 							tRegionAdjacencyGraph[voxelValue][neighborVoxelValue] += volumeVoxel;
 					}
-					for (ii = i - 1; ii <= i + 1; ii += 2)
+					for (int ii = i - 1; ii <= i + 1; ii += 2)
 					{
 						neighborVoxelValue = (int) imageStackWatershed.getVoxel(ii,j,k);
 						if (neighborVoxelValue > 0 && voxelValue != neighborVoxelValue)
@@ -103,12 +97,10 @@ public class ChromocenterSegmentation
 		double [] tMean = computeMeanIntensity (imagePlusRaw,imagePlusWatershed);
 		double [] tContrast= new double [tRegionAdjacencyGraph.length+1];
 		double neighborVolumeTotal;
-		int i;
-		int j;
-		for(i = 1; i < tRegionAdjacencyGraph.length; ++i)
+		for(int i = 1; i < tRegionAdjacencyGraph.length; ++i)
 		{
 			neighborVolumeTotal = 0;
-			for(j = 1; j < tRegionAdjacencyGraph[i].length; ++j)
+			for(int j = 1; j < tRegionAdjacencyGraph[i].length; ++j)
 			{
 				if (tRegionAdjacencyGraph[i][j] > 0 && i != j)
 				{
@@ -154,12 +146,12 @@ public class ChromocenterSegmentation
 	{
 		double [] tOutput = new double [tRegionAdjacencyGraph.length];
 		double max;
-		int i;
-		int j;
-		for(i = 1; i < tRegionAdjacencyGraph.length; ++i)
+		for(int i = 1; i < tRegionAdjacencyGraph.length; ++i)
 		{
 			max = tMeanIntensity[i];
-			for(j = 1; j < tRegionAdjacencyGraph.length; ++j) if  (tMeanIntensity[j] > max && tRegionAdjacencyGraph[i][j]>0 )  max = tMeanIntensity[j];
+			for(int j = 1; j < tRegionAdjacencyGraph.length; ++j) 
+				if  (tMeanIntensity[j] > max && tRegionAdjacencyGraph[i][j]>0 )
+					max = tMeanIntensity[j];
 			tOutput[i] = max;
 		}
 		return tOutput;
@@ -176,12 +168,10 @@ public class ChromocenterSegmentation
 	{
 		double tOutput[] = new double [tRegionAdjacencyGraph.length];
 		double min;
-		int i;
-		int j;
-		for(i = 1; i < tRegionAdjacencyGraph.length; ++i)
+		for(int i = 1; i < tRegionAdjacencyGraph.length; ++i)
 		{
 			min = tMeanIntensity[i];
-			for(j = 1; j < tRegionAdjacencyGraph.length; ++j)
+			for(int j = 1; j < tRegionAdjacencyGraph.length; ++j)
 				if (tMeanIntensity[j] > 0 && tMeanIntensity[j] < min && tRegionAdjacencyGraph[i][j] > 0 ) 
 					min = tMeanIntensity[j];
 			tOutput[i] = (int) min;
@@ -237,13 +227,10 @@ public class ChromocenterSegmentation
 		double [] tIntensityTotal = new double [(int)imageStatistics.histMax + 1];
 		double [] tIntensityMean = new double [(int)imageStatistics.histMax + 1];
 		int [] tNbVoxelInEachRegion = new int [(int)imageStatistics.histMax + 1];
-		int i;
-		int j;
-		int k;
 		int voxelValue;
-		for (k = 0; k < imagePlusWatershed.getNSlices(); ++k)
-			for (i = 0; i < imagePlusWatershed.getWidth(); ++i)
-				for (j = 0; j < imagePlusWatershed.getHeight(); ++j)
+		for (int k = 0; k < imagePlusWatershed.getNSlices(); ++k)
+			for (int i = 0; i < imagePlusWatershed.getWidth(); ++i)
+				for (int j = 0; j < imagePlusWatershed.getHeight(); ++j)
 				{
 					voxelValue = (int) imageStackWatershed.getVoxel(i,j,k);
 					if (voxelValue > 0)
@@ -252,7 +239,7 @@ public class ChromocenterSegmentation
 						++tNbVoxelInEachRegion [voxelValue];
 					}
  				}
-		for (i = 1; i < tIntensityTotal.length; ++i)
+		for (int i = 1; i < tIntensityTotal.length; ++i)
 			tIntensityMean[i] = tIntensityTotal[i] / tNbVoxelInEachRegion [i];
 		return tIntensityMean;
 	}
@@ -264,15 +251,12 @@ public class ChromocenterSegmentation
 	 */
 	public ImagePlus computeImage (ImagePlus imagePlusInput, double [] tVoxelValue)
 	{
-		int i;
-		int j;
-		int k;
 		double voxelValue;
 		ImagePlus imagePlusContrast = imagePlusInput.duplicate();
 		ImageStack imageStackConstrast = imagePlusContrast.getStack();
-		for (k = 0; k < imagePlusContrast.getNSlices(); ++k)
-			for (i = 0; i < imagePlusContrast.getWidth(); ++i)
-				for (j = 0; j < imagePlusContrast.getHeight(); ++j)
+		for (int k = 0; k < imagePlusContrast.getNSlices(); ++k)
+			for (int i = 0; i < imagePlusContrast.getWidth(); ++i)
+				for (int j = 0; j < imagePlusContrast.getHeight(); ++j)
 				{
 					voxelValue = imageStackConstrast.getVoxel(i, j, k);
 					if (voxelValue > 0) imageStackConstrast.setVoxel(i, j, k, tVoxelValue[(int)voxelValue]);

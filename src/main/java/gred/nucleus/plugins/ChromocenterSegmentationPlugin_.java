@@ -33,8 +33,10 @@ public class ChromocenterSegmentationPlugin_ implements PlugIn
 		for (int i = 0; i < wList.length; i++)
 		{
 			ImagePlus imagePlus = WindowManager.getImage(wList[i]);
-			if (imagePlus != null)	titles[i] = imagePlus.getTitle();
-			else	titles[i] = "";
+			if (imagePlus != null)
+				titles[i] = imagePlus.getTitle();
+			else
+				titles[i] = "";
 		}
 		
 		GenericDialog genericDialog = new GenericDialog("Chromocenter Segmentation", IJ.getInstance());
@@ -45,7 +47,8 @@ public class ChromocenterSegmentationPlugin_ implements PlugIn
 		genericDialog.addNumericField("z calibration",zCalibration, 3);
 		genericDialog.addStringField("Unit",unit,10);
 		genericDialog.showDialog();
-		if (genericDialog.wasCanceled())   return;
+		if (genericDialog.wasCanceled()) 
+			return;
 		ImagePlus imagePlusInput =  WindowManager.getImage(wList[genericDialog.getNextChoiceIndex()]);
 		ImagePlus imagePlusSegmented =  WindowManager.getImage(wList[genericDialog.getNextChoiceIndex()]);
 		xCalibration = genericDialog.getNextNumber();

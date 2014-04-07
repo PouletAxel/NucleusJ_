@@ -47,9 +47,18 @@ public class ProcessImageSegmentaion
 			IJ.log("image"+(i+1)+" / "+tInputFile.length);
 			ImagePlus imagePlusInput = IJ.openImage(tInputFile[i].toString());
 			imagePlusInput.setCalibration(calibration);
-			arrayListImageThread.add(new RunnableImageSegmentation(imagePlusInput,nucleusSegmentationAndAnalysisBatchPlugin.getMinVolume(),nucleusSegmentationAndAnalysisBatchPlugin.getMaxVolume()
-					,nucleusSegmentationAndAnalysisBatchPlugin.getWorkDirectory(),nucleusSegmentationAndAnalysisBatchPlugin.is2D3DAnalysis(),
-					nucleusSegmentationAndAnalysisBatchPlugin.is3DAnalysis(),doAnalysis));
+			arrayListImageThread.add
+			(new RunnableImageSegmentation
+				 (
+						 imagePlusInput,
+						 nucleusSegmentationAndAnalysisBatchPlugin.getMinVolume(),
+						 nucleusSegmentationAndAnalysisBatchPlugin.getMaxVolume(),
+						 nucleusSegmentationAndAnalysisBatchPlugin.getWorkDirectory(),
+						 nucleusSegmentationAndAnalysisBatchPlugin.is2D3DAnalysis(),
+						 nucleusSegmentationAndAnalysisBatchPlugin.is3DAnalysis(),
+						 doAnalysis
+				)
+			);
 			arrayListImageThread.get(i).start();
 			
 			while (_continuer == false)
@@ -88,8 +97,18 @@ public class ProcessImageSegmentaion
 			IJ.log("image"+(i+1)+" / "+tInputFile.length);
 			ImagePlus imagePlusInput = IJ.openImage(tInputFile[i].toString());
 			imagePlusInput.setCalibration(calibration);
-			arrayListImageThread.add(new RunnableImageSegmentation(imagePlusInput,nucleusSegmentationBatchPlugin.getMinVolume(),nucleusSegmentationBatchPlugin.getMaxVolume()
-					,nucleusSegmentationBatchPlugin.getWorkDirectory(),false, false ,doAnalysis));
+			arrayListImageThread.add
+			(new RunnableImageSegmentation
+					(
+							imagePlusInput,
+							nucleusSegmentationBatchPlugin.getMinVolume(),
+							nucleusSegmentationBatchPlugin.getMaxVolume(),
+							nucleusSegmentationBatchPlugin.getWorkDirectory(),
+							false,
+							false,
+							doAnalysis
+					)
+			);
 			arrayListImageThread.get(i).start();
 			while (_continuer == false)
 				Thread.sleep(10);

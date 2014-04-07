@@ -93,6 +93,8 @@ public class NucleusChromocentersAnalysis
 					+volumeCcMean+" "
 					+volumeCcMean*nbCc+" "
 					+computeMeanOfTable(tBorderToBorderDistance)+" "
+					+measure3D.computeFlatnessObject(imagePlusSegmented,255)+" "
+					+measure3D.computeElongationObject(imagePlusSegmented,255)+" "
 					+measure3D.computeSphericity(volume,surfaceArea)+" "
 					+measure3D.computeRhfIntensite(imagePlusInput,imagePlusSegmented, imagePlusChromocenter)+" "
 					+voxelVolume
@@ -289,9 +291,9 @@ public class NucleusChromocentersAnalysis
 	  
 	public double computeMeanOfTable (double [] tInput)
 	{
-		int i;
 		double mean = 0;
-		for (i = 0; i < tInput.length; ++i)	mean += tInput[i];
+		for (int i = 0; i < tInput.length; ++i)
+			mean += tInput[i];
 		mean = mean / (tInput.length);
 		return mean;
 	}

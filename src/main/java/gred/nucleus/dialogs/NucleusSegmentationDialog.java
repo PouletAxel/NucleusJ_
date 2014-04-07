@@ -20,7 +20,8 @@ public class NucleusSegmentationDialog  extends JFrame
 {
 
 	private static final long serialVersionUID = 1L;
-	private JButton _jButtonStart = new JButton("Start"), _jButtonquit = new JButton("Quit");
+	private JButton _jButtonStart = new JButton("Start");
+	private JButton _jButtonQuit = new JButton("Quit");
 	private Container _container;
 	private JFormattedTextField _jTextFieldXCalibration = new JFormattedTextField(Number.class);
 	private JFormattedTextField _jTextFieldYCalibration = new JFormattedTextField(Number.class);
@@ -28,8 +29,15 @@ public class NucleusSegmentationDialog  extends JFrame
 	private JFormattedTextField _jTextFieldMax =  new JFormattedTextField(Number.class);
 	private JFormattedTextField _jTextFieldMin =  new JFormattedTextField(Number.class);
 	private JTextField _jTextFieldUnit =  new JTextField();
-	private JLabel _jLabelXcalibration, _jLabelYcalibration, _jLabelZcalibration, _jLabelUnit,
-	_jLabelSegmentation, _jLabelVolumeMin, _jLabelVolumeMax, _JLabelCalibration,_jLabelUnitTexte;
+	private JLabel _jLabelXcalibration;
+	private JLabel _jLabelYcalibration;
+	private JLabel _jLabelZcalibration;
+	private JLabel _jLabelUnit;
+	private JLabel _jLabelSegmentation;
+	private JLabel _jLabelVolumeMin;
+	private JLabel _jLabelVolumeMax;
+	private JLabel _JLabelCalibration;
+	private JLabel _jLabelUnitTexte;
 	private boolean _start = false;
 		
 	/**
@@ -60,79 +68,259 @@ public class NucleusSegmentationDialog  extends JFrame
 		_container.setLayout (gridBagLayout);
 		
 		_JLabelCalibration = new JLabel();
-		_container.add(_JLabelCalibration, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
+		_container.add
+		(
+			_JLabelCalibration,
+			new GridBagConstraints
+			(
+				0, 1, 0, 0, 0.0, 0.0,
+				GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE,
+				new Insets(0, 10, 0, 0), 0, 0
+			)
+		);
 		_JLabelCalibration.setText("Voxel Calibration:");
 		
 		_container.setLayout (gridBagLayout);
 		_jLabelXcalibration = new JLabel();
-		_container.add(_jLabelXcalibration, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(20, 20, 0, 0), 0, 0));
+		_container.add
+		(
+			_jLabelXcalibration,
+			new GridBagConstraints
+			(
+				0, 1, 0, 0, 0.0, 0.0,
+				GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE,
+				new Insets(20, 20, 0, 0), 0, 0
+			)
+		);
 		_jLabelXcalibration.setText("x :");
 		_jLabelXcalibration.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_container.add(_jTextFieldXCalibration, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(20, 60, 0, 0), 0, 0));
+		_container.add
+		(
+			_jTextFieldXCalibration,
+			new GridBagConstraints
+			(
+				0, 1, 0, 0, 0.0, 0.0,
+				GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE,
+				new Insets(20, 60, 0, 0), 0, 0
+			)
+		);
 		_jTextFieldXCalibration.setText("1");
 		_jTextFieldXCalibration.setPreferredSize(new java.awt.Dimension(60, 21));
 		
 		_jLabelYcalibration = new JLabel();
-		_container.add(_jLabelYcalibration, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(45, 20, 0, 0), 0, 0));
+		_container.add
+		(
+			_jLabelYcalibration,
+			new GridBagConstraints
+			(
+				0, 1, 0, 0, 0.0, 0.0,
+				GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE,
+				new Insets(45, 20, 0, 0), 0, 0
+			)
+		);
 		_jLabelYcalibration.setText("y :");
 		_jLabelYcalibration.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_container.add(_jTextFieldYCalibration, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(45, 60, 0, 0), 0, 0));
+		_container.add
+		(
+			_jTextFieldYCalibration,
+			new GridBagConstraints
+			(
+				0, 1, 0, 0, 0.0, 0.0,
+				GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE,
+				new Insets(45, 60, 0, 0), 0, 0
+			)
+		);
 		_jTextFieldYCalibration.setText("1");
 		_jTextFieldYCalibration.setPreferredSize(new java.awt.Dimension(60, 21));
 		
 		_jLabelZcalibration = new JLabel();
-		_container.add(_jLabelZcalibration, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(70, 20, 0, 0), 0, 0));
+		_container.add
+		(
+			_jLabelZcalibration,
+			new GridBagConstraints
+			(
+				0, 1, 0, 0, 0.0, 0.0,
+				GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE,
+				new Insets(70, 20, 0, 0), 0, 0
+			)
+		);
 		_jLabelZcalibration.setText("z :");
 		_jLabelZcalibration.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_container.add(_jTextFieldZCalibration, new GridBagConstraints(0, 1,0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(70, 60, 0, 0), 0, 0));
+		_container.add
+		(
+			_jTextFieldZCalibration,
+			new GridBagConstraints
+			(
+				0, 1,0, 0, 0.0, 0.0,
+				GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE,
+				new Insets(70, 60, 0, 0), 0, 0
+			)
+		);
 		_jTextFieldZCalibration.setText("1");
 		_jTextFieldZCalibration.setPreferredSize(new java.awt.Dimension(60, 21));	 
 		
 		_jLabelUnit = new JLabel();
-		_container.add(_jLabelUnit, new GridBagConstraints(0, 1, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(95, 20, 0, 0), 0, 0));
+		_container.add
+		(
+			_jLabelUnit,
+			new GridBagConstraints
+			(
+				0, 1, 0, 0, 0.0, 0.0,
+				GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE,
+				new Insets(95, 20, 0, 0), 0, 0
+			)
+		);
 		_jLabelUnit.setText("unit :");
 		_jLabelUnit.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_container.add(_jTextFieldUnit, new GridBagConstraints(0, 1,0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(95, 60, 0, 0), 0, 0));
+		_container.add
+		(
+			_jTextFieldUnit,
+			new GridBagConstraints
+			(
+				0, 1,0, 0, 0.0, 0.0,
+				GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE,
+				new Insets(95, 60, 0, 0), 0, 0
+			)
+		);
 		_jTextFieldUnit.setText("pixel");
 		_jTextFieldUnit.setPreferredSize(new java.awt.Dimension(60, 21));	
 		
 		_jLabelSegmentation = new JLabel();
-		_container.add(_jLabelSegmentation, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(20, 10, 0, 0), 0, 0));
+		_container.add
+		(
+			_jLabelSegmentation,
+			new GridBagConstraints
+			(
+				0, 2, 0, 0, 0.0, 0.0,
+				GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE,
+				new Insets(20, 10, 0, 0), 0, 0
+			)
+		);
 		_jLabelSegmentation.setText("Choose the min and max volumes of the nucleus:");
 		
 		_jLabelVolumeMin = new JLabel();
-		_container.add(_jLabelVolumeMin, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(40, 20, 0, 0), 0, 0));
+		_container.add
+		(
+			_jLabelVolumeMin,
+			new GridBagConstraints
+			(
+				0, 2, 0, 0, 0.0, 0.0,
+				GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE,
+				new Insets(40, 20, 0, 0), 0, 0
+			)
+		);
 		_jLabelVolumeMin.setText("Minimun volume of the segmented nucleus :");
 		_jLabelVolumeMin.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_container.add(_jTextFieldMin, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(40, 320, 0, 0), 0, 0));
+		_container.add
+		(
+			_jTextFieldMin,
+			new GridBagConstraints
+			(
+				0, 2, 0, 0, 0.0, 0.0,
+				GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE,
+				new Insets(40, 320, 0, 0), 0, 0
+			)
+		);
 		_jTextFieldMin.setText("15");
 		_jTextFieldMin.setPreferredSize(new java.awt.Dimension( 60, 21));
 		
 		_jLabelUnitTexte = new JLabel();
-		_container.add(_jLabelUnitTexte, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(40, 410, 0, 0), 0, 0));
+		_container.add
+		(
+			_jLabelUnitTexte,
+			new GridBagConstraints
+			(
+				0, 2, 0, 0, 0.0, 0.0,
+				GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE,
+				new Insets(40, 410, 0, 0), 0, 0
+			)
+		);
 		_jLabelUnitTexte.setText("unit^3");
 		_jLabelUnitTexte.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
 		
 		_jLabelVolumeMax = new JLabel();
-		_container.add(_jLabelVolumeMax, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(70, 20, 0, 0), 0, 0));
+		_container.add
+		(
+			_jLabelVolumeMax,
+			new GridBagConstraints
+			(
+				0, 2, 0, 0, 0.0, 0.0,
+				GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE,
+				new Insets(70, 20, 0, 0), 0, 0
+			)
+		);
 		_jLabelVolumeMax.setText("Maximum volume of the segmented nucleus :");
 		_jLabelVolumeMax.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
-		_container.add(_jTextFieldMax, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,new Insets(70, 320, 0, 0), 0, 0));
+		_container.add
+		(
+			_jTextFieldMax,
+			new GridBagConstraints
+			(
+				0, 2, 0, 0, 0.0, 0.0,
+				GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE,
+				new Insets(70, 320, 0, 0), 0, 0
+			)
+		);
 		_jTextFieldMax.setText("2000");
 		_jTextFieldMax.setPreferredSize(new java.awt.Dimension (60, 21));
 		_jLabelUnitTexte = new JLabel();
-		_container.add(_jLabelUnitTexte, new GridBagConstraints(0, 2, 0, 0, 0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(70, 410, 0, 0), 0, 0));
+		_container.add
+		(
+			_jLabelUnitTexte,
+			new GridBagConstraints
+			(
+				0, 2, 0, 0, 0.0, 0.0,
+				GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE,
+				new Insets(70, 410, 0, 0), 0, 0
+			)
+		);
 		_jLabelUnitTexte.setText("unit^3");
 		_jLabelUnitTexte.setFont(new java.awt.Font("Albertus Extra Bold (W1)",2,12));
 		
-		_container.add(_jButtonStart, new GridBagConstraints(0, 2, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(160, 140, 0,0), 0, 0));
+		_container.add
+		(
+			_jButtonStart,
+			new GridBagConstraints
+			(
+				0, 2, 0, 0,  0.0, 0.0,
+				GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE,
+				new Insets(160, 140, 0,0), 0, 0
+			)
+		);
 		_jButtonStart.setPreferredSize(new java.awt.Dimension(120, 21));
-		_container.add(_jButtonquit, new GridBagConstraints(0, 2, 0, 0,  0.0, 0.0, GridBagConstraints.NORTHWEST,GridBagConstraints.NONE, new Insets(160, 10, 0, 0), 0, 0));
-		_jButtonquit.setPreferredSize(new java.awt.Dimension(120, 21));
+		_container.add
+		(
+			_jButtonQuit,
+			new GridBagConstraints
+			(
+				0, 2, 0, 0,  0.0, 0.0,
+				GridBagConstraints.NORTHWEST,
+				GridBagConstraints.NONE,
+				new Insets(160, 10, 0, 0), 0, 0
+			)
+		);
+		_jButtonQuit.setPreferredSize(new java.awt.Dimension(120, 21));
 		this.setVisible(true);
 		
 		QuitListener quitListener = new QuitListener(this);
-		_jButtonquit.addActionListener(quitListener);
+		_jButtonQuit.addActionListener(quitListener);
 		StartListener startListener = new StartListener(this);
 		_jButtonStart.addActionListener(startListener);	   
 	}
@@ -151,21 +339,47 @@ public class NucleusSegmentationDialog  extends JFrame
 	 */
 	/********************************************************************************************************************************************/
 	
+	/**
+	 * 
+	 * 
+	 */
 	class StartListener implements ActionListener 
 	{
 		NucleusSegmentationDialog _nucleusSegmentationDialog;	
-		public  StartListener (NucleusSegmentationDialog nucleusSegmentationDialog) {_nucleusSegmentationDialog = nucleusSegmentationDialog;}
+		/**
+		 * 
+		 * @param nucleusSegmentationDialog
+		 */
+		public  StartListener (NucleusSegmentationDialog nucleusSegmentationDialog)
+		{
+			_nucleusSegmentationDialog = nucleusSegmentationDialog;
+		}
+		/**
+		 * 
+		 */
 		public void actionPerformed(ActionEvent actionEvent)
 		{
 			_start=true;
 			_nucleusSegmentationDialog.dispose();
 		}
 	}
-	
+	/**
+	 * 
+	 * 
+	 */
 	class QuitListener implements ActionListener 
 	{
 		NucleusSegmentationDialog _nucleusSegmentationDialog;
-		public  QuitListener (NucleusSegmentationDialog nucleusSegmentationDialog) {_nucleusSegmentationDialog = nucleusSegmentationDialog;}
-		public void actionPerformed(ActionEvent actionEvent) { _nucleusSegmentationDialog.dispose(); }
+		public  QuitListener (NucleusSegmentationDialog nucleusSegmentationDialog)
+		{
+			_nucleusSegmentationDialog = nucleusSegmentationDialog;
+		}
+		/**
+		 * 
+		 */
+		public void actionPerformed(ActionEvent actionEvent)
+		{
+			_nucleusSegmentationDialog.dispose();
+		}
 	}
 }

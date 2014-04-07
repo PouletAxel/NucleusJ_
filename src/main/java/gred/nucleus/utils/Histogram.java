@@ -34,7 +34,8 @@ public class Histogram
     {
     	Object[] tTemp = computeHistogram(imagePlusInput).keySet().toArray();
     	_label = new double[tTemp.length];
-    	for (int i = 0; i < tTemp.length; ++i)   _label[i] = Double.parseDouble(tTemp[i].toString());
+    	for (int i = 0; i < tTemp.length; ++i)
+    		_label[i] = Double.parseDouble(tTemp[i].toString());
     	Arrays.sort(_label);
     	_labelMax = _label[_label.length-1];
     }
@@ -83,13 +84,7 @@ public class Histogram
      * 
      * @return
      */
-    public double getLabelMax()
-    {
-    	return _labelMax;
-    }
+    public double getLabelMax()  {    	return _labelMax;}
     
-    public int getNbLabels()
-    {
-    	return _hHistogram.size();
-    }
+    public int getNbLabels()   { 	return _hHistogram.size();}
 }
