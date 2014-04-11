@@ -179,4 +179,4 @@ public class RegionalExtremaFilter implements PlugInFilter
 				for (int k = 0; k < size3; ++k)
 					_tabMask[i][j][k] = imagePluslabel.getVoxel(i, j, k);
 	}
-}/
+}
