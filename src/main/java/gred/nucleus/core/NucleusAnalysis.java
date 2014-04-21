@@ -45,8 +45,8 @@ public class NucleusAnalysis
 		      (
 		    		  imagePlusInput.getTitle()+"\t"
 		    		  +measure3D.computeVolumeObject(imagePlusInput,255)+"\t"
-		    		  +measure3D.computeFlatnessObject(imagePlusInput,255)+"\t"
-		    		  +measure3D.computeElongationObject(imagePlusInput,255)+"\t"
+		    		  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[0]+"\t"
+		    		  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[1]+"\t"
 		    		  +measure3D.computeSphericity(volume, surfaceArea)+"\t"
 		    		  +measure3D.equivalentSphericalRadius(imagePlusInput,255)+"\t"
 		    		  +surfaceArea+"\n"
@@ -61,8 +61,8 @@ public class NucleusAnalysis
 		    		  "NucleusFileName\tVolume\tFlatness\tElongation\tSphericity\tEsr\tSurfacicArea\t\n"+
 		    		  imagePlusInput.getTitle()+"\t"
 		    		  +measure3D.computeVolumeObject(imagePlusInput,255)+"\t"
-		    		  +measure3D.computeFlatnessObject(imagePlusInput,255)+"\t"
-		    		  +measure3D.computeElongationObject(imagePlusInput,255)+"\t"
+		    		  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[0]+"\t"
+		    		  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[1]+"\t"
 		    		  +measure3D.computeSphericity(volume, surfaceArea)+"\t"
 		    		  +measure3D.equivalentSphericalRadius(imagePlusInput,255)+"\t"
 		    		  +surfaceArea+"\n"
@@ -88,8 +88,8 @@ public class NucleusAnalysis
 		  (
 				  imagePlusInput.getTitle()+" "
 				  +measure3D.computeVolumeObject(imagePlusInput,255)+" "
-				  +measure3D.computeFlatnessObject(imagePlusInput,255)+" "
-				  +measure3D.computeElongationObject(imagePlusInput,255)+" "
+				  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[0]+" "
+	    		  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[1]+" "
 				  +measure3D.computeSphericity(volume, surfaceArea)+" "
 				  +measure3D.equivalentSphericalRadius(imagePlusInput,255)+" "
 				  +surfaceArea+"\n"

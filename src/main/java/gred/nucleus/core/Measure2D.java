@@ -6,8 +6,8 @@ import ij.process.StackConverter;
 import ij.measure.*;
 
 /**
- * This class allow the determination of two shapes parameter in 2D, Circularity and AspectRation. This class detect the stack with the greatest Area
- *  and after compute the two shape parameters in this stack 
+ * This class allow the determination of two shapes parameter in 2D, Circularity and AspectRatio. This class detect the slice with the greatest Area
+ *  and after compute the two shape parameters in this slice 
  *  
  * @author Poulet Axel
  *
@@ -27,7 +27,7 @@ public class Measure2D
     {
     	 StackConverter stackConverter = new StackConverter( imagePlusSegmented );
          if (imagePlusSegmented.getType() != ImagePlus.GRAY8)	stackConverter.convertToGray8();
-         _resultsTable = computePrameters(imagePlusSegmented,searchStackWithMaxArea(imagePlusSegmented));  
+         _resultsTable = computePrameters(imagePlusSegmented,searchSliceWithMaxArea(imagePlusSegmented));  
     }
 
     /**
@@ -35,10 +35,10 @@ public class Measure2D
      * @param imagePlusSegmented
      * @return
      */
-    private int searchStackWithMaxArea(ImagePlus imagePlusSegmented)
+    private int searchSliceWithMaxArea(ImagePlus imagePlusSegmented)
     {
     	Calibration calibration= imagePlusSegmented.getCalibration();
-    	int stackMaxArea = -1;
+    	int indiceMaxArea = -1;
     	double xCalibration = calibration.pixelWidth;
     	double yCalibration = calibration.pixelHeight;
         ImageStack imageStackSegmented = imagePlusSegmented.getStack();
@@ -57,24 +57,24 @@ public class Measure2D
             if (area > areaMax)
             {
                 areaMax = area ;
-                stackMaxArea = k;
+                indiceMaxArea = k;
             }
         }
-        return stackMaxArea;
+        return indiceMaxArea;
     }
 
     /**
      * 
      * @param imagePlusSegmented
-     * @param stackMaxArea
+     * @param indiceMaxArea
      * @return
      */
-    private ResultsTable computePrameters(ImagePlus imagePlusSegmented, int stackMaxArea)
+    private ResultsTable computePrameters(ImagePlus imagePlusSegmented, int indiceMaxArea)
     {
     	ImagePlus imagePlusTemp = new ImagePlus();
     	ImageStack imageStackSegmented = imagePlusSegmented.getStack();
         ImageStack imageStackTemp = new ImageStack(imagePlusSegmented.getWidth(),imagePlusSegmented.getHeight());
-        imageStackTemp.addSlice(imageStackSegmented.getProcessor(stackMaxArea));
+        imageStackTemp.addSlice(imageStackSegmented.getProcessor(indiceMaxArea));
         imagePlusTemp.setStack(imageStackTemp);
         Calibration calibrationImagePlusSegmented= imagePlusSegmented.getCalibration();
         Calibration calibration = new Calibration();
@@ -88,6 +88,13 @@ public class Measure2D
         return resultTable;
        
     }
+	/**
+     * Aspect ratio The aspect ratio of the particle’s fitted ellipse, i.e., [M ajor Axis]/Minor Axis] . If Fit
+     * Ellipse is selected the Major and Minor axis are displayed. Uses the heading AR.
+     * 
+     * @return
+     */
+    public double getAspectRatio () {	return _resultsTable.getValue("AR", 0);	} 
     
     /**
      * Circularity Particles with size circularity values outside the range specified in this field are also 
@@ -96,14 +103,6 @@ public class Measure2D
      * 
      * @return
      */
-    public double getAspectRatio () {	return _resultsTable.getValue("AR", 0);	} 
     
-    
-    /**
-     * Aspect ratio The aspect ratio of the particle’s fitted ellipse, i.e., [M ajor Axis]/Minor Axis] . If Fit
-     * Ellipse is selected the Major and Minor axis are displayed. Uses the heading AR.
-     * 
-     * @return
-     */
     public double getCirculairty() {   return _resultsTable.getValue("Circ.", 0); }
 }

@@ -8,8 +8,6 @@ import java.util.ArrayList;
 
 
 /**
- * Class to detect the region minima from a 3D image gradient
- * with or without a binary mask
  * 
  * @author Philippe Andrey and Poulet Axel
  */
@@ -18,7 +16,6 @@ public class RegionalExtremaFilter implements PlugInFilter
 {
 	/** image to process */
 	private ImagePlus _imagePlusInput;
-	/** image of the regional Extrema*/
 	/** table to stock the values of the local minima their coordinates x, y, z*/
 	private double _localMinValues[][][] = null;
 	/** table to stock the binary mask if is necessary */

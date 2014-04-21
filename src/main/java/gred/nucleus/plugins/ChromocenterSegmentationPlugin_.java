@@ -1,5 +1,5 @@
 package gred.nucleus.plugins;
-import gred.nucleus.core.ChromocenterSegmentation;
+import gred.nucleus.core.EnhanceChromocenters;
 import ij.measure.Calibration;
 import ij.IJ;
 import ij.ImagePlus;
@@ -62,8 +62,8 @@ public class ChromocenterSegmentationPlugin_ implements PlugIn
 		calibration.setUnit(unit);
 		imagePlusInput.setCalibration(calibration);
 		imagePlusSegmented.setCalibration(calibration);
-		ChromocenterSegmentation chromocentersSegmentation	= new ChromocenterSegmentation();
-		ImagePlus imagePlusContraste = chromocentersSegmentation.applyChromocentersSegmentation(imagePlusInput, imagePlusSegmented);
+		EnhanceChromocenters chromocentersSegmentation	= new EnhanceChromocenters();
+		ImagePlus imagePlusContraste = chromocentersSegmentation.applyEnhanceChromocenters(imagePlusInput, imagePlusSegmented);
 		imagePlusContraste.setTitle("imageContraste");
 		imagePlusContraste.show();
 	}

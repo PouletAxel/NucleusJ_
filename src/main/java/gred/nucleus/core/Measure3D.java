@@ -35,7 +35,7 @@ public class Measure3D
 	public double computeSurfaceObject (ImagePlus imagePlusInput, double label)
 	{
 		Calibration calibration= imagePlusInput.getCalibration();
-		ImageStack imageStakInput = imagePlusInput.getStack();
+		ImageStack imageStackInput = imagePlusInput.getStack();
 		double xCalibration = calibration.pixelWidth;
 		double yCalibration = calibration.pixelHeight;
 		double zCalibration = calibration.pixelDepth;
@@ -44,24 +44,24 @@ public class Measure3D
 			for (int i = 0; i < imagePlusInput.getWidth(); ++i)
 				for (int j = 0; j < imagePlusInput.getHeight(); ++j)
 				{
-					voxelValue = imageStakInput.getVoxel(i, j, k);
+					voxelValue = imageStackInput.getVoxel(i, j, k);
 					if (voxelValue == label)
 					{
-						for (int kk = k-1; kk <= k+1; ++kk)
+						for (int kk = k-1; kk <= k+1; kk+=2)
 						{
-							neighborVoxelValue = imageStakInput.getVoxel(i, j, kk);
+							neighborVoxelValue = imageStackInput.getVoxel(i, j, kk);
 							if (voxelValue != neighborVoxelValue)
 								surfaceArea = surfaceArea + xCalibration * yCalibration;
 						}
-						for (int ii=i-1; ii<=i+1; ++ii)
+						for (int ii=i-1; ii<=i+1; ii+=2)
 						{
-							neighborVoxelValue =  imageStakInput.getVoxel(ii, j, k);
+							neighborVoxelValue =  imageStackInput.getVoxel(ii, j, k);
 							if (voxelValue != neighborVoxelValue)
 								surfaceArea = surfaceArea + xCalibration * zCalibration;
 						}
-						for (int jj = j-1; jj <= j+1; ++jj)
+						for (int jj = j-1; jj <= j+1; jj+=2)
 						{
-							neighborVoxelValue = imageStakInput.getVoxel(i, jj, k);
+							neighborVoxelValue = imageStackInput.getVoxel(i, jj, k);
 							if (voxelValue != neighborVoxelValue)
 								surfaceArea = surfaceArea + yCalibration * zCalibration;
 						}
@@ -117,8 +117,6 @@ public class Measure3D
 	}
     
 	/**
-	 * Method whiche compute the equivalent spheric radius of nucleus, corresponding
-	 * at the radius of sphere which has the same volume of the nucleus
 	 * 
 	 * @param imagePlusInput
 	 * @param label
@@ -130,7 +128,7 @@ public class Measure3D
 		double radius;
 		double volume = computeVolumeObject(imagePlusInput, label);
 		radius =  (3 * volume) / (4 * Math.PI);
-		radius = Math.pow(radius, 0.333333);
+		radius = Math.pow(radius, 1.0/3.0);
 		return radius;
 	}
 
@@ -179,21 +177,28 @@ public class Measure3D
 		int compteur = 0;
 		double voxelValue;
 		for (int k = 0; k < imagePlusInput.getStackSize(); ++k)
+		{
+			double dz = ((zCalibration * (double) k)-barycenter.getK());
 			for (int i = 0; i < imagePlusInput.getWidth(); ++i)
+			{
+				double dx = ((xCalibration * (double) i)-barycenter.getI());
 				for (int j = 0; j < imagePlusInput.getHeight(); ++j)
 				{
 					voxelValue = imageStackInput.getVoxel(i,j,k);
-					if (voxelValue > 0)
+					if (voxelValue == label)
 					{ 
-						xx+= ((xCalibration * (double) i)-barycenter.getI()) * ((xCalibration * (double) i)-barycenter.getI());
-						yy+= ((yCalibration * (double) j)-barycenter.getJ()) * ((yCalibration * (double) j)-barycenter.getJ());
-						zz+= ((zCalibration * (double) k)-barycenter.getK()) * ((zCalibration * (double) k)-barycenter.getK());
-						xy+= ((xCalibration * (double) i)-barycenter.getI()) * ((yCalibration * (double) j)-barycenter.getJ());
-						xz+= ((xCalibration * (double) i)-barycenter.getI()) * ((zCalibration * (double) k)-barycenter.getK());
-						yz+= ((yCalibration * (double) j)-barycenter.getJ()) * ((zCalibration * (double) k)-barycenter.getK());
+						double dy = ((yCalibration * (double) j)-barycenter.getJ());
+						xx+= dx * dx;
+						yy+= dy * dy;
+						zz+= dz * dz;
+						xy+= dx * dy;
+						xz+= dx * dz;
+						yz+= dy * dz;
 						compteur++;
 					}
 				}
+			}
+		}
 		double [][] tValues = {{xx / compteur, xy / compteur, xz / compteur},
                       {xy / compteur, yy / compteur, yz / compteur},
                       {xz / compteur, yz / compteur, zz / compteur}};
@@ -218,10 +223,13 @@ public class Measure3D
 	 * @param label
 	 * @return
 	 */
-	public double computeFlatnessObject (ImagePlus imagePlusInput, double label)
+	public double [] computeFlatnessAndElongation (ImagePlus imagePlusInput, double label)
 	{
-		double [] tEigenValue = computeEigenValue3D (imagePlusInput,label);
-		return Math.sqrt(tEigenValue[1] / tEigenValue[0]);
+		double [] shapeParameters = new double[2];
+		double [] tEigenValues = computeEigenValue3D (imagePlusInput,label);
+		shapeParameters [0] = Math.sqrt(tEigenValues[1] / tEigenValues[0]);
+		shapeParameters [1] =  Math.sqrt (tEigenValues[2] / tEigenValues[1]);
+		return shapeParameters;
 	}  
 
 	/**
@@ -240,7 +248,10 @@ public class Measure3D
 		double yCalibration = calibration.pixelHeight;
 		double zCalibration = calibration.pixelDepth;
 		VoxelRecord voxelRecordBarycenter = new VoxelRecord ();
-		int compteur = 0;
+		int count = 0;
+		int sx = 0;
+		int sy = 0;
+		int sz =0;
 		double voxelValue;
 		for (int k = 0; k < imagePlusInput.getStackSize(); ++k)
 			for (int i = 0; i < imagePlusInput.getWidth(); ++i)
@@ -249,13 +260,16 @@ public class Measure3D
 					voxelValue = imageStackInput.getVoxel(i,j,k);
 					if (voxelValue == label )
 					{
-						VoxelRecord voxelRecord = new VoxelRecord();
-						voxelRecord.setLocation((double)i,(double)j,(double)k);
-						voxelRecordBarycenter.shiftCoordinates(voxelRecord);
-						++compteur;
+						sx +=i;
+						sy +=j;
+						sz +=k;
+						++count;
 					}
 				}
-		voxelRecordBarycenter.Multiplie(1 / (double)compteur);
+		sx /= count;
+		sy /= count;
+		sz /= count;
+		voxelRecordBarycenter.setLocation(sx, sy, sz);
 		if (unit) voxelRecordBarycenter.Multiplie(xCalibration, yCalibration,zCalibration);
 		return voxelRecordBarycenter;
   	}
@@ -277,8 +291,7 @@ public class Measure3D
 		tVoxelRecord[i] = null;
 		for(Entry<Double, Integer> entry : histogram.getHistogram().entrySet())
 	    {
-	        VoxelRecord voxelRecord = computeBarycenter3D(unit, imagePlusInput,entry.getKey() );
-			tVoxelRecord[i] = voxelRecord;
+			tVoxelRecord[i] = computeBarycenter3D(unit, imagePlusInput,entry.getKey() );
 			++i;
 		}
 		return tVoxelRecord;
@@ -291,7 +304,7 @@ public class Measure3D
 	 * @param imagePlusChromocenter
 	 * @return
 	 */
-	public double computeRhfIntensite (ImagePlus imagePlusInput, ImagePlus imagePlusSegmented, ImagePlus imagePlusChromocenter )
+	public double computeIntensityRHF (ImagePlus imagePlusInput, ImagePlus imagePlusSegmented, ImagePlus imagePlusChromocenter )
 	  {
 	    double chromocenterIntensity = 0;
 	    double nucleusIntensity = 0;
@@ -326,7 +339,7 @@ public class Measure3D
 	   * @param imagePlusChomocenters
 	   * @return
 	   */
-	  public double computeRhfVolume (ImagePlus imagePlusSegmented, ImagePlus imagePlusChomocenters)
+	  public double computeVolumeRHF (ImagePlus imagePlusSegmented, ImagePlus imagePlusChomocenters)
 	  {
 	    double volumeCc = 0;
 	    double [] tVolumeChromocenter = computeVolumeofAllObjects(imagePlusChomocenters);
