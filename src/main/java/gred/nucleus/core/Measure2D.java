@@ -14,7 +14,7 @@ import ij.measure.*;
  */
 public class Measure2D
 {
-    /** Object to stock the two parameters computed*/
+    /** Object to store the two parameters computed*/
     ResultsTable _resultsTable;
 
     public Measure2D ()  {   }

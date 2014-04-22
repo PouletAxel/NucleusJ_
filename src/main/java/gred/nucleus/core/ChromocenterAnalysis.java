@@ -59,14 +59,14 @@ public class ChromocenterAnalysis
 		double [] tBarycenterToBorderDistanceTableNucleus = radialDistance.computeBarycenterToBorderDistances (imagePlusSegmented,imagePlusSegmented);
 		File fileResults = new File (pathResultsFile);
 		boolean exist = fileResults.exists();
-		BufferedWriter bufferedWirterOutput;	
+		BufferedWriter bufferedWriterOutput;	
 		FileWriter fileWriter = new FileWriter(fileResults, true);
-		bufferedWirterOutput = new BufferedWriter(fileWriter);
+		bufferedWriterOutput = new BufferedWriter(fileWriter);
 		if (exist == false)
-			bufferedWirterOutput.write("Titre\tVolume\tBorderToBorderDistance\tBarycenterToBorderDistance\ttBarycenterToBorderDistanceNucleus\n");
+			bufferedWriterOutput.write("Titre\tVolume\tBorderToBorderDistance\tBarycenterToBorderDistance\ttBarycenterToBorderDistanceNucleus\n");
 		for (int i = 0; i < tBorderToBorderDistanceTable.length;++i )
 		{
-			bufferedWirterOutput.write
+			bufferedWriterOutput.write
 			(
 				imagePlusChromocenter.getTitle()+"_"+i+"\t"
 				+tVolume[i]+"\t"
@@ -75,7 +75,7 @@ public class ChromocenterAnalysis
 				+tBarycenterToBorderDistanceTableNucleus[0]+"\n"
 			);
 		}
-		bufferedWirterOutput.flush();
-		bufferedWirterOutput.close();
+		bufferedWriterOutput.flush();
+		bufferedWriterOutput.close();
 	}
 }

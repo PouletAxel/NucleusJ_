@@ -11,9 +11,9 @@ import inra.ijpb.watershed.Watershed;
  * @author Poulet Axel
 
  */
-public class EnhanceChromocenters
+public class ChromocentersEnhancement
 {
-	public EnhanceChromocenters (){	}
+	public ChromocentersEnhancement (){	}
 
 
 	/**

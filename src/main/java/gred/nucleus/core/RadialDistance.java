@@ -25,20 +25,14 @@ public class RadialDistance
 	 * Method which compute the distance map of binary nucleus
 	 * Rescale the voxel to obtain cubic voxel
   	 * 
-  	 * @param imagePlusSegmented
+  	 * @param imagePlusSegmentedRescaled
   	 * @return
   	 */
-	public ImagePlus computeDistanceMap (ImagePlus imagePlusSegmented)
+  	public ImagePlus computeDistanceMap (ImagePlus imagePlusSegmentedRescaled)
 	{
-		Resizer resizer = new Resizer();
-		Calibration calibration = imagePlusSegmented.getCalibration();
-		double xCalibration = calibration.pixelWidth;
-		double zCalibration = calibration.pixelDepth;
-		double rescaleZFactor = zCalibration/xCalibration;
-		ImagePlus imagePlusRescale = resizer.zScale(imagePlusSegmented,(int)(imagePlusSegmented.getNSlices()*rescaleZFactor), 0);
 		Distance_Map distanceMap = new Distance_Map();
-		distanceMap.aplly(imagePlusRescale);
-		return imagePlusRescale;
+		distanceMap.apply(imagePlusSegmentedRescaled);
+		return imagePlusSegmentedRescaled;
 	}
 
 	/**
@@ -55,13 +49,12 @@ public class RadialDistance
 		Histogram histogram = new Histogram ();
 		histogram.run(imagePlusChromocenter);
 		double [] tLabel = histogram.getLabels();
-		Resizer resizer = new Resizer();
 		Calibration calibration = imagePlusSegmented.getCalibration();
 		double xCalibration = calibration.pixelWidth;
-		double zCalibration = calibration.pixelDepth;
-		double rescaleZFactor = zCalibration/xCalibration;
-		imagePlusChromocenter = resizer.zScale(imagePlusChromocenter,(int)(imagePlusSegmented.getNSlices()*rescaleZFactor), 0);
+		
+		imagePlusChromocenter = resizeImage(imagePlusChromocenter);
 		ImageStack imageStackChromocenter = imagePlusChromocenter.getStack();
+		imagePlusSegmented = resizeImage(imagePlusSegmented);
 		ImagePlus imagePlusDistanceMap =  computeDistanceMap(imagePlusSegmented);
 		ImageStack imageStackDistanceMap = imagePlusDistanceMap.getStack();
 		double voxelValueMin, voxelValue;
@@ -94,12 +87,10 @@ public class RadialDistance
 	
 	public double[] computeBarycenterToBorderDistances (ImagePlus imagePlusSegmented,ImagePlus imagePlusChromocenter)
 	{
-		Resizer resizer = new Resizer();
 		Calibration calibration = imagePlusSegmented.getCalibration();
 		double xCalibration = calibration.pixelWidth;
-		double zCalibration = calibration.pixelDepth;
-		double rescaleZFactor = zCalibration/xCalibration;
-		ImagePlus imagePlusChromocenterRescale = resizer.zScale(imagePlusChromocenter,(int)(imagePlusChromocenter.getNSlices()*rescaleZFactor), 0);
+		ImagePlus imagePlusChromocenterRescale = resizeImage(imagePlusChromocenter);
+		imagePlusSegmented = resizeImage (imagePlusSegmented);
 	    ImagePlus imagePlusDistanceMap =  computeDistanceMap(imagePlusSegmented);
 	    ImageStack imageStackDistanceMap = imagePlusDistanceMap.getStack();
 	    Measure3D measure3D = new Measure3D();
@@ -113,5 +104,16 @@ public class RadialDistance
 	    	tRadialDistance[i] = xCalibration * distance;
 	    }
 	    return tRadialDistance;
+	}
+	
+	private ImagePlus resizeImage (ImagePlus imagePlus)
+	{
+		Resizer resizer = new Resizer();
+		Calibration calibration = imagePlus.getCalibration();
+		double xCalibration = calibration.pixelWidth;
+		double zCalibration = calibration.pixelDepth;
+		double rescaleZFactor = zCalibration/xCalibration;
+		ImagePlus imagePlusRescale = resizer.zScale(imagePlus,(int)(imagePlus.getNSlices()*rescaleZFactor), 0);
+		return imagePlusRescale;
 	}
 }	 

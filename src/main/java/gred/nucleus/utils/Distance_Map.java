@@ -64,10 +64,10 @@ public class Distance_Map implements  PlugInFilter {
 	}
         public void run(ImageProcessor ip)
   {
-    aplly(imp);
+    apply(imp);
   }
   @SuppressWarnings("static-access")
-public void aplly (ImagePlus imagePlus){
+public void apply (ImagePlus imagePlus){
 		
 	  StackConverter stackConverter = new StackConverter( imagePlus );
 	  if (imagePlus.getType() != imagePlus.GRAY8) {  stackConverter.convertToGray8(); }

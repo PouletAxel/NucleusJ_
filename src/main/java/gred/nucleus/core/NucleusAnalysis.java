@@ -48,7 +48,7 @@ public class NucleusAnalysis
 		    		  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[0]+"\t"
 		    		  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[1]+"\t"
 		    		  +measure3D.computeSphericity(volume, surfaceArea)+"\t"
-		    		  +measure3D.equivalentSphericalRadius(imagePlusInput,255)+"\t"
+		    		  +measure3D.equivalentSphericalRadius(volume)+"\t"
 		    		  +surfaceArea+"\n"
 		     );
 		  }
@@ -58,13 +58,13 @@ public class NucleusAnalysis
 		      bufferedWriterOutput = new BufferedWriter(fileWriter);
 		      bufferedWriterOutput.write
 		      (
-		    		  "NucleusFileName\tVolume\tFlatness\tElongation\tSphericity\tEsr\tSurfacicArea\t\n"+
+		    		  "NucleusFileName\tVolume\tFlatness\tElongation\tSphericity\tEsr\tSurfaceArea\t\n"+
 		    		  imagePlusInput.getTitle()+"\t"
 		    		  +measure3D.computeVolumeObject(imagePlusInput,255)+"\t"
 		    		  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[0]+"\t"
 		    		  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[1]+"\t"
 		    		  +measure3D.computeSphericity(volume, surfaceArea)+"\t"
-		    		  +measure3D.equivalentSphericalRadius(imagePlusInput,255)+"\t"
+		    		  +measure3D.equivalentSphericalRadius(volume)+"\t"
 		    		  +surfaceArea+"\n"
 		      );
 		  } 
@@ -83,7 +83,7 @@ public class NucleusAnalysis
 		  double surfaceArea = measure3D.computeSurfaceObject(imagePlusInput,255);
 		  
 		  IJ.log("3D parameters");
-		  IJ.log("NucleusFileName Volume Flatness Elongation Sphericity Esr SurfacicArea");
+		  IJ.log("NucleusFileName Volume Flatness Elongation Sphericity Esr SurfaceArea");
 		  IJ.log
 		  (
 				  imagePlusInput.getTitle()+" "
@@ -91,7 +91,7 @@ public class NucleusAnalysis
 				  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[0]+" "
 	    		  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[1]+" "
 				  +measure3D.computeSphericity(volume, surfaceArea)+" "
-				  +measure3D.equivalentSphericalRadius(imagePlusInput,255)+" "
+				  +measure3D.equivalentSphericalRadius(volume)+" "
 				  +surfaceArea+"\n"
 		  );
 	  }

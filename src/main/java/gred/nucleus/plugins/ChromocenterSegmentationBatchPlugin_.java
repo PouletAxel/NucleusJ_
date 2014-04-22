@@ -1,5 +1,5 @@
 package gred.nucleus.plugins;
-import gred.nucleus.core.EnhanceChromocenters;
+import gred.nucleus.core.ChromocentersEnhancement;
 import gred.nucleus.dialogs.*;
 import gred.nucleus.utils.FileList;
 import ij.plugin.PlugIn;
@@ -59,7 +59,7 @@ public class ChromocenterSegmentationBatchPlugin_ implements PlugIn
 						calibration.setUnit(unit);
 						imagePlusSegmented.setCalibration(calibration);
 						imagePlusInput.setCalibration(calibration);
-						EnhanceChromocenters chromocenterSegmentation = new EnhanceChromocenters();
+						ChromocentersEnhancement chromocenterSegmentation = new ChromocentersEnhancement();
 						ImagePlus imagePlusConstraste = chromocenterSegmentation.applyEnhanceChromocenters(imagePlusInput, imagePlusSegmented);
 						imagePlusConstraste.setTitle(imagePlusInput.getTitle());
 						saveFile (imagePlusConstraste,workDirectory+File.separator+"ConstrastDataNucleus");

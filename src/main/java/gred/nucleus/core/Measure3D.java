@@ -3,10 +3,7 @@ import gred.nucleus.utils.Histogram;
 import gred.nucleus.utils.VoxelRecord;
 import ij.*;
 import ij.measure.*;
-
 import java.util.HashMap;
-import java.util.Map.Entry;
-
 import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
 
@@ -85,13 +82,13 @@ public class Measure3D
 		double zCalibration = calibration.pixelDepth;
 		Histogram histogram = new Histogram ();
 		histogram.run(imagePlusInput);
-		double [] tObjectVolume = new double[histogram.getLabels().length];
-		int i=0;
-		for(Entry<Double, Integer> entry : histogram.getHistogram().entrySet())
+		double []tlabel = histogram.getLabels();
+		double [] tObjectVolume = new double[tlabel.length];
+		HashMap<Double , Integer> hashHisto = histogram.getHistogram();
+		for(int i=0; i < tlabel.length; ++i)
 	    {
-	        int nbVoxel = entry.getValue(); 
+	        int nbVoxel = hashHisto.get(tlabel[i]); 
 			tObjectVolume[i] = nbVoxel*xCalibration*yCalibration*zCalibration;
-			++i;
 	    }
 		return tObjectVolume;
 	} 
@@ -123,11 +120,9 @@ public class Measure3D
 	 * @return
 	 */
 
-	public double equivalentSphericalRadius (ImagePlus imagePlusInput, double label)
+	public double equivalentSphericalRadius (double volume)
 	{
-		double radius;
-		double volume = computeVolumeObject(imagePlusInput, label);
-		radius =  (3 * volume) / (4 * Math.PI);
+		double radius =  (3 * volume) / (4 * Math.PI);
 		radius = Math.pow(radius, 1.0/3.0);
 		return radius;
 	}
@@ -207,16 +202,6 @@ public class Measure3D
 		return eigenValueDecomposition.getRealEigenvalues();
 	}
 
-	/**
-	 * @param imagePlusInput
-	 * @param label
-	 * @return
-	 */
-	public double computeElongationObject (ImagePlus imagePlusInput, double label)
-	{
-		double [] tEigenValues = computeEigenValue3D (imagePlusInput, label);
-		return Math.sqrt (tEigenValues[2] / tEigenValues[1]);
-	}
   
 	/**
 	 * @param imagePlusInput
@@ -286,13 +271,11 @@ public class Measure3D
 	{
 		Histogram histogram = new Histogram();
 		histogram.run(imagePlusInput);
-		VoxelRecord [] tVoxelRecord = new VoxelRecord [ histogram.getLabels().length];
-		int i = 0;
-		tVoxelRecord[i] = null;
-		for(Entry<Double, Integer> entry : histogram.getHistogram().entrySet())
+		double []tlabel = histogram.getLabels();
+		VoxelRecord [] tVoxelRecord = new VoxelRecord [ tlabel.length];
+		for(int i = 0; i < tlabel.length; ++i)
 	    {
-			tVoxelRecord[i] = computeBarycenter3D(unit, imagePlusInput,entry.getKey() );
-			++i;
+			tVoxelRecord[i] = computeBarycenter3D(unit, imagePlusInput,tlabel[i] );
 		}
 		return tVoxelRecord;
 	}
