@@ -46,8 +46,8 @@ public class NucleusChromocentersAnalysis
 				+volumeCcMean*nbCc+" "
 				+computeMeanOfTable(tBorderToBorderDistance)+" "
 				+computeMeanOfTable(tBarycenterToBorderDistance)+" "
-				+measure3D.computeFlatnessAndElongation(imagePlusInput,255)[0]+" "
-	    		+measure3D.computeFlatnessAndElongation(imagePlusInput,255)[1]+" "
+				+measure3D.computeFlatnessAndElongation(imagePlusSegmented,255)[0]+" "
+	    		+measure3D.computeFlatnessAndElongation(imagePlusSegmented,255)[1]+" "
 				+measure3D.computeSphericity(volume,surfaceArea)+" ";
 		if (rhfChoice.equals("Volume and intensity"))
 		{	
@@ -131,8 +131,8 @@ public class NucleusChromocentersAnalysis
 			 +volumeCcMean*nbCc+"\t"
 			 +computeMeanOfTable(tBorderToBorderDistance)+"\t"
 			 +computeMeanOfTable(tBarycenterToBorderDistance)+"\t"
-			 +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[0]+"\t"
-			 +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[1]+"\t"
+			 +measure3D.computeFlatnessAndElongation(imagePlusSegmented,255)[0]+"\t"
+			 +measure3D.computeFlatnessAndElongation(imagePlusSegmented,255)[1]+"\t"
 			 +measure3D.computeSphericity(volume,surfaceArea)+"\t";
 			
 		if (rhfChoice.equals("Volume and intensity")|| rhfChoice.equals("intensity"))
