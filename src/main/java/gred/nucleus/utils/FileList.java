@@ -1,5 +1,7 @@
 package gred.nucleus.utils;
 
+import ij.IJ;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +14,11 @@ import java.util.HashMap;
 
 public class FileList
 {
-    public FileList() {   }
+	boolean _windows = false; 
+    public FileList()
+    {
+    	_windows = System.getProperty("os.name").startsWith("Windows");
+    }
     /**
      * 
      * @param repertoire
@@ -136,6 +142,12 @@ public class FileList
      */
     public String fileSearch (String regex,File[] tFile)
     {
+    	if (_windows)
+    	{
+    		String as = new String ("\\"); 
+    		String das = new String("\\\\"); 
+    		regex =regex.replace(as, das);
+    	}
     	String file = null;
     	for(int i = 0; i < tFile.length; ++i)
 		{
@@ -157,6 +169,12 @@ public class FileList
      */
  	public boolean isDirectoryOrFileExist (String regex, File[] tFile)
     {
+ 		if (_windows)
+    	{
+    		String as = new String ("\\"); 
+    		String das = new String("\\\\"); 
+    		regex =regex.replace(as, das);
+    	}
     	boolean testFile = false;
         for(int i = 0; i < tFile.length; ++i)
  		{
@@ -212,6 +230,12 @@ public class FileList
      */
 	public ArrayList<String> fileSearchList(String regex, File[] tFile)
 	{
+		if (_windows)
+    	{
+    		String as = new String ("\\"); 
+    		String das = new String("\\\\"); 
+    		regex =regex.replace(as, das);
+    	}
 		ArrayList<String> arrayListFile = new ArrayList<String>();
        	for(int i = 0; i < tFile.length; ++i)
     		if(tFile[i].toString().matches((regex)))

@@ -42,8 +42,8 @@ public class ChromocentersAnalysisPlugin_   implements PlugIn
 		}
 		GenericDialog genericDialog = new GenericDialog("Chromocenter Analysis", IJ.getInstance());
 		genericDialog.addChoice("Raw image",titles,titles[indiceRawImage]);
-		genericDialog.addChoice("Chromocenters image Segemented",titles,titles[indiceCcImage]);
 		genericDialog.addChoice("Nucleus Segmeneted",titles,titles[indiceSegmentedImage]);
+		genericDialog.addChoice("Chromocenters image Segemented",titles,titles[indiceCcImage]);
 		genericDialog.addNumericField("x calibartion", xCalibration,3);
       	genericDialog.addNumericField("y calibration", yCalibration, 3);
       	genericDialog.addNumericField("z calibration).",zCalibration, 3);

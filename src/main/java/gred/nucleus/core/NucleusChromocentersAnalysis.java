@@ -135,9 +135,14 @@ public class NucleusChromocentersAnalysis
 			 +measure3D.computeFlatnessAndElongation(imagePlusSegmented,255)[1]+"\t"
 			 +measure3D.computeSphericity(volume,surfaceArea)+"\t";
 			
-		if (rhfChoice.equals("Volume and intensity")|| rhfChoice.equals("intensity"))
+		if (rhfChoice.equals("Volume and intensity"))
+		{
 			text +=  measure3D.computeIntensityRHF(imagePlusInput,imagePlusSegmented, imagePlusChromocenter)+"\t";
-		else if (rhfChoice.equals("Volume and intensity")|| rhfChoice.equals("volume"))
+			text += measure3D.computeVolumeRHF(imagePlusSegmented, imagePlusChromocenter)+"\t";
+		}
+		else if (rhfChoice.equals("intensity"))
+			text +=  measure3D.computeIntensityRHF(imagePlusInput,imagePlusSegmented, imagePlusChromocenter)+"\t";
+		else
 			text += measure3D.computeVolumeRHF(imagePlusSegmented, imagePlusChromocenter)+"\t";
 		text += measure2D.getAspectRatio()+"\t"
 			 +measure2D.getCirculairty()+"\t"
