@@ -147,7 +147,7 @@ public class ChromocentersAnalysisBatchPlugin_ implements PlugIn
 					 } 	  
 				}
 			}
-			else	{	IJ.showMessage("There are no the three subdirectories or the subDirectories is empty"); }
+			else	{	IJ.showMessage("There are no the three subdirectories  (See the directory name) or subDirectories are empty"); }
 		}
 	}
 }

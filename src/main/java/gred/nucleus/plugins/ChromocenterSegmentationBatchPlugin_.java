@@ -64,9 +64,10 @@ public class ChromocenterSegmentationBatchPlugin_ implements PlugIn
 						imagePlusConstraste.setTitle(imagePlusInput.getTitle());
 						saveFile (imagePlusConstraste,workDirectory+File.separator+"ConstrastDataNucleus");
 					}
-					else	{	IJ.showMessage("There are no the three subdirectories or the subDirectories is empty"); }
 				}
 			}
+			else	{	IJ.showMessage("There are no the two subdirectories (See the directory name) or subDirectories are empty"); }		
+			
 		}
 	}
 	
