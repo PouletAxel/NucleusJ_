@@ -3,6 +3,7 @@ import java.io.File;
 import gred.nucleus.dialogs.NucleusSegmentationBatchDialog;
 import gred.nucleus.multiThread.*;
 import gred.nucleus.utils.FileList;
+import ij.IJ;
 import ij.plugin.PlugIn;
 /**
  * 
@@ -28,12 +29,20 @@ public class NucleusSegmentationBatchPlugin_ implements PlugIn
 		{
 			FileList fileList = new FileList ();
 			File[] tRawImageFile = fileList.run(_nucleusSegmentationBatchDialog.getRawDataDirectory());
-			ProcessImageSegmentaion processImageSegmentation = new ProcessImageSegmentaion();
-			try 
-			{	
-				processImageSegmentation.go(this, tRawImageFile,false);
-			} 
-			catch (InterruptedException e) { e.printStackTrace(); }
+			if (tRawImageFile.length==0)
+			{
+				IJ.showMessage("There are no image in "+_nucleusSegmentationBatchDialog.getRawDataDirectory());
+			}
+			else
+			{
+				ProcessImageSegmentaion processImageSegmentation = new ProcessImageSegmentaion();
+				try 
+				{	
+					processImageSegmentation.go(this, tRawImageFile,false);
+					IJ.log("End of the nucleus segmentation , the results are in "+getWorkDirectory());
+				} 
+				catch (InterruptedException e) { e.printStackTrace(); }
+			}
 		}
 	}
 	public int getNbCpu(){return _nucleusSegmentationBatchDialog.getNbCpu();}

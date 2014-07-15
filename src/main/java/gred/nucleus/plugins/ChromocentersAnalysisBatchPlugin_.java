@@ -146,6 +146,7 @@ public class ChromocentersAnalysisBatchPlugin_ implements PlugIn
 					    catch (IOException e) {	e.printStackTrace();}
 					 } 	  
 				}
+				IJ.log("End of the chromocenter analysis , the results are in "+chromocentersPipelineBatchDialog.getWorkDirectory());
 			}
 			else	{	IJ.showMessage("There are no the three subdirectories  (See the directory name) or subDirectories are empty"); }
 		}

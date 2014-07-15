@@ -42,8 +42,8 @@ public class ChromocentersAnalysisPlugin_   implements PlugIn
 		}
 		GenericDialog genericDialog = new GenericDialog("Chromocenter Analysis", IJ.getInstance());
 		genericDialog.addChoice("Raw image",titles,titles[indiceRawImage]);
-		genericDialog.addChoice("Nucleus Segmeneted",titles,titles[indiceSegmentedImage]);
-		genericDialog.addChoice("Chromocenters image Segemented",titles,titles[indiceCcImage]);
+		genericDialog.addChoice("Nucleus Segmented",titles,titles[indiceSegmentedImage]);
+		genericDialog.addChoice("Chromocenters image Segmented",titles,titles[indiceCcImage]);
 		genericDialog.addNumericField("x calibartion", xCalibration,3);
       	genericDialog.addNumericField("y calibration", yCalibration, 3);
       	genericDialog.addNumericField("z calibration).",zCalibration, 3);
@@ -65,8 +65,8 @@ public class ChromocentersAnalysisPlugin_   implements PlugIn
 		genericDialog.showDialog();
         if (genericDialog.wasCanceled())   return;
         ImagePlus imagePlusInput =  WindowManager.getImage(wList[genericDialog.getNextChoiceIndex()]);
-        ImagePlus imagePlusChromocenter =  WindowManager.getImage(wList[genericDialog.getNextChoiceIndex()]);
         ImagePlus imagePlusSegmented =  WindowManager.getImage(wList[genericDialog.getNextChoiceIndex()]);
+         ImagePlus imagePlusChromocenter =  WindowManager.getImage(wList[genericDialog.getNextChoiceIndex()]);
         xCalibration = genericDialog.getNextNumber();
         yCalibration = genericDialog.getNextNumber();
         zCalibration = genericDialog.getNextNumber();

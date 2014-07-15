@@ -10,6 +10,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
+import java.text.NumberFormat;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -423,9 +425,22 @@ public class NucleusSegmentationBatchDialog extends JFrame
 	
 	public void setNbCpu(int nb){ _nbCpuChosen = nb; }
 	public int getNbCpu(){ return _nbCpuChosen; }
-	public double getXCalibration(){ return Double.parseDouble(_jTextFieldXCalibration.getText()); }
-	public double getYCalibration(){ return Double.parseDouble(_jTextFieldYCalibration.getText()); }
-	public double getZCalibration(){ return Double.parseDouble(_jTextFieldZCalibration.getText()); }
+	public double getXCalibration()
+	{
+		String xCal = _jTextFieldXCalibration.getText();
+		return Double.parseDouble(xCal.replaceAll(",", "."));
+	}
+	public double getYCalibration()
+	{
+		String yCal = _jTextFieldYCalibration.getText();
+		return Double.parseDouble(yCal.replaceAll(",", ".")); 
+	}
+	public double getZCalibration()
+	{
+		String zCal = _jTextFieldZCalibration.getText();
+		return Double.parseDouble(zCal.replaceAll(",", "."));
+	}
+	
 	public String getUnit(){ return _jTextFieldUnit.getText(); }
 	public double getMinVolume(){ return Double.parseDouble(_jTextFieldMin.getText()); }
 	public double getMaxVolume(){ return Double.parseDouble(_jTextFieldMax.getText()); }

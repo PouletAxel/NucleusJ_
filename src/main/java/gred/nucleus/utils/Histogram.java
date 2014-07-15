@@ -20,6 +20,7 @@ public class Histogram
     private double [] _label;
     /** */
     private double _labelMax = -1;
+    private int _nbLabel = 0;
     
     /**
      * 
@@ -37,7 +38,8 @@ public class Histogram
     	for (int i = 0; i < tTemp.length; ++i)
     		_label[i] = Double.parseDouble(tTemp[i].toString());
     	Arrays.sort(_label);
-    	_labelMax = _label[_label.length-1];
+    	if (_nbLabel > 0)
+    		_labelMax = _label[_label.length-1];
     }
     
     /**
@@ -63,7 +65,11 @@ public class Histogram
                             ++nbVoxel;
                             _hHistogram.put(voxelValue, nbVoxel);
                         }
-                        else _hHistogram.put(voxelValue, 1);
+                        else
+                        {
+                        	_hHistogram.put(voxelValue, 1);
+                        	++_nbLabel;
+                        }
                     }
                 }
         return _hHistogram;
@@ -86,5 +92,5 @@ public class Histogram
      */
     public double getLabelMax()  {    	return _labelMax;}
     
-    public int getNbLabels()   { 	return _hHistogram.size();}
+    public int getNbLabels()   { 	return _nbLabel;}
 }

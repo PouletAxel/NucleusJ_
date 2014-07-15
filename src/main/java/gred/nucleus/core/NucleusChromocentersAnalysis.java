@@ -3,6 +3,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import gred.nucleus.utils.Histogram;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.measure.Calibration;
@@ -25,61 +27,64 @@ public class NucleusChromocentersAnalysis
 	    */
 	public void computeParameters (String rhfChoice, ImagePlus imagePlusInput, ImagePlus imagePlusSegmented, ImagePlus imagePlusChromocenter)
 	{
+		IJ.log("3D PARAMETERS ");
+		Histogram histogram = new Histogram ();
+		histogram.run(imagePlusChromocenter);
 		Calibration calibration = imagePlusInput.getCalibration();
 		double voxelVolume = calibration.pixelDepth*calibration.pixelHeight*calibration.pixelWidth;
 		Measure3D measure3D = new Measure3D();
-		double [] tVolumesObjects =  measure3D.computeVolumeofAllObjects(imagePlusChromocenter);
-		RadialDistance radialDistance = new RadialDistance();
-		double [] tBorderToBorderDistance = radialDistance.computeBorderToBorderDistances(imagePlusSegmented,imagePlusChromocenter);
-		double [] tBarycenterToBorderDistance = radialDistance.computeBarycenterToBorderDistances (imagePlusSegmented,imagePlusChromocenter);
-		IJ.log("3D PARAMETERS ");
 		double volume = measure3D.computeVolumeObject(imagePlusSegmented,255);
 		double surfaceArea = measure3D.computeSurfaceObject(imagePlusSegmented,255);
-		double volumeCcMean = computeMeanOfTable(tVolumesObjects);
-		int nbCc = measure3D.getNumberOfObject(imagePlusChromocenter);
-		String text = imagePlusSegmented.getTitle()+" "
-				+volume+" "
+		String text = imagePlusSegmented.getTitle()+" "+volume+" "
 				+measure3D.equivalentSphericalRadius(volume)+" "
 				+surfaceArea +" "
-				+nbCc+" "
-				+volumeCcMean+" "
-				+volumeCcMean*nbCc+" "
-				+computeMeanOfTable(tBorderToBorderDistance)+" "
-				+computeMeanOfTable(tBarycenterToBorderDistance)+" "
 				+measure3D.computeFlatnessAndElongation(imagePlusSegmented,255)[0]+" "
 	    		+measure3D.computeFlatnessAndElongation(imagePlusSegmented,255)[1]+" "
-				+measure3D.computeSphericity(volume,surfaceArea)+" ";
+				+measure3D.computeSphericity(volume,surfaceArea);
 		if (rhfChoice.equals("Volume and intensity"))
 		{	
-			IJ.log("ImageTitle Volume ESR SurfaceArea NbCc VCcMean VCcTotal DistanceBorderToBorderMean DistanceBarycenterToBorderMean Flatness Elongation Sphericity IntensityRHF VolumeRHF VoxelVolume");
-			IJ.log
-			(
-				text
-				+measure3D.computeIntensityRHF(imagePlusInput,imagePlusSegmented,imagePlusChromocenter)+" "
-				+measure3D.computeVolumeRHF(imagePlusSegmented, imagePlusChromocenter)+" "
-				+voxelVolume
-			);
+			IJ.log("ImageTitle Volume ESR SurfaceArea Flatness Elongation Sphericity IntensityRHF VolumeRHF NbCc VCcMean VCcTotal DistanceBorderToBorderMean DistanceBarycenterToBorderMean VoxelVolume");
+			text = text+" "+measure3D.computeIntensityRHF(imagePlusInput,imagePlusSegmented,imagePlusChromocenter)+" "
+					+measure3D.computeVolumeRHF(imagePlusSegmented, imagePlusChromocenter)+" ";
+	
+		
 		}
 		else if (rhfChoice.equals("Volume"))
 		{
-			IJ.log("ImageTitle Volume ESR SurfaceArea NbCc VCcMean VCcTotal DistanceBorderToBorderMean DistanceBarycenterToBorderMean Flatness Elongation Sphericity VolumeRHF VoxelVolume");
-			IJ.log
-			(
-				text
-				+measure3D.computeVolumeRHF(imagePlusSegmented, imagePlusChromocenter)+" "
-				+voxelVolume
-			);
+			IJ.log("ImageTitle Volume ESR SurfaceArea Flatness Elongation Sphericity VolumeRHF NbCc VCcMean VCcTotal DistanceBorderToBorderMean DistanceBarycenterToBorderMean VoxelVolume");
+			text = text+" "+measure3D.computeVolumeRHF(imagePlusSegmented, imagePlusChromocenter)+" ";
+				
 		}
 		else  
 		{
-			IJ.log("ImageTitle Volume ESR SurfaceArea NbCc VCcMean VCcTotal DistanceBorderToBorderMean DistanceBarycenterToBorderMean Flatness Elongation Sphericity IntensityRHF VoxelVolume");
-			IJ.log
-			(
-				text
-				+measure3D.computeIntensityRHF(imagePlusInput,imagePlusSegmented, imagePlusChromocenter)+" "
-				+voxelVolume
-			);
+			IJ.log("ImageTitle Volume ESR SurfaceArea Flatness Elongation Sphericity IntensityRHF NbCc VCcMean VCcTotal DistanceBorderToBorderMean DistanceBarycenterToBorderMean VoxelVolume");
+			text = text+" "+measure3D.computeIntensityRHF(imagePlusInput,imagePlusSegmented, imagePlusChromocenter)+" ";
 		}
+		
+		if (histogram.getNbLabels() > 0)
+		{
+			double [] tVolumesObjects =  measure3D.computeVolumeofAllObjects(imagePlusChromocenter);
+			RadialDistance radialDistance = new RadialDistance();
+			double [] tBorderToBorderDistance = radialDistance.computeBorderToBorderDistances(imagePlusSegmented,imagePlusChromocenter);
+			double [] tBarycenterToBorderDistance = radialDistance.computeBarycenterToBorderDistances (imagePlusSegmented,imagePlusChromocenter);
+			double volumeCcMean = computeMeanOfTable(tVolumesObjects);
+			int nbCc = measure3D.getNumberOfObject(imagePlusChromocenter);
+			text = text+nbCc+" "
+				+volumeCcMean+" "
+				+volumeCcMean*nbCc+" "
+				+computeMeanOfTable(tBorderToBorderDistance)+" "
+				+computeMeanOfTable(tBarycenterToBorderDistance)+" "+voxelVolume;
+		}
+		
+		else	text = text+"0 0 0 NaN NaN "+voxelVolume;
+		IJ.log(text);
+		
+		
+		
+		
+		
+		
+		
 	}
 	   
 
