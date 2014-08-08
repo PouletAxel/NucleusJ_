@@ -13,10 +13,10 @@
 	</parent>
 
 	<groupId>sc.fiji</groupId>
-	<artifactId>3D_NucleusJ</artifactId>
+	<artifactId>NucleusJ_</artifactId>
 	<version>1.0.0</version>
 
-	<name>plugins/3D_NucleusJ.jar</name>
+	<name>plugins/NucleusJ_.jar</name>
 	<description>Ensemble of ImageJ plugins for nuclear analysis</description>
 
 	<dependencies>
@@ -84,9 +84,9 @@
 
 
 	<scm>
-		<connection>scm:git:git://github.com/PouletAxel/3D_NucleusJ</connection>
-		<developerConnection>scm:git:git@github.com:PouletAxel/3D_NucleusJ</developerConnection>
+		<connection>scm:git:git://github.com/PouletAxel/NucleusJ_</connection>
+		<developerConnection>scm:git:git@github.com:PouletAxel/NucleusJ_</developerConnection>
 		<tag>HEAD</tag>
-		<url>https://github.com/PouletAxel/3D_NucleusJ</url>
+		<url>https://github.com/PouletAxel/NucleusJ_</url>
 	</scm>
 </project>
