@@ -29,7 +29,7 @@ public class ChromocenterAnalysis
 		double [] tVolume =  measure3D.computeVolumeofAllObjects(imagePlusChromocenter);
 		RadialDistance radialDistance = new RadialDistance();
 		IJ.log("CHROMOCENTER PARAMETERS");
-		IJ.log("Titre Volume BorderToBorderDistance BarycenterToBorderDistance BarycenterToBorderDistanceNucleus");
+		IJ.log("Titre Volume BorderToBorderDistance BarycenterToBorderDistance BarycenterToBorderDistanceNucleus ");
 		if (histogram.getNbLabels() > 0)
 		{
 			double [] tBorderToBorderDistanceTable = radialDistance.computeBorderToBorderDistances(imagePlusSegmented,imagePlusChromocenter);
@@ -73,7 +73,7 @@ public class ChromocenterAnalysis
 			double [] tBarycenterToBorderDistanceTableCc = radialDistance.computeBarycenterToBorderDistances (imagePlusSegmented,imagePlusChromocenter);
 			double [] tBarycenterToBorderDistanceTableNucleus = radialDistance.computeBarycenterToBorderDistances (imagePlusSegmented,imagePlusSegmented);
 			if (exist == false)
-				bufferedWriterOutput.write("Titre\tVolume\tBorderToBorderDistance\tBarycenterToBorderDistance\ttBarycenterToBorderDistanceNucleus\n");
+				bufferedWriterOutput.write("Titre\tVolume\tBorderToBorderDistance\tBarycenterToBorderDistance\tBarycenterToBorderDistanceNucleus\n");
 			for (int i = 0; i < tBorderToBorderDistanceTable.length;++i )
 			{
 				bufferedWriterOutput.write
