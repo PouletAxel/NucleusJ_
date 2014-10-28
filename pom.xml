@@ -16,7 +16,7 @@
 	<artifactId>NucleusJ_</artifactId>
 	<version>1.0.1-SNAPSHOT</version>
 
-	<name>plugins/NucleusJ_.jar</name>
+	<name>NucleusJ</name>
 	<description>Ensemble of ImageJ plugins for nuclear analysis</description>
 
 	<dependencies>
