@@ -57,12 +57,12 @@
 			</testResource>
 		</testResources>
 	</build>
-	
+
 	<developers>
 		<developer>
 			<id>PouletAxel</id>
 			<name>Axel Poulet</name>
-			<email>pouletaxel@gmail.com</email>			
+			<email>pouletaxel@gmail.com</email>
 			<organization>GRED</organization>
 			<roles>
 				<role>architect</role>
@@ -72,7 +72,6 @@
 		</developer>
 	</developers>
 
-
 	<repositories>
 		<!-- NB: for project parent -->
 		<repository>
@@ -80,8 +79,6 @@
 			<url>http://maven.imagej.net/content/groups/public</url>
 		</repository>
 	</repositories>
-
-
 	<scm>
 		<connection>scm:git:git://github.com/PouletAxel/NucleusJ_</connection>
 		<developerConnection>scm:git:git@github.com:PouletAxel/NucleusJ_</developerConnection>
