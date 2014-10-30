@@ -15,7 +15,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 /**
- * 
+ * Class to construct graphical interface for the nucleus segmentation and analysis pipeline
  * @author Poulet Axel
  *
  */
@@ -62,7 +62,8 @@ public class NucleusSegmentationAndAnalysisDialog extends JFrame
 	    
 	/**
 	 * 
-	 *
+	 * Architecture of the graphical windows
+	 * 
 	 */
 	
 	public NucleusSegmentationAndAnalysisDialog ()

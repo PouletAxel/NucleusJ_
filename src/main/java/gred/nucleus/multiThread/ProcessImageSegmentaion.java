@@ -7,7 +7,9 @@ import ij.measure.Calibration;
 
 import java.io.File;
 import java.util.ArrayList;
+
 /**
+ * multi thread class for the nucleus segmentation
  * 
  * @author Poulet Axel
  *
@@ -22,6 +24,7 @@ public class ProcessImageSegmentaion
 	public ProcessImageSegmentaion(){}
 
 	/**
+	 * method to run the segmentation and analysis with the features chosen by the user
 	 * 
 	 * @param nucleusSegmentationAndAnalysisBatchPlugin
 	 * @param tInputFile
@@ -72,6 +75,7 @@ public class ProcessImageSegmentaion
 	}
 
 	/**
+	 * method to run the segmentation with the features chosen by the user
 	 * 
 	 * @param nucleusSegmentationBatchPlugin
 	 * @param tInputFile

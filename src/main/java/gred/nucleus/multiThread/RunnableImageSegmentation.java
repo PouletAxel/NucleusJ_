@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
+ * Runnable class to the segmentation of the nucleus
  * 
  * @author Poulet Axel
  *
@@ -19,6 +20,8 @@ public class RunnableImageSegmentation extends Thread implements Runnable
 	boolean _isanalysis3D, _isanalysis2D3D, _doAnalysis;
 
 	/**
+	 * 
+	 * Costructor which stock all the parameters of the graphical windows
 	 * 
 	 * @param imagePlusInput
 	 * @param volumeMin
@@ -41,7 +44,7 @@ public class RunnableImageSegmentation extends Thread implements Runnable
 	}
 	
 	/**
-	 * 
+	 * Run parallel compute in function of the number of CPU chose by the user, and call the class ProcessImageSgmentation
 	 */
 	public void run()
 	{

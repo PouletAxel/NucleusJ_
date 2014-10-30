@@ -9,7 +9,7 @@ import ij.IJ;
 import ij.ImagePlus;
 
 /**
- * Several method to realise and creat the outfile for the chromocenter Analysis
+ * Several method to realise and create the outfile for the chromocenter Analysis
  * 
  * @author Poulet Axel
  *

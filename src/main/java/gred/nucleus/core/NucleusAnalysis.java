@@ -8,6 +8,7 @@ import ij.ImagePlus;
 
 
 /**
+ * Several method to realise and create the outfile for the nuclear Analysis
  * 
  * @author Poulet Axel
  *
@@ -25,8 +26,8 @@ public class NucleusAnalysis
 	  * elongation) and parameters of lenght (volume and equivalent spherique radius)
 	  * Take in input the path of results files output.
 	  * 
-	  * @param pathResultsFile
-	  * @param imagePlusInput
+	  * @param pathResultsFile path for the output file
+	  * @param imagePlusInput image of the segmented nucleus
 	  * @throws IOException
 	  */
 	  public void nucleusParameter3D (String pathResultsFile, ImagePlus imagePlusInput) throws IOException
@@ -73,8 +74,11 @@ public class NucleusAnalysis
 	  }
 	  
 	  /**
-	   * 
-	   * @param imagePlusInput
+	   * this method compute severals parameters of shape (sphericity, flataness and
+	   * elongation) and parameters of lenght (volume and equivalent spherique radius) for one nucleus
+	   * the results are written on the IJ log windows
+	   *  
+	   * @param imagePlusInput image segmented
 	   */
 	  public void nucleusParameter3D (ImagePlus imagePlusInput)
 	  {
@@ -98,8 +102,10 @@ public class NucleusAnalysis
 
 	  /**
 	   * 
-	   * @param pathResultsFile
-	   * @param imagePlusInput
+	   * this method compute severals 2D parameters of 2D shape for several nuclei.
+	   * 
+	   * @param pathResultsFile  path for the output file
+	   * @param imagePlusInput image of the segmented nucleus
 	   * @throws IOException
 	   */
 	  public void nucleusParameter2D (String pathResultsFile,ImagePlus imagePlusInput) throws IOException

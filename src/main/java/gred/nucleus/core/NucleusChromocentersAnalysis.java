@@ -10,6 +10,8 @@ import ij.ImagePlus;
 import ij.measure.Calibration;
 
 /**
+ * Several method to realise and create the outfile for the nuclear Analysis
+ * this class contains the chromocenter parameters
  * 
  * @author Poulet Axel
  *
@@ -19,8 +21,9 @@ public class NucleusChromocentersAnalysis
 	public NucleusChromocentersAnalysis ()  { }
 
 	   /**
+	    * Analysis for one nucleus, the results are stock on the IJ log windows
 	    * 
-	    * @param rhfChoice
+	    * @param rhfChoice 
 	    * @param imagePlusInput
 	    * @param imagePlusSegmented
 	    * @param imagePlusChromocenter
@@ -82,6 +85,8 @@ public class NucleusChromocentersAnalysis
 	   
 
 	/**
+	 * 
+	 * Analysis for several nuclei, the results are stock on output file
 	 * 
 	 * @param pathResultsFile
 	 * @param rhfChoice
@@ -160,6 +165,7 @@ public class NucleusChromocentersAnalysis
 
 	/**
 	 * Method wich compute the mean of the value in the table
+	 * 
 	 * @param tInput Table of value
 	 * @return Mean of the table
 	 */

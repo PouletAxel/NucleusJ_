@@ -24,7 +24,7 @@ import javax.swing.JTextField;
 
 
 /**
- * 
+ * Class to construct graphical interface for the Nucleus Segentation analysis in batch
  * @author Poulet Axel
  *
  */
@@ -38,6 +38,7 @@ public class NucleusSegmentationAndAnalysisBatchDialog extends JFrame
 	private JButton _jButtonRawData = new JButton("Raw Data");
 	
 	private Container _container;
+	@SuppressWarnings("rawtypes")
 	private JComboBox _comboBoxCpu = new JComboBox();
 	
 	private JFormattedTextField _jTextFieldXCalibration = new JFormattedTextField(Number.class);
@@ -83,7 +84,7 @@ public class NucleusSegmentationAndAnalysisBatchDialog extends JFrame
 	
     
     /**
-     * 
+     * Architecture of the graphical windows
      *
      */
     

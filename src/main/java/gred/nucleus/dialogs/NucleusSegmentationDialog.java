@@ -41,6 +41,7 @@ public class NucleusSegmentationDialog  extends JFrame
 	private boolean _start = false;
 		
 	/**
+	 * Class to construct graphical interface for the nucleus segmentation
 	 * 
 	 * @param args
 	 */
@@ -51,7 +52,7 @@ public class NucleusSegmentationDialog  extends JFrame
 	}
 		
 	/**
-	 * 
+	 * Architecture of the graphical windows
 	 *
 	 */
 	

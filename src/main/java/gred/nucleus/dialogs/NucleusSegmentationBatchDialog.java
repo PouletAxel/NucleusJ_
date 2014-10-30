@@ -10,7 +10,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
-import java.text.NumberFormat;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -23,7 +22,8 @@ import javax.swing.JTextField;
 
 
 /**
- * 
+ *  Class to construct graphical interface for the nucleus segmentation in batch
+ *  
  * @author pouletaxel
  *
  */
@@ -36,6 +36,7 @@ public class NucleusSegmentationBatchDialog extends JFrame
 	private JButton _jButtonRawData = new JButton("Raw Data");
 	
 	private Container _container;
+	@SuppressWarnings("rawtypes")
 	private JComboBox _comboBoxCpu = new JComboBox();
 	
 	private JFormattedTextField _jTextFieldXCalibration = new JFormattedTextField(Number.class);
@@ -76,7 +77,7 @@ public class NucleusSegmentationBatchDialog extends JFrame
 		
 	    
 	/**
-	 *     
+	 *     Architecture of the graphical windows
 	 */
 	public NucleusSegmentationBatchDialog ()
 	{

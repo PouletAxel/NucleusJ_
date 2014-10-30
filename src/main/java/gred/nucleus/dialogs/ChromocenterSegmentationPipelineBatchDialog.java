@@ -16,7 +16,8 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
 /**
- * 
+ *  Class to construct graphical interface for the chromocenter segmentation pipeline in batch
+ *  
  * @author Poulet Axel
  *
  */
@@ -56,7 +57,7 @@ public class ChromocenterSegmentationPipelineBatchDialog extends JFrame
 		
 	    
 	/**
-	 * 
+	 * Architecture of the graphical windows
 	 *
 	 */
 	    

@@ -19,6 +19,7 @@ import javax.swing.JTextPane;
 
 
 /**
+ * Class to construct graphical interface for the chromocenter analysis pipeline in batch
  * 
  * @author pouletaxel
  *
@@ -76,7 +77,7 @@ public class ChromocentersAnalysisPipelineBatchDialog extends JFrame
 	
     
     /**
-     * 
+     * Architecture of the graphical windows
      *
      */
     

@@ -105,7 +105,11 @@ public class RadialDistance
 	    }
 	    return tRadialDistance;
 	}
-	
+	/**
+	 * Resize the input image to obtain isotropic voxel
+	 * @param imagePlus 
+	 * @return resized image
+	 */
 	private ImagePlus resizeImage (ImagePlus imagePlus)
 	{
 		Resizer resizer = new Resizer();

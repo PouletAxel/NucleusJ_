@@ -141,8 +141,9 @@ public class NucleusSegmentation
 
 	
 	/**
+	 * Compute the beginig threshold value
 	 * 
-	 * @param imagePlusInput
+	 * @param imagePlusInput raw image
 	 * @return
 	 */
 	private int computeThreshold (ImagePlus imagePlusInput)
@@ -154,10 +155,11 @@ public class NucleusSegmentation
 	}
 
 	/**
+	 * Creation of the nucleus segmented image
 	 * 
-	 * @param imagePlusInput
-	 * @param threshold
-	 * @return
+	 * @param imagePlusInput raw image
+	 * @param threshold threshold value for the segmentation
+	 * @return segmented image of the nucleus
 	 */
 	private ImagePlus generateSegmentedImage (ImagePlus imagePlusInput, int threshold)
 	{
@@ -176,9 +178,11 @@ public class NucleusSegmentation
 	}
 
 	/**
+	 * Determine of the minimum and the maximum value o find the better threshold value
 	 * 
-	 * @param imagePlusInput
-	 * @return
+	 * @param imagePlusInput raw image
+	 * @return array lis which contain at the index 0 the min valu and index 1 the max value
+	 * 
 	 */
 	private ArrayList<Integer> computeMinMaxThreshold(ImagePlus imagePlusInput)
 	{
@@ -194,6 +198,7 @@ public class NucleusSegmentation
 	}
 	
 	/**
+	 * Determines there 
 	 * 
 	 * @param imagePlusSegmented
 	 * @param threshold
@@ -215,11 +220,14 @@ public class NucleusSegmentation
 				}
 			}
 		}
-		if (nbVoxelThresholded >= 50) voxelThresolded=true;
+		if (nbVoxelThresholded >= 50) voxelThresolded = true;
 		return voxelThresolded;
 	}
+	
+	
 	/**
-	 * 	 
+	 * 	 method to realise sevral morphological correction ( filling holes and top hat)
+	 * 
 	 * @param imagePlusSegmented image to be correct
 	 */
 	private void morphologicalCorrection (ImagePlus imagePlusSegmented)
@@ -232,8 +240,9 @@ public class NucleusSegmentation
 
 
 	/**
+	 * compute closing with the segmented image
 	 * 
-	 * @param imagePlusInput
+	 * @param imagePlusInput image segmented
 	 */
 	private void computeClosing (ImagePlus imagePlusInput)
 	{
@@ -244,8 +253,9 @@ public class NucleusSegmentation
 	}
 
 	/**
+	 * compute opening with the segmented image 
 	 * 
-	 * @param imagePlusInput
+	 * @param imagePlusInput image segmented
 	 */
 	private void computeOpening (ImagePlus imagePlusInput)
 	{
@@ -257,24 +267,26 @@ public class NucleusSegmentation
   
 
 	/**
-	 * 
-	 * @return
+	 * getter to retun the chosen threshold value
+	 * @return the final threshold value
 	 */
 	public int getBestThreshold (){ return _bestThreshold;}
 	
 	/**
-	 * 
+	 * if the detected object is superior or equal at 70% of the image return false
+	 *  
 	 * @param objectVolume
 	 * @return
 	 */
 	private boolean testRelativeObjectVolume(double objectVolume,double imageVolume)
 	{
 		final double ratio = (objectVolume/imageVolume)*100;
-		if (ratio >= 50) return false;
+		if (ratio >= 70) return false;
 		else return true;
 	}
 	
 	/**
+	 * interval of volume to detect the object
 	 * 
 	 * @param volumeMin
 	 * @param volumeMax
