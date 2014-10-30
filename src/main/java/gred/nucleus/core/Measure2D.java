@@ -20,8 +20,9 @@ public class Measure2D
     public Measure2D ()  {   }
     
     /**
+     * Compute of the 2D parameters of the nucleus 
      * 
-     * @param imagePlusSegmented
+     * @param imagePlusSegmented image of segmented nucleus
      */
     public void run (ImagePlus imagePlusSegmented)
     {
@@ -31,9 +32,10 @@ public class Measure2D
     }
 
     /**
+     * Search the stack with the greatest area for the nucleus
      * 
      * @param imagePlusSegmented
-     * @return
+     * @return the number of the stack with the greatest area
      */
     private int searchSliceWithMaxArea(ImagePlus imagePlusSegmented)
     {
@@ -64,10 +66,11 @@ public class Measure2D
     }
 
     /**
+     * method to compute the parameter
      * 
      * @param imagePlusSegmented
-     * @param indiceMaxArea
-     * @return
+     * @param indiceMaxArea 
+     * @return a resultTable object which contain the results
      */
     private ResultsTable computePrameters(ImagePlus imagePlusSegmented, int indiceMaxArea)
     {

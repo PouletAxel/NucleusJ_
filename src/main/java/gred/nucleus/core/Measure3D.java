@@ -10,6 +10,7 @@ import Jama.Matrix;
 /**
  * Class NucleusMeasure : allow the compute of severals 3Dparameters (shape, lenght) in
  * binary object
+ * 
  * @author Poulet Axel
  */
 
@@ -24,9 +25,9 @@ public class Measure3D
 	 * Adding the surface of the face of the voxel frontier, which are in contact
 	 * with the background of the image, to the surface total.
 	 *
-	 * @param imagePlusInput
-	 * @param label
-	 * @return
+	 * @param imagePlusInput segmented image
+	 * @param label label of the interest object
+	 * @return the surface
 	 */
 
 	public double computeSurfaceObject (ImagePlus imagePlusInput, double label)
@@ -71,8 +72,9 @@ public class Measure3D
 	/**
 	 * This Method compute the volume of each segmented objects
 	 * in imagePlus
-	 * @param imagePlusInput
-	 * @return
+	 * 
+	 * @param imagePlusInput segmented image
+	 * @return double table which contain the volume of each image object
 	 */
 	public double[] computeVolumeofAllObjects (ImagePlus imagePlusInput)
 	{
@@ -94,10 +96,10 @@ public class Measure3D
 	} 
 
 	/**
-	 * 
+	 * Compute the volume of one object with this label
 	 * @param imagePlusInput
-	 * @param label
-	 * @return
+	 * @param label 
+	 * @return the volume
 	 */
 	public double computeVolumeObject (ImagePlus imagePlusInput, double label)
 	{
@@ -281,6 +283,7 @@ public class Measure3D
 	}
 	
 	/**
+	 * Intensity of chromocenters/ intensity of the nucleus
 	 * 
 	 * @param imagePlusInput
 	 * @param imagePlusSegmented
@@ -333,7 +336,7 @@ public class Measure3D
 	  } 
 	  
 	  /**
-	   * 
+	   * Detect the number of object on segmented imaeg 
 	   * @param imagePlusInput
 	   * @return
 	   */

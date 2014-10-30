@@ -9,6 +9,7 @@ import ij.IJ;
 import ij.ImagePlus;
 
 /**
+ * Several method to realise and creat the outfile for the chromocenter Analysis
  * 
  * @author Poulet Axel
  *
@@ -17,10 +18,12 @@ public class ChromocenterAnalysis
 {
 	public ChromocenterAnalysis ()   {	   }
 	/**
-	 * 
-	 * @param imagePlusSegmented
-	 * @param imagePlusChromocenter
+	 *  Compute the several parameters to characterize the chromocenter of one image, and return the results on the IJ log windows
+	 *  
+	 * @param imagePlusSegmented image of the segmented nucleus
+	 * @param imagePlusChromocenter image of the segmented chromocenter
 	 */
+	
 	public void computeParametersChromocenter (ImagePlus imagePlusSegmented, ImagePlus imagePlusChromocenter)
 	{
 		Histogram histogram = new Histogram ();
@@ -49,10 +52,13 @@ public class ChromocenterAnalysis
 	   
 	/**
 	 * 
-	 * @param pathResultsFile
-	 * @param imagePlusSegmented
-	 * @param imagePlusChromocenter
-	 * @throws IOException
+	 * Compute the several parameters to characterize the chromocenter of several images, and create 
+	 * one output file for the results
+	 * 
+	 * @param pathResultsFile path for the output file
+	 * @param imagePlusSegmented image of the segmented nucleus
+	 * @param imagePlusChromocenter image of the chromocenter segmented
+	 * @throws IOException 
 	 */
 	   
 	public void computeParametersChromocenter (String pathResultsFile,ImagePlus imagePlusSegmented, ImagePlus imagePlusChromocenter) throws IOException

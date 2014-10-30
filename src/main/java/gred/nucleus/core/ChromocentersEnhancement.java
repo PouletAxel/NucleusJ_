@@ -6,8 +6,10 @@ import ij.*;
 import ij.process.*;
 import inra.ijpb.binary.ConnectedComponents;
 import inra.ijpb.watershed.Watershed;
+
 /**
- *
+ * Several method to create the image of contrasted regions
+ * 
  * @author Poulet Axel
 
  */
@@ -19,9 +21,9 @@ public class ChromocentersEnhancement
 	/**
 	 * compute and create the image contrast with the raw image and the segmented image
 	 *  
-	 * @param imagePlusRaw
-	 * @param imagePlusSegmented
-	 * @return
+	 * @param imagePlusRaw	raw image
+	 * @param imagePlusSegmented segmented image of the nucleus
+	 * @return image of the cotrasted region
 	 */
 
 	public ImagePlus applyEnhanceChromocenters(ImagePlus imagePlusRaw,ImagePlus imagePlusSegmented)
@@ -42,8 +44,8 @@ public class ChromocentersEnhancement
 	/**
 	 * Compute the region adjacency graph. The aim is to detect the  neighboring region.
 	 * 
-	 * @param imagePlusWatershed
-	 * @return
+	 * @param imagePlusWatershed image results of the watershed
+	 * @return a float table which contain the value of the contrast between each region
 	 */
 	public double [][] getRegionAdjacencyGraph (ImagePlus imagePlusWatershed)
 	{
@@ -84,9 +86,9 @@ public class ChromocentersEnhancement
 	/**
 	 * Compute the contrasts between neighboring region.
 	 * 
-	 * @param imagePlusRaw
-	 * @param imagePlusRegions
-	 * @return
+	 * @param imagePlusRaw raw image
+	 * @param imagePlusRegions imag of the contrasted regions
+	 * @return table of constrast
 	 */
 	
 	public double [] computeContrast (ImagePlus imagePlusRaw,ImagePlus imagePlusRegions)
@@ -118,7 +120,7 @@ public class ChromocentersEnhancement
 	/**
 	 * Filter max on the RAG
 	 * 
-	 * @param tMeanIntensity
+	 * @param tMeanIntensity 
 	 * @param tRegionAdjacencyGraph
 	 * @return
 	 */
@@ -193,8 +195,9 @@ public class ChromocentersEnhancement
 		return tIntensityMean;
 	}
 	/**
+	 * Creation of the image of contrasted regions
 	 * 
-	 * @param imagePlusInput
+	 * @param imagePlusInput 
 	 * @param tVoxelValue
 	 * @return
 	 */
