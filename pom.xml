@@ -6,24 +6,36 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.scijava</groupId>
-		<artifactId>pom-scijava</artifactId>
-		<version>1.126</version>
+		<groupId>sc.fiji</groupId>
+		<artifactId>pom-fiji</artifactId>
+		<version>2.0.0-beta-0</version>
 		<relativePath />
 	</parent>
 
 	<groupId>sc.fiji</groupId>
 	<artifactId>NucleusJ_</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 
-	<name>plugins/NucleusJ_.jar</name>
+	<name>NucleusJ</name>
 	<description>Ensemble of ImageJ plugins for nuclear analysis</description>
 
 	<dependencies>
 		<dependency>
 			<groupId>net.imagej</groupId>
 			<artifactId>ij</artifactId>
-			<version>${imagej1.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>sc.fiji</groupId>
+			<artifactId>imagescience</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.math</groupId>
+			<artifactId>jama</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>sc.fiji</groupId>
+			<artifactId>ijpb_plugins</artifactId>
+			<version>1.0.5</version>
 		</dependency>
 	</dependencies>
 
@@ -44,26 +56,13 @@
 				<directory>${project.build.testSourceDirectory}</directory>
 			</testResource>
 		</testResources>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>java</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
 	</build>
-	
+
 	<developers>
 		<developer>
 			<id>PouletAxel</id>
 			<name>Axel Poulet</name>
-			<email>pouletaxel@gmail.com</email>			
+			<email>pouletaxel@gmail.com</email>
 			<organization>GRED</organization>
 			<roles>
 				<role>architect</role>
@@ -73,7 +72,6 @@
 		</developer>
 	</developers>
 
-
 	<repositories>
 		<!-- NB: for project parent -->
 		<repository>
@@ -81,8 +79,6 @@
 			<url>http://maven.imagej.net/content/groups/public</url>
 		</repository>
 	</repositories>
-
-
 	<scm>
 		<connection>scm:git:git://github.com/PouletAxel/NucleusJ_</connection>
 		<developerConnection>scm:git:git@github.com:PouletAxel/NucleusJ_</developerConnection>
