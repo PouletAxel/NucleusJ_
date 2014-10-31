@@ -6,7 +6,8 @@ import ij.measure.Calibration;
 import ij.plugin.*;
 
 /**
- * 
+ *  Method to segment the nucleus on one image
+ *  
  * @author Poulet Axel
  *
  */
@@ -17,6 +18,7 @@ public class NucleusSegmentationPlugin_ implements PlugIn
 	
 	/**
 	 * This method permit to execute the ReginalExtremFilter on the selected image
+	 * 
 	 * @param arg 
 	 */
 	public void run(String arg)
@@ -27,14 +29,14 @@ public class NucleusSegmentationPlugin_ implements PlugIn
 	       IJ.noImage();
 	       return;
 	    }
-	    else if (_imagePlusInput.getStackSize() == 1)
-	    {
-	    	IJ.error("image format", "No images in gray scale 8bits in 3D");
+	    else if (_imagePlusInput.getStackSize() == 1 || (_imagePlusInput.getType() != ImagePlus.GRAY8 && _imagePlusInput.getType() != ImagePlus.GRAY16))
+		{
+	    	IJ.error("image format", "No images in gray scale 8bits or 16 bits in 3D");
 	        return;
 	    }
 	    if (IJ.versionLessThan("1.32c"))
 	    	return;
-	    NucleusSegmentationDialog nucleusSegmentationDialog = new NucleusSegmentationDialog();
+	    NucleusSegmentationDialog nucleusSegmentationDialog = new NucleusSegmentationDialog(_imagePlusInput.getCalibration());
 	    while( nucleusSegmentationDialog.isShowing())
 		{
 			try {Thread.sleep(1);}

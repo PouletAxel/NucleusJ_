@@ -16,14 +16,18 @@ import gred.nucleus.dialogs.ChromocentersAnalysisPipelineBatchDialog;
 import gred.nucleus.utils.FileList;
 
 /**
+ * Method to analyse the chromocenter on batch
  * 
  * @author Poulet Axel
  *
  */
+
 public class ChromocentersAnalysisBatchPlugin_ implements PlugIn
 {
 		
 	/**
+	 * 
+	 * Run the the analyse, call the graphical windows
 	 * 
 	 */
 	public void run(String arg)
@@ -71,9 +75,14 @@ public class ChromocentersAnalysisBatchPlugin_ implements PlugIn
 					if (fileList.isDirectoryOrFileExist(pathNucleusRaw,tFileRawImage) &&
 						fileList.isDirectoryOrFileExist(pathNucleusSegmented,tFileRawImage))
 					{
+						ImagePlus imagePlusInput = IJ.openImage(pathNucleusRaw);
+						if (imagePlusInput.getType() == ImagePlus.GRAY32)
+						{
+						    	IJ.error("image format", "No images in gray scale 8bits in 3D");
+						        return;
+						}
 						ImagePlus imagePlusChromocenter = IJ.openImage(arrayListImageChromocenter.get(i));
 						ImagePlus imagePlusSegmented = IJ.openImage(pathNucleusSegmented);
-						ImagePlus imagePlusInput = IJ.openImage(pathNucleusRaw);
 						Calibration calibration = new Calibration();
 						calibration.pixelDepth = zCalibration;
 						calibration.pixelWidth = xCalibration;

@@ -8,30 +8,39 @@ import java.util.HashMap;
 
 /**
  * 
- * @author apoulet
+ * @author Poulet Axel
+ * 
+ * Several method on the file 
  *
  */
-
 public class FileList
 {
 	boolean _windows = false; 
-    public FileList()
+    
+	/**
+     * 
+     */
+	public FileList()
     {
     	_windows = System.getProperty("os.name").startsWith("Windows");
     }
+    
     /**
-     * 
+     * run the methods to list all the file in one input directory
+     *  
      * @param repertoire
-     * @return
+     * @return Liste of file
+    
      */
 	public File[]  run (String repertoire){ 	return repertoryFileList( repertoire); }
 	
 
 	
 	/**
+	 * method to list all the file in one input directory
 	 * 
 	 * @param directory
-	 * @return
+	 * @return list file
 	 */
 	public File[] repertoryFileList(String directory)
     {    
@@ -53,6 +62,7 @@ public class FileList
     }
 	
     /**
+     * methode to list on subdirectory
      * 
      * @param tTempBeforeElement
      * @param tTempAfterElement

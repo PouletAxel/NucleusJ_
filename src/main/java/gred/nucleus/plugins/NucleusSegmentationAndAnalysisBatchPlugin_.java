@@ -5,10 +5,12 @@ import gred.nucleus.dialogs.NucleusSegmentationAndAnalysisBatchDialog;
 import gred.nucleus.multiThread.*;
 import gred.nucleus.utils.FileList;
 import ij.IJ;
+import ij.ImagePlus;
 import ij.plugin.PlugIn;
 
 /**
- * 
+ *  Method to segment and analyse the nucleus on batch
+ *  
  * @author Poulet Axel
  *
  */
@@ -31,6 +33,12 @@ public class NucleusSegmentationAndAnalysisBatchPlugin_ implements PlugIn
 			IJ.log("Begining of the segmentation of nuclei, the data are in "+_nucleusPipelineBatchDialog.getRawDataDirectory());
 			FileList fileList = new FileList ();
 			File[] tFileRawImage = fileList.run(_nucleusPipelineBatchDialog.getRawDataDirectory());
+			if(IJ.openImage(tFileRawImage[0].toString()).getType() == ImagePlus.GRAY32 )
+			{
+		    	IJ.error("image format", "No images in gray scale 8bits or 16 bits in 3D");
+		        return;
+		    }
+			
 			ProcessImageSegmentaion processImageSegmentation = new ProcessImageSegmentaion();
 			try
 			{

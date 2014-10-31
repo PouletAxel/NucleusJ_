@@ -4,9 +4,12 @@ import gred.nucleus.dialogs.NucleusSegmentationBatchDialog;
 import gred.nucleus.multiThread.*;
 import gred.nucleus.utils.FileList;
 import ij.IJ;
+import ij.ImagePlus;
 import ij.plugin.PlugIn;
 /**
  * 
+ * Method to segment the nucleus on batch
+ *  
  * @author Poulet Axel
  *
  */
@@ -35,6 +38,11 @@ public class NucleusSegmentationBatchPlugin_ implements PlugIn
 			}
 			else
 			{
+				if(IJ.openImage(tRawImageFile[0].toString()).getType() == ImagePlus.GRAY32 )
+				{
+			    	IJ.error("image format", "No images in gray scale 8bits or 16 bits in 3D");
+			        return;
+			    }
 				ProcessImageSegmentaion processImageSegmentation = new ProcessImageSegmentaion();
 				try 
 				{	

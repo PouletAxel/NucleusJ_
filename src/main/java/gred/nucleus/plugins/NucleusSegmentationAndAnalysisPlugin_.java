@@ -8,7 +8,8 @@ import ij.measure.Calibration;
 import ij.plugin.PlugIn;
 
 /**
- * 
+ *  Method to segment and analyse the nucleus on one image
+ *  
  * @author Poulet Axel
  *
  */
@@ -28,14 +29,14 @@ public class NucleusSegmentationAndAnalysisPlugin_ implements PlugIn
 			IJ.noImage();
 			return;
 		}
-		else if (_imagePlusInput.getStackSize() == 1)
+		else if (_imagePlusInput.getStackSize() == 1 || (_imagePlusInput.getType() != ImagePlus.GRAY8 && _imagePlusInput.getType() != ImagePlus.GRAY16))
 		{
-			IJ.error("image format", "No images in gray scale in 3D");
+			IJ.error("image format", "No images in 8 or 16 bits gray scale  in 3D");
 			return;
 		}
 		if (IJ.versionLessThan("1.32c"))
 			return;
-		NucleusSegmentationAndAnalysisDialog nucleusSegmentationAndAnalysisDialog = new NucleusSegmentationAndAnalysisDialog();
+		NucleusSegmentationAndAnalysisDialog nucleusSegmentationAndAnalysisDialog = new NucleusSegmentationAndAnalysisDialog(_imagePlusInput.getCalibration());
 		while( nucleusSegmentationAndAnalysisDialog.isShowing())
 		{
 	    	 try {Thread.sleep(1);}

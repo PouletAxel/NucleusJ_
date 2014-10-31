@@ -188,7 +188,8 @@ public class NucleusSegmentation
 	{
 		ArrayList<Integer> arrayListMinMaxThreshold = new ArrayList<Integer>();
 		int threshold = computeThreshold (imagePlusInput);
-		double stdDev = imagePlusInput.getStatistics().stdDev;
+		StackStatistics stackStatistics = new StackStatistics(imagePlusInput);
+		double stdDev =stackStatistics.stdDev ;
 		double min = threshold - stdDev*2;
 		double max = threshold + stdDev;
 		if ( min < 0) arrayListMinMaxThreshold.add(1);

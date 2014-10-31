@@ -1,4 +1,6 @@
 package gred.nucleus.dialogs;
+import ij.measure.Calibration;
+
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -49,15 +51,6 @@ public class NucleusSegmentationAndAnalysisDialog extends JFrame
 	private JRadioButton _jRadioButton2D3D = new JRadioButton("2D and 3D");
 	private boolean _start = false;
 	
-	/**
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args)  
-	{
-		NucleusSegmentationAndAnalysisDialog nucleusSegmentationAndAnalysisDialog = new NucleusSegmentationAndAnalysisDialog();
-		nucleusSegmentationAndAnalysisDialog.setLocationRelativeTo(null);
-	}
 	
 	    
 	/**
@@ -66,7 +59,7 @@ public class NucleusSegmentationAndAnalysisDialog extends JFrame
 	 * 
 	 */
 	
-	public NucleusSegmentationAndAnalysisDialog ()
+	public NucleusSegmentationAndAnalysisDialog (Calibration cal)
 	{
 		this.setTitle("Nucleus segmentation & analysis");
 		this.setSize(500, 350);
@@ -119,7 +112,7 @@ public class NucleusSegmentationAndAnalysisDialog extends JFrame
 				new Insets(20, 60, 0, 0), 0, 0
 			)
 		);
-		_jTextFieldXCalibration.setText("1");
+		_jTextFieldXCalibration.setText(""+cal.pixelWidth);
 		_jTextFieldXCalibration.setPreferredSize(new java.awt.Dimension(60, 21));
 		
 		_jLabelYcalibration = new JLabel();
@@ -147,7 +140,7 @@ public class NucleusSegmentationAndAnalysisDialog extends JFrame
 				new Insets(45, 60, 0, 0), 0, 0
 			)
 		);
-		_jTextFieldYCalibration.setText("1");
+		_jTextFieldYCalibration.setText(""+cal.pixelWidth);
 		_jTextFieldYCalibration.setPreferredSize(new java.awt.Dimension(60, 21));
 		
 		_jLabelZcalibration = new JLabel();
@@ -175,7 +168,7 @@ public class NucleusSegmentationAndAnalysisDialog extends JFrame
 				new Insets(70, 60, 0, 0), 0, 0
 			)
 		);
-		_jTextFieldZCalibration.setText("1");
+		_jTextFieldZCalibration.setText(""+cal.pixelDepth);
 		_jTextFieldZCalibration.setPreferredSize(new java.awt.Dimension(60, 21));	 
 		
 		_jLabelUnit = new JLabel();

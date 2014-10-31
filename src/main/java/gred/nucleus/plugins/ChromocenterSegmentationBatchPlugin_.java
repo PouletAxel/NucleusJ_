@@ -11,6 +11,7 @@ import ij.measure.Calibration;
 import java.io.File;
 import java.util.ArrayList;
 /**
+ * Method to detect the chromocenters on batch
  * 
  * @author Poulet Axel
  *
@@ -19,6 +20,7 @@ public class ChromocenterSegmentationBatchPlugin_ implements PlugIn
 {
 
 	/**
+	 *  
 	 * 
 	 */
 	public void run(String arg)
@@ -73,9 +75,10 @@ public class ChromocenterSegmentationBatchPlugin_ implements PlugIn
 	}
 	
 	/**
+	 * saving file method
 	 * 
-	 * @param imagePlus
-	 * @param pathFile
+	 * @param imagePlus imagePus to save 
+	 * @param pathFile the path where save the image
 	 */
 	public void saveFile ( ImagePlus imagePlus, String pathFile)
 	{

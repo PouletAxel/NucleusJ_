@@ -9,12 +9,14 @@ import gred.nucleus.core.ChromocenterAnalysis;
 import gred.nucleus.core.NucleusChromocentersAnalysis;
 
 /**
+ *  Method to analyse the chromocenter
  * 
  * @author Poulet Axel
  *
  */
 public class ChromocentersAnalysisPlugin_   implements PlugIn
 {
+	
 	/**
 	 * 
 	 */
@@ -35,8 +37,18 @@ public class ChromocentersAnalysisPlugin_   implements PlugIn
 		for (int i = 0; i < wList.length; i++)
 		{
 			ImagePlus imagePlus = WindowManager.getImage(wList[i]);
+			
 			if (imagePlus != null)
+			{
+				if (i == 0)
+				{
+					Calibration cal = imagePlus.getCalibration();
+					xCalibration = cal.pixelWidth;
+					yCalibration= cal.pixelHeight;
+					zCalibration= cal.pixelDepth;
+				}
 				titles[i] = imagePlus.getTitle();
+			}
 			else
 				titles[i] = "";
 		}
@@ -66,7 +78,7 @@ public class ChromocentersAnalysisPlugin_   implements PlugIn
         if (genericDialog.wasCanceled())   return;
         ImagePlus imagePlusInput =  WindowManager.getImage(wList[genericDialog.getNextChoiceIndex()]);
         ImagePlus imagePlusSegmented =  WindowManager.getImage(wList[genericDialog.getNextChoiceIndex()]);
-         ImagePlus imagePlusChromocenter =  WindowManager.getImage(wList[genericDialog.getNextChoiceIndex()]);
+        ImagePlus imagePlusChromocenter =  WindowManager.getImage(wList[genericDialog.getNextChoiceIndex()]);
         xCalibration = genericDialog.getNextNumber();
         yCalibration = genericDialog.getNextNumber();
         zCalibration = genericDialog.getNextNumber();

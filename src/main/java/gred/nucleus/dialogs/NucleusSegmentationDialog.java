@@ -1,4 +1,6 @@
 package gred.nucleus.dialogs;
+import ij.measure.Calibration;
+
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -12,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 /**
+ * Class to construct graphical interface for the nucleus segmentation
  * 
  * @author Poulet Axel
  *
@@ -39,24 +42,15 @@ public class NucleusSegmentationDialog  extends JFrame
 	private JLabel _JLabelCalibration;
 	private JLabel _jLabelUnitTexte;
 	private boolean _start = false;
+
 		
-	/**
-	 * Class to construct graphical interface for the nucleus segmentation
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args)  
-	{
-		NucleusSegmentationAndAnalysisDialog nucleusSegmentationAndAnalysisDialog = new NucleusSegmentationAndAnalysisDialog();
-		nucleusSegmentationAndAnalysisDialog.setLocationRelativeTo(null);
-	}
 		
 	/**
 	 * Architecture of the graphical windows
 	 *
 	 */
 	
-	public NucleusSegmentationDialog ()
+	public NucleusSegmentationDialog (Calibration cal)
 	{
 		this.setTitle("Nucleus segmentation");
 		this.setSize(500, 350);
@@ -108,7 +102,7 @@ public class NucleusSegmentationDialog  extends JFrame
 				new Insets(20, 60, 0, 0), 0, 0
 			)
 		);
-		_jTextFieldXCalibration.setText("1");
+		_jTextFieldXCalibration.setText(""+cal.pixelWidth);
 		_jTextFieldXCalibration.setPreferredSize(new java.awt.Dimension(60, 21));
 		
 		_jLabelYcalibration = new JLabel();
@@ -136,7 +130,7 @@ public class NucleusSegmentationDialog  extends JFrame
 				new Insets(45, 60, 0, 0), 0, 0
 			)
 		);
-		_jTextFieldYCalibration.setText("1");
+		_jTextFieldYCalibration.setText(""+cal.pixelHeight);
 		_jTextFieldYCalibration.setPreferredSize(new java.awt.Dimension(60, 21));
 		
 		_jLabelZcalibration = new JLabel();
@@ -164,7 +158,7 @@ public class NucleusSegmentationDialog  extends JFrame
 				new Insets(70, 60, 0, 0), 0, 0
 			)
 		);
-		_jTextFieldZCalibration.setText("1");
+		_jTextFieldZCalibration.setText(""+cal.pixelDepth);
 		_jTextFieldZCalibration.setPreferredSize(new java.awt.Dimension(60, 21));	 
 		
 		_jLabelUnit = new JLabel();
