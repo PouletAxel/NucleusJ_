@@ -33,9 +33,9 @@
 			<artifactId>jama</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>sc.fiji</groupId>
-			<artifactId>ijpb_plugins</artifactId>
-			<version>1.0.5</version>
+			<groupId>fr.inra.ijpb</groupId>
+			<artifactId>MorphoLibJ_</artifactId>
+			<version>1.0.6</version>
 		</dependency>
 	</dependencies>
 
