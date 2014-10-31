@@ -28,9 +28,16 @@ UMR CNRS 6293, INSERM U1103, Genetic, Reproduction and Development, Clermont-Fer
 Department of Biological and Medical Sciences Faculty of Health and Life Sciences, Oxford Brookes University, Headington Campus, Oxford, United Kingdom
 
 Philippe Andrey
+
 Modeling and Digital Imaging Group, Institut Jean-Pierre Bourgin, INRA Versailles, France.
 
-Ignacio Arganda-Carreras and David Legland, Modeling and Digital Imaging Group, Institut Jean-Pierre Bourgin, INRA Versailles, France.
+Ignacio Arganda-Carreras 
+
+ Modeling and Digital Imaging Group, Institut Jean-Pierre Bourgin, INRA 
+ 
+ David Legland,
+ 
+  Modeling and Digital Imaging Group, Institut Jean-Pierre Bourgin, INRA Versailles, France.
 
 Contact: axel.poulet@etudiant.univ-bpclermont.fr
 
