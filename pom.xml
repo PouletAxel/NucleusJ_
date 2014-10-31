@@ -13,7 +13,7 @@
 	</parent>
 
 	<artifactId>NucleusJ_</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.1</version>
 
 	<name>NucleusJ</name>
 	<description>Ensemble of ImageJ plugins for nuclear analysis</description>
