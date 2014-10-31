@@ -46,6 +46,7 @@ public class ChromocentersAnalysisPlugin_   implements PlugIn
 					xCalibration = cal.pixelWidth;
 					yCalibration= cal.pixelHeight;
 					zCalibration= cal.pixelDepth;
+					unit = cal.getUnit();
 				}
 				titles[i] = imagePlus.getTitle();
 			}

@@ -186,7 +186,7 @@ public class NucleusSegmentationDialog  extends JFrame
 				new Insets(95, 60, 0, 0), 0, 0
 			)
 		);
-		_jTextFieldUnit.setText("pixel");
+		_jTextFieldUnit.setText(cal.getUnit());
 		_jTextFieldUnit.setPreferredSize(new java.awt.Dimension(60, 21));	
 		
 		_jLabelSegmentation = new JLabel();
