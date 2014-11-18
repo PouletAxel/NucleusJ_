@@ -346,4 +346,31 @@ public class Measure3D
 		histogram.run(imagePlusInput);
 		return histogram.getNbLabels();
 	  } 
+	 
+	  
+	  public double computeComplexSurface()
+	  {
+			double surface=0;
+			return surface;
+	  }
+	  
+	  private void computeGradient(ImagePlus imagePlusInput)
+	  {
+		  Calibration calibration= imagePlusInput.getCalibration();
+		  ImageStack imageStackInput = imagePlusInput.getStack();
+		  double xCalibration = calibration.pixelWidth;
+		  double yCalibration = calibration.pixelHeight;
+		  double zCalibration = calibration.pixelDepth;
+		  for (int k = 0; k < imagePlusInput.getStackSize(); ++k)
+			  for (int i = 0; i < imagePlusInput.getWidth(); ++i)
+				  for (int j = 0; j < imagePlusInput.getHeight(); ++j)
+				  { 
+					  double dx = (1/xCalibration)*((imageStackInput.getVoxel(i+1, j, k)-imageStackInput.getVoxel(i-1, j, k))/2);
+					  double dy = (1/yCalibration)*((imageStackInput.getVoxel(i, j+1, k)-imageStackInput.getVoxel(i, j-1, k))/2);
+					  double dz = (1/zCalibration)*((imageStackInput.getVoxel(i, j, k+1)-imageStackInput.getVoxel(i-1, j, k-1))/2);
+					  
+					  
+				  }
+	  }
+	  
 }
