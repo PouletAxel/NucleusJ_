@@ -34,7 +34,7 @@ public class OtherNucleusSegmentationPlugin_ implements PlugIn
 	    }
 	    if (IJ.versionLessThan("1.32c"))
 	    	return;
-	    NucleusSegmentationDialog nucleusSegmentationDialog = new NucleusSegmentationDialog();
+	    NucleusSegmentationDialog nucleusSegmentationDialog = new NucleusSegmentationDialog(_imagePlusInput.getCalibration());
 	    while( nucleusSegmentationDialog.isShowing())
 		{
 			try {Thread.sleep(1);}
