@@ -351,12 +351,13 @@ public class Measure3D
 		return histogram.getNbLabels();
 	  } 
 	 
+
 	  /**
 	   * 
 	   * @param imagePlusInput
 	   * @param imagePlusSegmented
+	   * @return
 	   */
-	  
 	  public double computeComplexSurface(ImagePlus imagePlusInput, ImagePlus imagePlusSegmented)
 	  {
 			Gradient gradient = new Gradient(imagePlusInput);
@@ -416,7 +417,15 @@ public class Measure3D
 			return surfaceArea;
 	  }
 	  
-	  
+	  /**
+	   * 
+	   * @param listUnitaireIn
+	   * @param listUnitaireOut
+	   * @param voxelRecordIn
+	   * @param voxelRecordOut
+	   * @param as
+	   * @return
+	   */
 	  private double computeSurfelContribution (ArrayList <Double> listUnitaireIn, ArrayList <Double> listUnitaireOut,
 			  VoxelRecord voxelRecordIn, VoxelRecord voxelRecordOut, double as )
 	  {
@@ -429,7 +438,4 @@ public class Measure3D
 		  return (dx*nx+dy*ny+dz*nz)*as;
 	  }
 	  
-	  
-	  
-	
 }
