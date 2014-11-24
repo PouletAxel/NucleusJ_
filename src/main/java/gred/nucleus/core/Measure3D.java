@@ -397,7 +397,6 @@ public class Measure3D
 									voxelRecordOut.setLocation((double) ii, (double) j, (double) k);
 									surfaceArea = surfaceArea+computeSurfelContribution(tableUnitaire[i][j][k],tableUnitaire[ii][j][k],
 											voxelRecordIn,voxelRecordOut,((1/yCalibration)*(1/zCalibration)));
-									
 								}
 							}
 							for (int jj = j-1; jj <= j+1; jj+=2)

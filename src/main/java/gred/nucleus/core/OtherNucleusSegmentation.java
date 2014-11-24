@@ -57,18 +57,19 @@ public class OtherNucleusSegmentation
 		// DistanceMap thresholding???? => seuillage en soit facil, mais comment faire qqch de cohérent?
 		Histogram histogram = new Histogram();
 		histogram.run(imagePlusDistanceMap);
-		double s_threshold = histogram.getLabelMax();
-		double  s_thresholdInitial = s_threshold/2;
+		double s_threshold = histogram.getLabelMax()/4;
+		double  s_thresholdInitial = s_threshold;
 		double compteur = 1;
 		while (s_threshold>=0.103)
 		{
-			if (s_threshold != s_thresholdInitial ) imagePlusDistanceMap = radialDistance.computeDistanceMap(resizeImage(imagePlusSegmented));
+			IJ.log("plopi : "+s_threshold);
+			if (s_threshold != s_thresholdInitial )
+				imagePlusDistanceMap = radialDistance.computeDistanceMap(resizeImage(imagePlusSegmented));
 			ImageStack imageStackDistanceMap = imagePlusDistanceMap.getStack();
 			ImageStack imageStackOutput = imagePlusSegmented.getStack();
 			for (int k = 0; k < imagePlusDistanceMap.getNSlices(); ++k)
 				for (int i = 0; i < imagePlusDistanceMap.getWidth(); ++i)
 					for (int j = 0; j < imagePlusDistanceMap.getHeight(); ++j)
-						
 					{
 						double voxelValue =  imageStackDistanceMap.getVoxel(i, j, k); 
 						if (voxelValue >= s_threshold)
