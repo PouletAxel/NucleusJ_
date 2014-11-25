@@ -59,13 +59,13 @@ public class Measure3D
 						{
 							neighborVoxelValue =  imageStackInput.getVoxel(ii, j, k);
 							if (voxelValue != neighborVoxelValue)
-								surfaceArea = surfaceArea + xCalibration * zCalibration;
+								surfaceArea = surfaceArea + yCalibration * zCalibration;
 						}
 						for (int jj = j-1; jj <= j+1; jj+=2)
 						{
 							neighborVoxelValue = imageStackInput.getVoxel(i, jj, k);
 							if (voxelValue != neighborVoxelValue)
-								surfaceArea = surfaceArea + yCalibration * zCalibration;
+								surfaceArea = surfaceArea + xCalibration * zCalibration;
 						}
 					}
 				}
@@ -370,9 +370,9 @@ public class Measure3D
 			double xCalibration = calibration.pixelWidth;
 			double yCalibration = calibration.pixelHeight;
 			double zCalibration = calibration.pixelDepth;
-			for (int k = 0; k < imagePlusSegmented.getNSlices(); ++k)
-			      for (int i = 0; i < imagePlusSegmented.getWidth(); ++i )
-			        for (int j = 0; j < imagePlusSegmented.getHeight(); ++j )
+			for (int k = 2; k < imagePlusSegmented.getNSlices()-2; ++k)
+			      for (int i = 2; i < imagePlusSegmented.getWidth()-2; ++i )
+			        for (int j = 2; j < imagePlusSegmented.getHeight()-2; ++j )
 			        {
 			        	voxelValue = imageStackSegmented.getVoxel(i, j, k);
 						if (voxelValue > 0)
@@ -385,7 +385,7 @@ public class Measure3D
 									voxelRecordIn.setLocation((double) i, (double) j, (double) k);
 									voxelRecordOut.setLocation((double) i, (double) j, (double) kk);
 									surfaceArea = surfaceArea+computeSurfelContribution(tableUnitaire[i][j][k],tableUnitaire[i][j][kk],
-											voxelRecordIn,voxelRecordOut,((1/xCalibration)*(1/yCalibration)));
+											voxelRecordIn,voxelRecordOut,((xCalibration)*(yCalibration)));
 								}
 							}
 							for (int ii=i-1; ii<=i+1; ii+=2)
@@ -396,7 +396,7 @@ public class Measure3D
 									voxelRecordIn.setLocation((double) i, (double) j, (double) k);
 									voxelRecordOut.setLocation((double) ii, (double) j, (double) k);
 									surfaceArea = surfaceArea+computeSurfelContribution(tableUnitaire[i][j][k],tableUnitaire[ii][j][k],
-											voxelRecordIn,voxelRecordOut,((1/yCalibration)*(1/zCalibration)));
+											voxelRecordIn,voxelRecordOut,((yCalibration)*(zCalibration)));
 								}
 							}
 							for (int jj = j-1; jj <= j+1; jj+=2)
@@ -407,7 +407,7 @@ public class Measure3D
 									voxelRecordIn.setLocation((double) i, (double) j, (double) k);
 									voxelRecordOut.setLocation((double) i, (double) jj, (double) k);
 									surfaceArea = surfaceArea+computeSurfelContribution(tableUnitaire[i][j][k],tableUnitaire[i][jj][k],
-											voxelRecordIn,voxelRecordOut,((1/xCalibration)*(1/zCalibration)));;
+											voxelRecordIn,voxelRecordOut,((xCalibration)*(zCalibration)));;
 								}
 									
 							}
@@ -434,7 +434,7 @@ public class Measure3D
 		  double nx = (listUnitaireIn.get(0)+listUnitaireOut.get(0))/2;
 		  double ny = (listUnitaireIn.get(1)+listUnitaireOut.get(1))/2;
 		  double nz = (listUnitaireIn.get(2)+listUnitaireOut.get(2))/2;
-		  return (dx*nx+dy*ny+dz*nz)*as;
+		  return Math.abs((dx*nx+dy*ny+dz*nz)*as);
 	  }
 	  
 }

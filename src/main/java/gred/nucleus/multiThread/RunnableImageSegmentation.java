@@ -65,11 +65,11 @@ public class RunnableImageSegmentation extends Thread implements Runnable
 				{
 					if(_isanalysis2D3D)
 					{
-						nucleusAnalysis.nucleusParameter3D(_workDirectory+File.separator+"3DNucleiParameters.tab",impagePlusSegmented);
+						nucleusAnalysis.nucleusParameter3D(_workDirectory+File.separator+"3DNucleiParameters.tab",_imagePlusInput,impagePlusSegmented);
 						nucleusAnalysis.nucleusParameter2D(_workDirectory+File.separator+"2DNucleiParameters.tab",impagePlusSegmented);
 					}
 					else if(_isanalysis3D)
-						nucleusAnalysis.nucleusParameter3D(_workDirectory+File.separator+"3DNucleiParameters.tab",impagePlusSegmented);
+						nucleusAnalysis.nucleusParameter3D(_workDirectory+File.separator+"3DNucleiParameters.tab",_imagePlusInput,impagePlusSegmented);
 					else
 						nucleusAnalysis.nucleusParameter2D(_workDirectory+File.separator+"2DNucleiParameters.tab",impagePlusSegmented);
 				}

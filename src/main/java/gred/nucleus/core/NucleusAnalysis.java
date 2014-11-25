@@ -27,17 +27,17 @@ public class NucleusAnalysis
 	  * Take in input the path of results files output.
 	  * 
 	  * @param pathResultsFile path for the output file
-	  * @param imagePlusInput image of the segmented nucleus
+	  * @param imagePlusSegmented image of the segmented nucleus
 	  * @throws IOException
 	  */
-	  public void nucleusParameter3D (String pathResultsFile, ImagePlus imagePlusInput) throws IOException
+	  public void nucleusParameter3D (String pathResultsFile, ImagePlus imagePlusRaw ,ImagePlus imagePlusSegmented) throws IOException
 	  {
 		  Measure3D measure3D = new Measure3D();
 		  File fileResults = new File(pathResultsFile);
 		  boolean exist = fileResults.exists();
 		  BufferedWriter bufferedWriterOutput;
-		  double volume = measure3D.computeVolumeObject(imagePlusInput,255);
-		  double surfaceArea = measure3D.computeSurfaceObject(imagePlusInput,255);
+		  double volume = measure3D.computeVolumeObject(imagePlusSegmented,255);
+		  double surfaceArea = measure3D.computeSurfaceObject(imagePlusSegmented,255);
 
 		  if (exist)
 		  {
@@ -45,10 +45,10 @@ public class NucleusAnalysis
 		      bufferedWriterOutput = new BufferedWriter(fileWriter);
 		      bufferedWriterOutput.write
 		      (
-		    		  imagePlusInput.getTitle()+"\t"
-		    		  +measure3D.computeVolumeObject(imagePlusInput,255)+"\t"
-		    		  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[0]+"\t"
-		    		  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[1]+"\t"
+		    		  imagePlusSegmented.getTitle()+"\t"
+		    		  +measure3D.computeVolumeObject(imagePlusSegmented,255)+"\t"
+		    		  +measure3D.computeFlatnessAndElongation(imagePlusSegmented,255)[0]+"\t"
+		    		  +measure3D.computeFlatnessAndElongation(imagePlusSegmented,255)[1]+"\t"
 		    		  +measure3D.computeSphericity(volume, surfaceArea)+"\t"
 		    		  +measure3D.equivalentSphericalRadius(volume)+"\t"
 		    		  +surfaceArea+"\n"
@@ -61,10 +61,10 @@ public class NucleusAnalysis
 		      bufferedWriterOutput.write
 		      (
 		    		  "NucleusFileName\tVolume\tFlatness\tElongation\tSphericity\tEsr\tSurfaceArea\t\n"+
-		    		  imagePlusInput.getTitle()+"\t"
-		    		  +measure3D.computeVolumeObject(imagePlusInput,255)+"\t"
-		    		  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[0]+"\t"
-		    		  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[1]+"\t"
+		    		  imagePlusSegmented.getTitle()+"\t"
+		    		  +measure3D.computeVolumeObject(imagePlusSegmented,255)+"\t"
+		    		  +measure3D.computeFlatnessAndElongation(imagePlusSegmented,255)[0]+"\t"
+		    		  +measure3D.computeFlatnessAndElongation(imagePlusSegmented,255)[1]+"\t"
 		    		  +measure3D.computeSphericity(volume, surfaceArea)+"\t"
 		    		  +measure3D.equivalentSphericalRadius(volume)+"\t"
 		    		  +surfaceArea+"\n"
@@ -79,22 +79,22 @@ public class NucleusAnalysis
 	   * elongation) and parameters of lenght (volume and equivalent spherique radius) for one nucleus
 	   * the results are written on the IJ log windows
 	   *  
-	   * @param imagePlusInput image segmented
+	   * @param imagePlusSegmented image segmented
 	   */
-	  public void nucleusParameter3D (ImagePlus imagePlusInput)
+	  public void nucleusParameter3D (ImagePlus imagePlusRaw, ImagePlus imagePlusSegmented)
 	  {
 		  Measure3D measure3D = new Measure3D();
-		  double volume = measure3D.computeVolumeObject(imagePlusInput,255);
-		  double surfaceArea = measure3D.computeSurfaceObject(imagePlusInput,255);
-		  double bis = measure3D.computeComplexSurface(imagePlusInput, imagePlusInput);
+		  double volume = measure3D.computeVolumeObject(imagePlusSegmented,255);
+		  double surfaceArea = measure3D.computeSurfaceObject(imagePlusSegmented,255);
+		  double bis = measure3D.computeComplexSurface(imagePlusRaw, imagePlusSegmented);
 		  IJ.log("3D parameters");
 		  IJ.log("NucleusFileName Volume Flatness Elongation Sphericity Esr SurfaceArea");
 		  IJ.log
 		  (
-				  imagePlusInput.getTitle()+" "
-				  +measure3D.computeVolumeObject(imagePlusInput,255)+" "
-				  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[0]+" "
-	    		  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[1]+" "
+				  imagePlusSegmented.getTitle()+" "
+				  +measure3D.computeVolumeObject(imagePlusSegmented,255)+" "
+				  +measure3D.computeFlatnessAndElongation(imagePlusSegmented,255)[0]+" "
+	    		  +measure3D.computeFlatnessAndElongation(imagePlusSegmented,255)[1]+" "
 				  +measure3D.computeSphericity(volume, surfaceArea)+" "
 				  +measure3D.equivalentSphericalRadius(volume)+" "
 				  +surfaceArea+" "+bis+"\n"

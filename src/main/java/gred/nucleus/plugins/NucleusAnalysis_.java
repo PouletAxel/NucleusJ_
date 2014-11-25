@@ -4,6 +4,8 @@ import gred.nucleus.core.NucleusAnalysis;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
+import ij.gui.GenericDialog;
+import ij.measure.Calibration;
 import ij.plugin.PlugIn;
 
 public class NucleusAnalysis_
@@ -17,21 +19,61 @@ implements PlugIn
 	 */
 	public void run(String arg)
 	{
-		_imagePlusInput = WindowManager.getCurrentImage();
-		if (null == _imagePlusInput)
+		int indiceRawImage = 0;
+		int indiceSementedImage = 0;
+		double xCalibration = 1,yCalibration = 1,zCalibration = 1;
+		String unit = "pixel";
+		int[] wList = WindowManager.getIDList();
+		if (wList == null)
 		{
 			IJ.noImage();
 			return;
 		}
-		else if (_imagePlusInput.getStackSize() == 1 || (_imagePlusInput.getType() != ImagePlus.GRAY8 && _imagePlusInput.getType() != ImagePlus.GRAY16))
+		String[] titles = new String[wList.length];
+		for (int i = 0; i < wList.length; i++)
 		{
-			IJ.error("image format", "No images in 8 or 16 bits gray scale  in 3D");
-			return;
-		}
+			ImagePlus imagePlus = WindowManager.getImage(wList[i]);
 			
-			IJ.log("Begin image processing "+_imagePlusInput.getTitle());
-			NucleusAnalysis nucleusAnalysis = new NucleusAnalysis();
-			nucleusAnalysis.nucleusParameter3D(_imagePlusInput);
+			if (imagePlus != null)
+			{	
+				if (i == 0)
+				{
+					Calibration cal = imagePlus.getCalibration();
+					xCalibration = cal.pixelWidth;
+					yCalibration= cal.pixelHeight;
+					zCalibration= cal.pixelDepth;
+					unit = cal.getUnit();
+				}
+				titles[i] = imagePlus.getTitle();
+			}
+			else
+				titles[i] = "";
+		}
+		
+		GenericDialog genericDialog = new GenericDialog("Chromocenter Segmentation", IJ.getInstance());
+		genericDialog.addChoice("Raw image",titles,titles[indiceRawImage]);
+		genericDialog.addChoice("Nucleus segmeneted image",titles,titles[indiceSementedImage]);
+		genericDialog.addNumericField("x calibartion", xCalibration,3);
+		genericDialog.addNumericField("y calibration", yCalibration, 3);
+		genericDialog.addNumericField("z calibration",zCalibration, 3);
+		genericDialog.addStringField("Unit",unit,10);
+		genericDialog.showDialog();
+		if (genericDialog.wasCanceled()) 
+			return;
+		ImagePlus imagePlusInput =  WindowManager.getImage(wList[genericDialog.getNextChoiceIndex()]);
+		ImagePlus imagePlusSegmented =  WindowManager.getImage(wList[genericDialog.getNextChoiceIndex()]);
+		xCalibration = genericDialog.getNextNumber();
+		yCalibration = genericDialog.getNextNumber();
+		zCalibration = genericDialog.getNextNumber();
+		unit = genericDialog.getNextString();
+		Calibration calibration = new Calibration();
+		calibration.pixelDepth = zCalibration;
+		calibration.pixelWidth = xCalibration;
+		calibration.pixelHeight = yCalibration;
+		calibration.setUnit(unit);
+		imagePlusInput.setCalibration(calibration);
+		NucleusAnalysis nucleusAnalysis = new NucleusAnalysis();
+			nucleusAnalysis.nucleusParameter3D(imagePlusInput, imagePlusSegmented);
 	}
 
 }

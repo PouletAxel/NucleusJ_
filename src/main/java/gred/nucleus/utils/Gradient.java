@@ -37,16 +37,16 @@ public class Gradient
 		 double xCalibration = calibration.pixelWidth;
 		 double yCalibration = calibration.pixelHeight;
 		 double zCalibration = calibration.pixelDepth;
-		 for (int k = 0; k < imagePlusInput.getStackSize(); ++k)
-			 for (int i = 0; i < imagePlusInput.getWidth(); ++i)
-				 for (int j = 0; j < imagePlusInput.getHeight(); ++j)
+		 for (int k = 1; k < imagePlusInput.getStackSize()-1; ++k)
+			 for (int i = 1; i < imagePlusInput.getWidth()-1; ++i)
+				 for (int j = 1; j < imagePlusInput.getHeight()-1; ++j)
 				 { 
 					 ArrayList <Double> list = new ArrayList();
 					 double dx = 0;
 					 double dy = 0;
 					 double dz = 0; 
-					 if (k-1>0 || j-1>0 || i-1>0 || k+1 < imagePlusInput.getStackSize()|| 
-							 j+1 < imagePlusInput.getHeight()|| i+1 < imagePlusInput.getWidth())
+					 if (k-1>1 || j-1>1 || i-1>1 || k+1 < imagePlusInput.getStackSize()-1|| 
+							 j+1 < imagePlusInput.getHeight()-1|| i+1 < imagePlusInput.getWidth()-1)
 					 {
 						 dx = (1/xCalibration)*((imageStackInput.getVoxel(i+1, j, k)-imageStackInput.getVoxel(i-1, j, k))/2);
 						 dy = (1/yCalibration)*((imageStackInput.getVoxel(i, j+1, k)-imageStackInput.getVoxel(i, j-1, k))/2);
@@ -56,13 +56,19 @@ public class Gradient
 					 list.add(dy);
 					 list.add(dz);
 					 _tableGradient[i][j][k] = list;
-
-					 double nx = dx/ Math.sqrt(dx*dx+dy*dy+dz*dz);
-					 double ny = dy/ Math.sqrt(dx*dx+dy*dy+dz*dz);
-					 double nz = dz/ Math.sqrt(dx*dx+dy*dy+dz*dz);
-					 ArrayList <Double> listN = new ArrayList();
-					 listN.add(nx);
-					 listN.add(ny);
+/*variable intermediaire*/
+					 double norme = Math.sqrt(dx*dx+dy*dy+dz*dz);
+					 double nx =0, ny=0 ,nz=0;
+					 if (norme > 1e-15)
+					 {
+						 nx = dx/ norme;
+						 ny = dy/ norme;
+						 nz = dz/ norme;
+					 }
+						 
+						 ArrayList <Double> listN = new ArrayList();
+						 listN.add(nx);
+						 listN.add(ny);
 					 listN.add(nz);
 					 _tableUnitaire[i][j][k] = listN;
 				 }

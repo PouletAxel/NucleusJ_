@@ -67,11 +67,11 @@ public class NucleusSegmentationAndAnalysisPlugin_ implements PlugIn
 				NucleusAnalysis nucleusAnalysis = new NucleusAnalysis();
 				if (nucleusSegmentationAndAnalysisDialog.is2D3DAnalysis())
 				{
-					nucleusAnalysis.nucleusParameter3D(imagePlusSegmented);
+					nucleusAnalysis.nucleusParameter3D(_imagePlusInput,imagePlusSegmented);
 					nucleusAnalysis.nucleusParameter2D(imagePlusSegmented);
 				}
 				else if(nucleusSegmentationAndAnalysisDialog.is3D())
-					nucleusAnalysis.nucleusParameter3D(imagePlusSegmented);
+					nucleusAnalysis.nucleusParameter3D(_imagePlusInput,imagePlusSegmented);
 				else
 					nucleusAnalysis.nucleusParameter2D(imagePlusSegmented);
 			}
