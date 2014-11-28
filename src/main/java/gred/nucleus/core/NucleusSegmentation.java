@@ -221,7 +221,7 @@ public class NucleusSegmentation
 				}
 			}
 		}
-		if (nbVoxelThresholded >= 50) voxelThresolded = true;
+		if (nbVoxelThresholded >= 70) voxelThresolded = true;
 		return voxelThresolded;
 	}
 	
