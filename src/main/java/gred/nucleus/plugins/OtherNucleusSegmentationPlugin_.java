@@ -46,6 +46,8 @@ public class OtherNucleusSegmentationPlugin_ implements PlugIn
 			double yCalibration = nucleusSegmentationDialog.getYCalibration();
 			double zCalibration = nucleusSegmentationDialog.getZCalibration();
 			String unit = nucleusSegmentationDialog.getUnit();
+			double volumeMin = nucleusSegmentationDialog.getMinVolume();
+			double volumeMax = nucleusSegmentationDialog.getMaxVolume();
 			Calibration calibration = new Calibration();
 			calibration.pixelDepth = zCalibration;
 			calibration.pixelWidth = xCalibration;
@@ -54,6 +56,7 @@ public class OtherNucleusSegmentationPlugin_ implements PlugIn
 			_imagePlusInput.setCalibration(calibration);
 			ImagePlus imagePlusSegmented= _imagePlusInput;
 			OtherNucleusSegmentation nucleusSegmentation = new OtherNucleusSegmentation();
+			nucleusSegmentation.setVolumeRange(volumeMin, volumeMax);
 			imagePlusSegmented = nucleusSegmentation.run(imagePlusSegmented);
 			imagePlusSegmented.setTitle("Segmented"+_imagePlusInput.getTitle());
 			imagePlusSegmented.show();

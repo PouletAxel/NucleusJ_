@@ -72,7 +72,7 @@ public class Gradient
 					 listN.add(nz);
 					 _tableUnitaire[i][j][k] = listN;
 				 }
-		 IJ.log("fin Gradient");
+		// IJ.log("fin Gradient");
 	 }
 	 
 	 public ArrayList <Double> [][][] getUnitaire (){ return _tableUnitaire;}

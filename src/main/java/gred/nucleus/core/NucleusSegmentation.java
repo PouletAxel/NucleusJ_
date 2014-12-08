@@ -5,7 +5,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map.Entry;
+
 import gred.nucleus.utils.FillingHoles;
+import gred.nucleus.utils.Gradient;
 import gred.nucleus.utils.Histogram;
 import ij.*;
 import ij.plugin.Filters3D;
@@ -102,8 +104,9 @@ public class NucleusSegmentation
 		final double xCalibration = calibration.pixelWidth;
 		final double yCalibration = calibration.pixelHeight;
 		final double zCalibration = calibration.pixelDepth;
+		Measure3D measure3D = new Measure3D();
+		Gradient gradient = new Gradient(imagePlusInput);
 		final double imageVolume = xCalibration*imagePlusInput.getWidth()*yCalibration*imagePlusInput.getHeight()*zCalibration*imagePlusInput.getStackSize();
-		
 		IJ.log(xCalibration+" "+yCalibration+" "+zCalibration+"  volume image :"+imageVolume);
 		ImagePlus imagePlusSegmented = new ImagePlus();
 		ArrayList<Integer> arrayListThreshold = computeMinMaxThreshold(imagePlusInput);		
@@ -111,21 +114,18 @@ public class NucleusSegmentation
 		for (int t = arrayListThreshold.get(0) ; t <= arrayListThreshold.get(1); ++t)
 		{
 			ImagePlus imagePlusSegmentedTemp = generateSegmentedImage(imagePlusInput,t);
-			Measure3D measure3D = new Measure3D();
+			imagePlusSegmentedTemp = ConnectedComponents.computeLabels(imagePlusSegmentedTemp, 26, 32);
+			deleteArtefact(imagePlusSegmentedTemp);
+			imagePlusSegmentedTemp.setCalibration(calibration);
 			volume = measure3D.computeVolumeObject(imagePlusSegmentedTemp,255);
+			imagePlusSegmentedTemp.setCalibration(calibration);
 			if (testRelativeObjectVolume(volume,imageVolume) &&
-				isVoxelThresholded(imagePlusSegmentedTemp,255,0)==false &&
-				isVoxelThresholded(imagePlusSegmentedTemp,255,imagePlusSegmentedTemp.getStackSize())==false)
-			{	
-				morphologicalCorrection (imagePlusSegmentedTemp);
-				imagePlusSegmentedTemp = ConnectedComponents.computeLabels(imagePlusSegmentedTemp, 26, 32);
-				deleteArtefact(imagePlusSegmentedTemp);
-				imagePlusSegmentedTemp.setCalibration(calibration);
-				volume = measure3D.computeVolumeObject(imagePlusSegmentedTemp,255);
-				sphericity = measure3D.computeSphericity(volume,measure3D.computeSurfaceObject(imagePlusSegmentedTemp, 255));
-				if (sphericity > sphericityMax &&
 					volume >= _volumeMin &&
 					volume <= _volumeMax)
+			{	
+				
+				sphericity = measure3D.computeSphericity(volume,measure3D.computeComplexSurface(imagePlusSegmentedTemp,gradient));
+				if (sphericity > sphericityMax )
 				{
 					_bestThreshold=t;
 					sphericityMax = sphericity;
@@ -134,8 +134,8 @@ public class NucleusSegmentation
 					imagePlusSegmented= imagePlusSegmentedTemp.duplicate();			
 				}
 			}
-		}
-		imagePlusSegmented.setCalibration(calibration);
+		}		
+		morphologicalCorrection(imagePlusSegmented);
 		return imagePlusSegmented;
 	}
 
@@ -191,8 +191,8 @@ public class NucleusSegmentation
 		StackStatistics stackStatistics = new StackStatistics(imagePlusInput);
 		double stdDev =stackStatistics.stdDev ;
 		double min = threshold - stdDev*2;
-		double max = threshold + stdDev;
-		if ( min < 0) arrayListMinMaxThreshold.add(1);
+		double max = threshold + stdDev/2;
+		if ( min < 0) arrayListMinMaxThreshold.add(6);
 		else arrayListMinMaxThreshold.add((int)min);
 		arrayListMinMaxThreshold.add((int)max);
 		return arrayListMinMaxThreshold;

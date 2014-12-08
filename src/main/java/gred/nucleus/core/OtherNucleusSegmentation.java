@@ -1,9 +1,14 @@
 package gred.nucleus.core;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import gred.nucleus.utils.FillingHoles;
+import gred.nucleus.utils.Gradient;
 import gred.nucleus.utils.Histogram;
 import ij.*;
 import ij.plugin.Filters3D;
@@ -16,14 +21,111 @@ import inra.ijpb.binary.ConnectedComponents;
 
 public class OtherNucleusSegmentation
 {
+	
+	private int _bestThreshold = 0;
+	/** Segmentation parameters*/
+	private double _volumeMin;
+	/** */
+	private double _volumeMax;
+	/** */
+	private String _logErrorSeg = "";
+	
 	public OtherNucleusSegmentation (){	}
 
+
+	/**
+	 * 
+	 * @param imagePlusInput
+	 * @param threshold
+	 * @return
+	 */
+	
+	public ImagePlus run (ImagePlus imagePlusInput)
+	{
+		IJ.log("Begin segmentation "+imagePlusInput.getTitle());
+		ImagePlus imagePlusSegmented = applySegmentation (imagePlusInput);
+		IJ.log("fin 1");
+		IJ.log("End segmentation "+imagePlusInput.getTitle()+" "+_bestThreshold);
+		if (_bestThreshold == 0)
+		{
+			if (_logErrorSeg.length()==0)
+			{
+				IJ.showMessage("Error Segmentation", "Bad parameter for the segmentation, any object is detected between "
+    				  +_volumeMin+" and "+ _volumeMax+" "+ imagePlusInput.getCalibration().getUnit()+"^3");
+			}
+			else
+			{
+				File fileLogError = new File (_logErrorSeg);
+				BufferedWriter bufferedWriterLogError;
+				FileWriter fileWriterLogError;
+				try
+				{
+					fileWriterLogError = new FileWriter(fileLogError, true);
+					bufferedWriterLogError = new BufferedWriter(fileWriterLogError);
+					bufferedWriterLogError.write(imagePlusInput.getTitle()+"\n");
+					bufferedWriterLogError.flush();
+					bufferedWriterLogError.close();
+				}
+				catch (IOException e) { e.printStackTrace(); } 
+			}
+		}
+		return imagePlusSegmented;
+	}
+	
+	public ImagePlus applySegmentation (ImagePlus imagePlusInput)
+	{
+		double sphericityMax = -1.0;
+		double sphericity;
+		double volume;
+		Calibration calibration = imagePlusInput.getCalibration();
+		final double xCalibration = calibration.pixelWidth;
+		final double yCalibration = calibration.pixelHeight;
+		final double zCalibration = calibration.pixelDepth;
+		Measure3D measure3D = new Measure3D();
+		Gradient gradient = new Gradient(imagePlusInput);
+		final double imageVolume = xCalibration*imagePlusInput.getWidth()*yCalibration*imagePlusInput.getHeight()*zCalibration*imagePlusInput.getStackSize();
+		IJ.log(xCalibration+" "+yCalibration+" "+zCalibration+"  volume image :"+imageVolume);
+		ImagePlus imagePlusSegmented = new ImagePlus();
+		ArrayList<Integer> arrayListThreshold = computeMinMaxThreshold(imagePlusInput);		
+		IJ.log("Lower limit: "+arrayListThreshold.get(0)+" Upper limit "+arrayListThreshold.get(1));
+		for (int t = arrayListThreshold.get(0) ; t <= arrayListThreshold.get(1); ++t)
+		{
+			ImagePlus imagePlusSegmentedTemp = generateSegmentedImage(imagePlusInput,t);
+			imagePlusSegmentedTemp = ConnectedComponents.computeLabels(imagePlusSegmentedTemp, 26, 32);
+			deleteArtefact(imagePlusSegmentedTemp);
+			imagePlusSegmentedTemp.setCalibration(calibration);
+			volume = measure3D.computeVolumeObject(imagePlusSegmentedTemp,255);
+			imagePlusSegmentedTemp.setCalibration(calibration);
+			if (testRelativeObjectVolume(volume,imageVolume) &&
+					volume >= _volumeMin &&
+					volume <= _volumeMax)
+			{	
+				
+				sphericity = measure3D.computeSphericity(volume,measure3D.computeComplexSurface(imagePlusSegmentedTemp,gradient));
+				if (sphericity > sphericityMax )
+				{
+					_bestThreshold=t;
+					sphericityMax = sphericity;
+					StackConverter stackConverter = new StackConverter( imagePlusSegmentedTemp );
+					stackConverter.convertToGray8();
+					imagePlusSegmented= imagePlusSegmentedTemp.duplicate();			
+				}
+			}
+		}		
+		morphologicalCorrection(imagePlusSegmented);
+		if(_bestThreshold==0) return imagePlusSegmented;
+		else return correctionSegmentation(imagePlusSegmented,imagePlusInput,arrayListThreshold.get(0));
+	}
+	
+	
+	
+	
 	/**
 	 * 
 	 * @param imagePlusInput
 	 * @return
 	 */
-	public ImagePlus run (ImagePlus imagePlusInput)
+	public ImagePlus correctionSegmentation (ImagePlus imagePlusSegmented, ImagePlus imagePlusInput, double min)
 	{
 		 /* 2 rescale image and do distance Map => obtain image with istrope voxel
 				 * 3 thresholded the distance Map image to creat the "deep kernel". The threshold value is inferior or equal at the "rayon de courbure "????
@@ -37,26 +139,21 @@ public class OtherNucleusSegmentation
 				 *    	=> repasse en voxel anistrope l'image final et retourner cette image
 				 * 5 eliminer les objer surnumreraire
 				 */
-				Calibration calibration = imagePlusInput.getCalibration();
+				Calibration calibration = imagePlusSegmented.getCalibration();
 				final double xCalibration = calibration.pixelWidth;
 				final double yCalibration = calibration.pixelHeight;
 				final double zCalibration = calibration.pixelDepth;
-			
-				IJ.log(imagePlusInput.getTitle());
-				ImageStack imageStackInput = imagePlusInput.getImageStack();
-				ImagePlus imagePlusSegmented = generateSegmentedImage (imagePlusInput, computeThreshold(imagePlusInput));
-				morphologicalCorrection (imagePlusSegmented);
-				imagePlusSegmented.setCalibration(calibration);
-				double min = computeMin(imagePlusInput);	
 				//2 DistanceMap
+				ImageStack imageStackInput =  imagePlusInput.getStack();
 				RadialDistance radialDistance = new RadialDistance();
 				ImagePlus imagePlusDistanceMap = radialDistance.computeDistanceMap(resizeImage(imagePlusSegmented));
 				Histogram histogram = new Histogram();
 				histogram.run(imagePlusDistanceMap);
+				
 				double s_threshold = histogram.getLabelMax();
 				double  s_thresholdInitial = s_threshold;
 				double compteur = 1;
-				while (s_threshold >= 0.103)
+				while (s_threshold >= xCalibration)
 				{
 					if (s_threshold != s_thresholdInitial )
 						imagePlusDistanceMap = radialDistance.computeDistanceMap(resizeImage(imagePlusSegmented));
@@ -85,7 +182,7 @@ public class OtherNucleusSegmentation
 											for (int jj =  inf_j; jj < sup_j; ++jj)
 											{
 												double plop = (ii-i)*(ii-i)+(jj-j)*(jj-j)+(kk-(k*(xCalibration/zCalibration)))*(kk-(k*(xCalibration/zCalibration)));
-												if (imageStackInput.getVoxel(ii,jj,kk) >= min
+												if (imageStackInput.getVoxel(ii,jj,kk) >= 10
 														&& plop <= s_threshold*s_threshold)
 													imageStackOutput.setVoxel(ii,jj,kk,255);	
 											}
@@ -94,7 +191,7 @@ public class OtherNucleusSegmentation
 					if (compteur > 1 ) s_threshold--;
 					compteur++;
 				}
-				
+				IJ.log("min "+min );
 				imagePlusSegmented = ConnectedComponents.computeLabels(imagePlusSegmented, 6, 32);
 				deleteArtefact(imagePlusSegmented);
 				morphologicalCorrection (imagePlusSegmented);
@@ -130,12 +227,7 @@ public class OtherNucleusSegmentation
 		ImagePlus imagePlusRescale = resizer.zScale(imagePlus,(int)(imagePlus.getNSlices()*rescaleZFactor), 0);
 		return imagePlusRescale;
 	}
-	/**
-	 * 
-	 * @param imagePlusInput
-	 * @param threshold
-	 * @return
-	 */
+	
 	private ImagePlus generateSegmentedImage (ImagePlus imagePlusInput, int threshold)
 	{
 		ImageStack imageStackInput = imagePlusInput.getStack();
@@ -164,6 +256,24 @@ public class OtherNucleusSegmentation
 		imagePlusSegmented = holesFilling.apply2D(imagePlusSegmented);
 	}
 
+	private boolean testRelativeObjectVolume(double objectVolume,double imageVolume)
+	{
+		final double ratio = (objectVolume/imageVolume)*100;
+		if (ratio >= 70) return false;
+		else return true;
+	}
+	
+	/**
+	 * interval of volume to detect the object
+	 * 
+	 * @param volumeMin
+	 * @param volumeMax
+	 */
+	public void setVolumeRange(double volumeMin, double volumeMax)
+	{
+		_volumeMin = volumeMin;
+		_volumeMax = volumeMax;
+	}
 
 	/**
 	 * 
@@ -212,17 +322,20 @@ public class OtherNucleusSegmentation
 	    		}
 	}
 
-	private double computeMin(ImagePlus imagePlusInput)
+	private ArrayList<Integer> computeMinMaxThreshold(ImagePlus imagePlusInput)
 	{
 		ArrayList<Integer> arrayListMinMaxThreshold = new ArrayList<Integer>();
 		int threshold = computeThreshold (imagePlusInput);
 		StackStatistics stackStatistics = new StackStatistics(imagePlusInput);
 		double stdDev =stackStatistics.stdDev ;
 		double min = threshold - stdDev*2;
-		double max = threshold + stdDev;
-		if ( min < 0) arrayListMinMaxThreshold.add(1);
-		return min;
+		double max = threshold + stdDev/2;
+		if ( min < 0) arrayListMinMaxThreshold.add(6);
+		else arrayListMinMaxThreshold.add((int)min);
+		arrayListMinMaxThreshold.add((int)max);
+		return arrayListMinMaxThreshold;
 	}
+	
 	/**
 	 * Browse each object of image and return the label of the larger object
 	 * @param imagePluslab Image labeled
@@ -239,7 +352,6 @@ public class OtherNucleusSegmentation
 	    {
 	    	double label = entry.getKey();
 	        int nbVoxel = entry.getValue();
-	        IJ.log("label"+label+" nb "+nbVoxel);
 	        if (nbVoxel > nbVoxelMax)
 	        {
 	        	nbVoxelMax = nbVoxel;

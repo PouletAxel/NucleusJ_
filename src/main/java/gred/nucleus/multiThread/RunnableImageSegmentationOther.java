@@ -45,6 +45,7 @@ public class RunnableImageSegmentationOther  extends Thread implements Runnable
 		ProcessImageOtherSeg._nbLance++;
 		ProcessImageOtherSeg._continuer = true;
 		OtherNucleusSegmentation nucleusSegmentation = new OtherNucleusSegmentation();
+		nucleusSegmentation.setVolumeRange(_volumeMin, _volumeMax);
 		ImagePlus impagePlusSegmented = nucleusSegmentation.run(_imagePlusInput);
 		impagePlusSegmented.setTitle(_imagePlusInput.getTitle());
 		saveFile(impagePlusSegmented,_workDirectory+File.separator+"SegmentedDataNucleus");
