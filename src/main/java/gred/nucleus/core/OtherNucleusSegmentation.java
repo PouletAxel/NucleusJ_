@@ -147,6 +147,7 @@ public class OtherNucleusSegmentation
 				ImageStack imageStackInput =  imagePlusInput.getStack();
 				RadialDistance radialDistance = new RadialDistance();
 				ImagePlus imagePlusDistanceMap = radialDistance.computeDistanceMap(resizeImage(imagePlusSegmented));
+			
 				Histogram histogram = new Histogram();
 				histogram.run(imagePlusDistanceMap);
 				
