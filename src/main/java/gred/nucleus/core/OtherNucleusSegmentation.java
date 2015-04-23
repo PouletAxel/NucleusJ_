@@ -121,13 +121,7 @@ public class OtherNucleusSegmentation
 	
 	
 	/**
-	 * 
-	 * @param imagePlusInput
-	 * @return
-	 */
-	public ImagePlus correctionSegmentation (ImagePlus imagePlusSegmented, ImagePlus imagePlusInput, double min)
-	{
-		 /* 2 rescale image and do distance Map => obtain image with istrope voxel
+	 *  2 rescale image and do distance Map => obtain image with istrope voxel
 				 * 3 thresholded the distance Map image to creat the "deep kernel". The threshold value is inferior or equal at the "rayon de courbure "????
 				 *     => comment j estime un rayon de courbure?
 				 * 4 en chaque voxel du deep kernel (peut etre prendre que les voxel exterieur gain de temps?), parcourir tout les voxels appartenant
@@ -137,38 +131,38 @@ public class OtherNucleusSegmentation
 				 *    si le voxel sur l'image binaire et a 0 le passer a un sinon rien faire :
 				 *    		travailler sur une image binaire rescale
 				 *    	=> repasse en voxel anistrope l'image final et retourner cette image
-				 * 5 eliminer les objer surnumreraire
-				 */
+			 * 5 eliminer les objer surnumreraire
+	 * @param imagePlusInput
+	 * @return
+	 * @throws IOException 
+	 */
+	public ImagePlus correctionSegmentation (ImagePlus imagePlusSegmented, ImagePlus imagePlusInput, double min)
+	{
+		
+		
 				Calibration calibration = imagePlusSegmented.getCalibration();
 				final double xCalibration = calibration.pixelWidth;
-				final double yCalibration = calibration.pixelHeight;
 				final double zCalibration = calibration.pixelDepth;
-				//2 DistanceMap
-				ImageStack imageStackInput =  imagePlusInput.getStack();
 				RadialDistance radialDistance = new RadialDistance();
 				ImagePlus imagePlusDistanceMap = radialDistance.computeDistanceMap(resizeImage(imagePlusSegmented));
-			
+				ImageStack imageStackDistanceMap = imagePlusDistanceMap.getStack();
 				Histogram histogram = new Histogram();
 				histogram.run(imagePlusDistanceMap);
-				
-				double s_threshold = histogram.getLabelMax();
-				double  s_thresholdInitial = s_threshold;
-				double compteur = 1;
+				double s_threshold = histogram.getLabelMax();	
+				ImageStack imageStackOutput = imagePlusSegmented.getStack();
 				while (s_threshold >= xCalibration)
-				{
-					if (s_threshold != s_thresholdInitial )
-						imagePlusDistanceMap = radialDistance.computeDistanceMap(resizeImage(imagePlusSegmented));
-					ImageStack imageStackDistanceMap = imagePlusDistanceMap.getStack();
-					ImageStack imageStackOutput = imagePlusSegmented.getStack();
+				{					
 					for (int k = 0; k < imagePlusDistanceMap.getNSlices(); ++k)
 						for (int i = 0; i < imagePlusDistanceMap.getWidth(); ++i)
 							for (int j = 0; j < imagePlusDistanceMap.getHeight(); ++j)
 							{
 								if (imageStackDistanceMap.getVoxel(i, j, k) >= s_threshold)
 								{
-									int inf_k = (int)(float)((k-s_threshold)*(xCalibration/zCalibration));
+									double darwin = (k*(xCalibration/zCalibration)-s_threshold);
+									int inf_k = (int)(float)(darwin);
+									
 									if (inf_k < 0) inf_k=0; 
-									int sup_k = (int)(float)((k+s_threshold)*(xCalibration/zCalibration));
+									int sup_k = (int)(float)((k*(xCalibration/zCalibration)+s_threshold));
 									if (sup_k > imagePlusSegmented.getNSlices()) sup_k = imagePlusSegmented.getNSlices();
 									int inf_i = (int)(float)(i-s_threshold);
 									if (inf_i < 0) inf_i=0; 
@@ -183,20 +177,15 @@ public class OtherNucleusSegmentation
 											for (int jj =  inf_j; jj < sup_j; ++jj)
 											{
 												double plop = (ii-i)*(ii-i)+(jj-j)*(jj-j)+(kk-(k*(xCalibration/zCalibration)))*(kk-(k*(xCalibration/zCalibration)));
-												if (imageStackInput.getVoxel(ii,jj,kk) >= 10
-														&& plop <= s_threshold*s_threshold)
-													imageStackOutput.setVoxel(ii,jj,kk,255);	
+												double plopi = s_threshold*s_threshold;
+												if (imageStackOutput.getVoxel(ii, jj, kk)!=255 && plop <= plopi)																					
+													imageStackOutput.setVoxel(ii,jj,kk,255);
 											}
 								}
 							}
-					if (compteur > 1 ) s_threshold--;
-					compteur++;
+					s_threshold--;
 				}
 				IJ.log("min "+min );
-				imagePlusSegmented = ConnectedComponents.computeLabels(imagePlusSegmented, 6, 32);
-				deleteArtefact(imagePlusSegmented);
-				morphologicalCorrection (imagePlusSegmented);
-				imagePlusSegmented.setCalibration(calibration);
 				return imagePlusSegmented;
 	}
 	
@@ -228,6 +217,13 @@ public class OtherNucleusSegmentation
 		ImagePlus imagePlusRescale = resizer.zScale(imagePlus,(int)(imagePlus.getNSlices()*rescaleZFactor), 0);
 		return imagePlusRescale;
 	}
+	
+	/**
+	 * 
+	 * @param imagePlus
+	 * @return
+	 */
+	
 	
 	private ImagePlus generateSegmentedImage (ImagePlus imagePlusInput, int threshold)
 	{
