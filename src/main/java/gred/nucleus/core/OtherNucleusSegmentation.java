@@ -42,8 +42,19 @@ public class OtherNucleusSegmentation
 	
 	public ImagePlus run (ImagePlus imagePlusInput)
 	{
+		
 		IJ.log("Begin segmentation "+imagePlusInput.getTitle());
-		ImagePlus imagePlusSegmented = applySegmentation (imagePlusInput);
+		ArrayList<Integer> arrayListThreshold = computeMinMaxThreshold(imagePlusInput);	
+		ImagePlus imagePlusSegmented = applySegmentation (imagePlusInput,arrayListThreshold);
+		if(_bestThreshold!=0) 
+		{
+			imagePlusSegmented = correctionSegmentation(imagePlusSegmented,true);
+			reverseImage(imagePlusSegmented);
+			imagePlusSegmented = correctionSegmentation(imagePlusSegmented,false);
+			reverseImage(imagePlusSegmented);
+			morphologicalCorrection(imagePlusSegmented);
+			
+		}
 		IJ.log("fin 1");
 		IJ.log("End segmentation "+imagePlusInput.getTitle()+" "+_bestThreshold);
 		if (_bestThreshold == 0)
@@ -72,7 +83,13 @@ public class OtherNucleusSegmentation
 		return imagePlusSegmented;
 	}
 	
-	public ImagePlus applySegmentation (ImagePlus imagePlusInput)
+	/**
+	 * 
+	 * @param imagePlusInput
+	 * @param arrayListThreshold
+	 * @return
+	 */
+	public ImagePlus applySegmentation (ImagePlus imagePlusInput,ArrayList<Integer> arrayListThreshold)
 	{
 		double sphericityMax = -1.0;
 		double sphericity;
@@ -86,7 +103,7 @@ public class OtherNucleusSegmentation
 		final double imageVolume = xCalibration*imagePlusInput.getWidth()*yCalibration*imagePlusInput.getHeight()*zCalibration*imagePlusInput.getStackSize();
 		IJ.log(xCalibration+" "+yCalibration+" "+zCalibration+"  volume image :"+imageVolume);
 		ImagePlus imagePlusSegmented = new ImagePlus();
-		ArrayList<Integer> arrayListThreshold = computeMinMaxThreshold(imagePlusInput);		
+			
 		IJ.log("Lower limit: "+arrayListThreshold.get(0)+" Upper limit "+arrayListThreshold.get(1));
 		for (int t = arrayListThreshold.get(0) ; t <= arrayListThreshold.get(1); ++t)
 		{
@@ -113,8 +130,7 @@ public class OtherNucleusSegmentation
 			}
 		}		
 		morphologicalCorrection(imagePlusSegmented);
-		if(_bestThreshold==0) return imagePlusSegmented;
-		else return correctionSegmentation(imagePlusSegmented,imagePlusInput,arrayListThreshold.get(0));
+		return imagePlusSegmented;
 	}
 	
 	
@@ -136,27 +152,30 @@ public class OtherNucleusSegmentation
 	 * @return
 	 * @throws IOException 
 	 */
-	public ImagePlus correctionSegmentation (ImagePlus imagePlusSegmented, ImagePlus imagePlusInput, double min)
+	public ImagePlus correctionSegmentation (ImagePlus imagePlusSegmented, boolean threshold)
 	{
-		
-		
 				Calibration calibration = imagePlusSegmented.getCalibration();
 				final double xCalibration = calibration.pixelWidth;
 				final double zCalibration = calibration.pixelDepth;
 				RadialDistance radialDistance = new RadialDistance();
 				ImagePlus imagePlusDistanceMap = radialDistance.computeDistanceMap(resizeImage(imagePlusSegmented));
 				ImageStack imageStackDistanceMap = imagePlusDistanceMap.getStack();
-				Histogram histogram = new Histogram();
-				histogram.run(imagePlusDistanceMap);
-				double s_threshold = histogram.getLabelMax();	
+				double s_threshold = 5;
+				if (threshold)
+				{
+					Histogram histogram = new Histogram();
+					histogram.run(imagePlusDistanceMap);
+					s_threshold = histogram.getLabelMax();
+				}
 				ImageStack imageStackOutput = imagePlusSegmented.getStack();
 				while (s_threshold >= xCalibration)
 				{					
+					IJ.log(s_threshold+" ");
 					for (int k = 0; k < imagePlusDistanceMap.getNSlices(); ++k)
 						for (int i = 0; i < imagePlusDistanceMap.getWidth(); ++i)
 							for (int j = 0; j < imagePlusDistanceMap.getHeight(); ++j)
 							{
-								if (imageStackDistanceMap.getVoxel(i, j, k) >= s_threshold)
+								if (imageStackDistanceMap.getVoxel(i, j, k) >= s_threshold && imageStackDistanceMap.getVoxel(i, j, k) <= s_threshold+1 )
 								{
 									double darwin = (k*(xCalibration/zCalibration)-s_threshold);
 									int inf_k = (int)(float)(darwin);
@@ -185,7 +204,6 @@ public class OtherNucleusSegmentation
 							}
 					s_threshold--;
 				}
-				IJ.log("min "+min );
 				return imagePlusSegmented;
 	}
 	
@@ -357,4 +375,23 @@ public class OtherNucleusSegmentation
 	    }
 	    return indiceNbVoxelMax;
 	}
+	
+	/**
+	 * 
+	 * @param imagePlusInput
+	 */
+	public void reverseImage(ImagePlus imagePlusInput)
+	{
+	    double voxelValue;
+	    ImageStack imageStackInput = imagePlusInput.getStack();
+	    for(int k = 0; k < imagePlusInput.getNSlices(); ++k)
+	    	for (int i = 0; i < imagePlusInput.getWidth(); ++i)
+	    		for (int j = 0; j < imagePlusInput.getHeight(); ++j)
+	    		{
+	    			voxelValue = imageStackInput.getVoxel(i,j,k);
+	    			if (voxelValue == 255) imageStackInput.setVoxel(i,j,k,0);
+	    			else imageStackInput.setVoxel(i,j,k,255);
+	    		}
+	}
+	
 }
