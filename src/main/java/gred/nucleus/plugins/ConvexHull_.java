@@ -23,7 +23,12 @@ public class ConvexHull_  implements PlugIn
 	       return;
 	    }		
 	    NucleusSegmentationConvexeHull nuc = new NucleusSegmentationConvexeHull();
+	    nuc.setAxes("xy");
 		nuc.giftWrapping(_imagePlusInput);
-		
+		nuc.setAxes("xz");
+		nuc.giftWrapping(_imagePlusInput);
+		nuc.setAxes("yz");
+		nuc.giftWrapping(_imagePlusInput);
+		IJ.log("finale : "+nuc.getConvexHull().size());
 	}
 }

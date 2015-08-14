@@ -132,6 +132,20 @@ public class Measure3D
 		radius = Math.pow(radius, 1.0/3.0);
 		return radius;
 	}
+	
+	/**
+	 * 
+	 * @param imagePlusInput
+	 * @param label
+	 * @return(
+	 */
+
+	public double equivalentSphericalRadius (ImagePlus imagePlusBinaire)
+	{
+		double radius =  (3 * computeVolumeObject(imagePlusBinaire,255)) / (4 * Math.PI);
+		radius = Math.pow(radius, 1.0/3.0);
+		return radius;
+	}
 
 
 	/**

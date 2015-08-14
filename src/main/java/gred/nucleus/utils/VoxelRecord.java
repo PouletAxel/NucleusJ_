@@ -81,6 +81,24 @@ public class VoxelRecord implements Comparable
   }
 
   /**
+   * Compare the values of two voxel
+   * 0 if same voxel value
+   * -1 if value of voxel input > value voxel
+   * 1 if value of voxel input < value voxel
+   * @param object a voxel
+   * @return results of comparaison
+   */
+
+  public int compareCooridnatesTo(Object object)
+  {
+    VoxelRecord voxelRecord = (VoxelRecord)object;
+
+    if ( _i == voxelRecord._i && _j == voxelRecord._j && _k == voxelRecord._k)
+    	return 0;
+   else
+    	return 1;
+  }
+  /**
    * Compute a addition between the coordinates between two voxel
    * @param p a VoxelRecord
    */
