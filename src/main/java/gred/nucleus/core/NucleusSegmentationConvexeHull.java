@@ -337,7 +337,7 @@ et on cherche la détermination + ou - 2*k*pi qui se trouve dans [0, 2*pi[
 		Polygon p = new Polygon(x, y,x.length );
 		BufferedImage bi = new BufferedImage(imagePlusInput.getWidth(), imagePlusInput.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
 		Graphics2D ig2 = bi.createGraphics();
-		IJ.log("plop");
+		
 		return output;
 	}
 
