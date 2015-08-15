@@ -1,4 +1,4 @@
-package gred.nucleus.core;
+package gred.nucleus.utils;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -8,13 +8,14 @@ import java.util.ArrayList;
 
 import javax.imageio.stream.ImageInputStream;
 
-import gred.nucleus.utils.VoxelRecord;
+import gred.nucleus.core.Measure3D;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.Calibration;
+import ij.process.ImageProcessor;
 
-public class NucleusSegmentationConvexeHull
+public class ConvexeHullDetection
 {
 	VoxelRecord _p0 = new VoxelRecord();
 	double _pi=Math.PI;
@@ -325,57 +326,4 @@ et on cherche la détermination + ou - 2*k*pi qui se trouve dans [0, 2*pi[
 	public void setAxes(String axes){ _axes=axes;}
 	public ArrayList<VoxelRecord> getConvexHull(){return _convexHull;}
 	public void setAxes(ArrayList<VoxelRecord> convexHull){ _convexHull = convexHull;}
-
-
-
-
-	public ImagePlus imageMaking (ImagePlus imagePlusInput, ArrayList<VoxelRecord> convexHull)
-	{
-		ImagePlus output = new ImagePlus();
-		Graphics graphics;
-		
-		Polygon p = new Polygon(x, y,x.length );
-		BufferedImage bi = new BufferedImage(imagePlusInput.getWidth(), imagePlusInput.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
-		Graphics2D ig2 = bi.createGraphics();
-		
-		return output;
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

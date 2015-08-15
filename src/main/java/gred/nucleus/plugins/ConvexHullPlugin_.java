@@ -1,10 +1,10 @@
 package gred.nucleus.plugins;
 import gred.nucleus.core.*;
-
+import gred.nucleus.utils.ConvexeHullDetection;
 import ij.*;
 import ij.plugin.*;
 
-public class ConvexHull_  implements PlugIn
+public class ConvexHullPlugin_  implements PlugIn
 {
 
 	ImagePlus _imagePlusInput;
@@ -22,7 +22,7 @@ public class ConvexHull_  implements PlugIn
 	       IJ.noImage();
 	       return;
 	    }		
-	    NucleusSegmentationConvexeHull nuc = new NucleusSegmentationConvexeHull();
+	    ConvexeHullDetection nuc = new ConvexeHullDetection();
 	    nuc.setAxes("xy");
 		nuc.giftWrapping(_imagePlusInput);
 		nuc.setAxes("xz");
