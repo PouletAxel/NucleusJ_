@@ -22,13 +22,9 @@ public class ConvexHullPlugin_  implements PlugIn
 	       IJ.noImage();
 	       return;
 	    }		
-	    ConvexeHullDetection nuc = new ConvexeHullDetection();
-	    nuc.setAxes("xy");
-		nuc.giftWrapping(_imagePlusInput);
-		nuc.setAxes("xz");
-		nuc.giftWrapping(_imagePlusInput);
-		nuc.setAxes("yz");
-		nuc.giftWrapping(_imagePlusInput);
-		IJ.log("finale : "+nuc.getConvexHull().size());
+	    ConvexHull nuc = new ConvexHull();
+	    ImagePlus plopi = nuc.run(_imagePlusInput);
+	   plopi.setTitle("test");
+	   plopi.show();
 	}
 }

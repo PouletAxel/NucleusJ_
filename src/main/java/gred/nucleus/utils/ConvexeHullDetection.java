@@ -1,26 +1,17 @@
 package gred.nucleus.utils;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Polygon;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-
-import javax.imageio.stream.ImageInputStream;
-
 import gred.nucleus.core.Measure3D;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.measure.Calibration;
-import ij.process.ImageProcessor;
 
 public class ConvexeHullDetection
 {
 	VoxelRecord _p0 = new VoxelRecord();
 	double _pi=Math.PI;
 	String _axes = "";
-	ArrayList<VoxelRecord> _convexHull = new ArrayList<VoxelRecord>();
 	/*
   	* 1) On calcule l'angle alpha comme précédemment :
   	* double acos = Math.acos(cosAlpha)
@@ -52,15 +43,16 @@ public class ConvexeHullDetection
 	 * @param imagePlusInput
 	 * @return
 	 */
-	public void giftWrapping (ImagePlus imagePlusInput)
+	public  ArrayList<VoxelRecord> giftWrapping (ImagePlus imagePlusInput)
 	{
+		ArrayList<VoxelRecord> convexHull = new ArrayList<VoxelRecord>();
 		Calibration calibration = imagePlusInput.getCalibration();
 		Measure3D mesure3d = new Measure3D();
 		int x = imagePlusInput.getWidth();
 		int y = imagePlusInput.getHeight();
 		int z =imagePlusInput.getNSlices();
 		double equivalentSphericalRadius = mesure3d.equivalentSphericalRadius(imagePlusInput);
-		IJ.log("ers " +equivalentSphericalRadius);
+		//IJ.log("ers " +equivalentSphericalRadius);
 		if (_axes =="xy")
 		{
 			for (int k = 0; k < z; ++k )
@@ -69,11 +61,11 @@ public class ConvexeHullDetection
 				//IJ.log("boundary "+lVoxelBoundary.size());
 				if (lVoxelBoundary.size() > 10)
 				{
-					IJ.log("start point "+_p0._i+" "+_p0._j+" "+_p0._k);
-					_convexHull.add(_p0);
+					//IJ.log("start point "+_p0._i+" "+_p0._j+" "+_p0._k);
+					convexHull.add(_p0);
 					VoxelRecord vectorTest = new VoxelRecord();
 					vectorTest.setLocation (-10, 0, 0);
-					findConvexeHull(lVoxelBoundary, vectorTest, calibration,equivalentSphericalRadius);
+					convexHull = findConvexeHull(convexHull,lVoxelBoundary, vectorTest, calibration,equivalentSphericalRadius);
 				}
 			}
 		}
@@ -85,11 +77,11 @@ public class ConvexeHullDetection
 				//IJ.log("boundary "+lVoxelBoundary.size());
 				if (lVoxelBoundary.size() > 10)
 				{
-					IJ.log("start point "+_p0._i+" "+_p0._j+" "+_p0._k);
-					_convexHull.add(_p0);
+					//IJ.log("start point "+_p0._i+" "+_p0._j+" "+_p0._k);
+					convexHull.add(_p0);
 					VoxelRecord vectorTest = new VoxelRecord();
 					vectorTest.setLocation (-10, 0, 0);
-					findConvexeHull(lVoxelBoundary, vectorTest, calibration,equivalentSphericalRadius);
+					convexHull = findConvexeHull(convexHull,lVoxelBoundary, vectorTest, calibration,equivalentSphericalRadius);
 				}
 			}
 		}
@@ -101,14 +93,15 @@ public class ConvexeHullDetection
 					//IJ.log("boundary "+lVoxelBoundary.size());
 					if (lVoxelBoundary.size() > 10)
 					{
-						IJ.log("start point "+_p0._i+" "+_p0._j+" "+_p0._k);
-						_convexHull.add(_p0);
+						//IJ.log("start point "+_p0._i+" "+_p0._j+" "+_p0._k);
+						convexHull.add(_p0);
 						VoxelRecord vectorTest = new VoxelRecord();
 						vectorTest.setLocation (0, -10, 0);
-						findConvexeHull(lVoxelBoundary, vectorTest, calibration,equivalentSphericalRadius);
+						convexHull = findConvexeHull(convexHull, lVoxelBoundary, vectorTest, calibration,equivalentSphericalRadius);
 					}
 				}
 			}
+		return convexHull;
 	}
 	
 	/*
@@ -252,7 +245,7 @@ et on cherche la détermination + ou - 2*k*pi qui se trouve dans [0, 2*pi[
 	 * @param calibration
 	 */
 	
-	void findConvexeHull(ArrayList<VoxelRecord> lVoxelBoundary,  VoxelRecord vectorTest, Calibration calibration, double ers )
+	private ArrayList<VoxelRecord> findConvexeHull(ArrayList<VoxelRecord> convexHull, ArrayList<VoxelRecord> lVoxelBoundary,  VoxelRecord vectorTest, Calibration calibration, double ers )
 	{
 		double anglesSum = 0.0;	
 		int compteur = 0;
@@ -285,8 +278,9 @@ et on cherche la détermination + ou - 2*k*pi qui se trouve dans [0, 2*pi[
 					if (distance <= ers )
 					{
 						double angle = computeAngle(vectorTest,vectorCourant,calibration); 
-						double anglePlusPiSurDeux = angle - _pi/2;
-						if (anglePlusPiSurDeux < -_pi)       anglePlusPiSurDeux += 2*_pi;
+						double anglePlusPiSurDeux = angle -_pi/2;
+						if (anglePlusPiSurDeux < -_pi)
+							anglePlusPiSurDeux += 2*_pi;
 				  	  	if(anglePlusPiSurDeux <= angleMinPiSurDeux)
 				  	  	{
 				  	  		if(anglePlusPiSurDeux < angleMinPiSurDeux)
@@ -316,14 +310,13 @@ et on cherche la détermination + ou - 2*k*pi qui se trouve dans [0, 2*pi[
 			anglesSum += angleMin;
 			if (anglesSum < 2*_pi)
 			{
-				_convexHull.add(voxelMin);
-				IJ.log("point num: "+compteur+" "+voxelMin._i+" "+voxelMin._j+" "+voxelMin._k+" angle: "+angleMinPiSurDeux+" distance: "+maxLength+" angle sum"+anglesSum);
+				convexHull.add(voxelMin);
+				//IJ.log("point num: "+compteur+" "+voxelMin._i+" "+voxelMin._j+" "+voxelMin._k+" angle: "+angleMinPiSurDeux+" distance: "+maxLength+" angle sum"+anglesSum);
 			}
 		}
+		return convexHull;
 	}
 	
 	public String getAxes () {return _axes;}
 	public void setAxes(String axes){ _axes=axes;}
-	public ArrayList<VoxelRecord> getConvexHull(){return _convexHull;}
-	public void setAxes(ArrayList<VoxelRecord> convexHull){ _convexHull = convexHull;}
 }
