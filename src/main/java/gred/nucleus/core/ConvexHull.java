@@ -46,77 +46,91 @@ public class ConvexHull
 	
 	public ImagePlus imageMakingUnion (ImagePlus imagePlusInput, ArrayList<VoxelRecord> convexHullXY,ArrayList<VoxelRecord> convexHullYZ ,ArrayList<VoxelRecord> convexHullXZ )
 	{
-		ImagePlus imagePlusCorrected = imagePlusInput.duplicate();
-				
 
-		for (int k = 11;  k < 20; ++k)
+		ImagePlus imagePlusCorrected = imagePlusInput;
+		ImageStack imageStackOutput = new ImageStack(imagePlusInput.getWidth(),imagePlusInput.getHeight());
+				
+		
+		for (int k = 0 ;  k < imagePlusInput.getNSlices(); ++k)
 		{
+			ImagePlus ip = new ImagePlus();
 			IJ.log("quel plan "+k);
-			ArrayList<Integer> xCoordinates = new ArrayList<Integer>();
-			ArrayList<Integer> yCoordinates = new ArrayList<Integer>();
+			ArrayList<VoxelRecord> plopi = new ArrayList<VoxelRecord>();
+			IJ.log("J'en suis a XY");
 			/*for(int i = 0; i < convexHullXY.size(); ++i)
 			{
 				if (convexHullXY.get(i)._k == (double) k)
 				{
-					xCoordinates.add((int)convexHullXY.get(i)._i);
-					yCoordinates.add((int)convexHullXY.get(i)._j);
+					plopi.add(convexHullXY.get(i));
+					IJ.log("x "+convexHullXY.get(i)._i+" y "+convexHullXY.get(i)._j);
 					convexHullXY.remove(i);
-
 				}
 				
 			}
+			IJ.log("J'en suis a XZ");
 			for(int i = 0; i < convexHullXZ.size(); ++i)
 			{
 				if (convexHullXZ.get(i)._k == (double) k)
 				{
-					xCoordinates.add((int)convexHullXZ.get(i)._i);
-					yCoordinates.add((int)convexHullXZ.get(i)._j);
+					if (testVoxel(plopi,convexHullXZ.get(i)) == -1)
+					{
+						plopi.add(convexHullXZ.get(i));
+						IJ.log("x "+convexHullXZ.get(i)._i+" y "+convexHullXZ.get(i)._j);
+					}
 					convexHullXZ.remove(i);
 				}
 				
 			}*/
-			
+			IJ.log("J'en suis a YZ");
 			for(int i = 0; i < convexHullYZ.size(); ++i)
 			{
 				if (convexHullYZ.get(i)._k == (double) k)
 				{
-					xCoordinates.add((int)convexHullYZ.get(i)._i);
-					yCoordinates.add((int)convexHullYZ.get(i)._j);
-					convexHullYZ.remove(i);
+					if (testVoxel(plopi,convexHullYZ.get(i)) == -1)
+					{
+						plopi.add(convexHullYZ.get(i));
+						IJ.log("x "+convexHullYZ.get(i)._i+" y "+convexHullYZ.get(i)._j);
+					}
+						convexHullYZ.remove(i);
 				}
 				
 			}
-			if (xCoordinates.size()>0)
+			if (plopi.size()>0)
 			{
 				BufferedImage bufferedImage = new BufferedImage(imagePlusInput.getWidth(), imagePlusInput.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
-
+				int []tablex = new int[plopi.size()+1];
+				int []tabley = new int[plopi.size()+1];
+				for (int i = 0; i < plopi.size();++i)
+				{
+					tablex[i] = (int) plopi.get(i)._i;
+					tabley[i] = (int) plopi.get(i)._j;
+				}
+				tablex[plopi.size()] = (int) plopi.get(0)._i;
+				tabley[plopi.size()] = (int) plopi.get(0)._j;
 				IJ.log("Je suis "+k+ " et je passes par la");
-				xCoordinates.add(xCoordinates.get(0));
-				yCoordinates.add(yCoordinates.get(0));
-				int []tablex = convertObjectInInt(xCoordinates.toArray());
-				int []tabley = convertObjectInInt(yCoordinates.toArray());
 				Polygon p = new Polygon(tablex, tabley,tablex.length );
 				Graphics2D g2d = bufferedImage.createGraphics();
 				g2d.drawPolygon(p);
 				g2d.fillPolygon(p);
 				g2d.setColor(Color.WHITE);
 				g2d.dispose();
-				ImagePlus ip = new ImagePlus();
+
 				ip.setImage(bufferedImage);
-				ip.setTitle("plop"+k);
-				ip.show();
+				//ip.setTitle("plop"+k);
+				//ip.show();
 			}
 			else
 			{
 				BufferedImage bufferedImage = new BufferedImage(imagePlusInput.getWidth(), imagePlusInput.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
 				Graphics2D g2d = bufferedImage.createGraphics();
-				ImagePlus ip = new ImagePlus();
+				ip = new ImagePlus();
 				ip.setImage(bufferedImage);
-				ip.setTitle("plop"+k);
-				ip.show();
+				//ip.setTitle("plop"+k);
+				//ip.show();
 			}
-			
+			imageStackOutput.addSlice(ip.getProcessor());
 		}
+		imagePlusCorrected.setStack(imageStackOutput);
 		return imagePlusCorrected;
 	}
 	
@@ -135,5 +149,19 @@ public class ConvexHull
 		}
 		return tableInt;
 	}
-
+	
+	private int testVoxel(ArrayList<VoxelRecord> listVoxel, VoxelRecord voxel)
+	{
+		int plop = -1;
+		for (int x = 0; x < listVoxel.size(); ++x )
+		{
+			if (voxel.compareCooridnatesTo(listVoxel.get(x)) == 0)
+			{
+				plop = 0;
+				break;
+			}
+		}
+		return plop;
+		
+	}
 }
