@@ -205,7 +205,7 @@ et on cherche la détermination + ou - 2*k*pi qui se trouve dans [0, 2*pi[
 		}
 		else if (_axes == "xz")
 		{
-			for (int i = 0; i < imagePlusInput.getWidth(); ++i )
+			for (int i = 0; i < x; ++i )
 				for (int k = 0; k < z; ++k )
 					if (imageStackInput.getVoxel(i, indice,k) > 0)
 						if ( imageStackInput.getVoxel(i-1, indice, k) == 0 || imageStackInput.getVoxel(i+1, indice, k) == 0||
@@ -221,7 +221,7 @@ et on cherche la détermination + ou - 2*k*pi qui se trouve dans [0, 2*pi[
 		}
 		else if (_axes == "yz")
 		{
-			for (int j = 0; j < imagePlusInput.getWidth(); ++j )
+			for (int j = 0; j < y; ++j )
 				for (int k = 0; k < z; ++k )
 					if (imageStackInput.getVoxel(indice, j, k) > 0)
 						if ( imageStackInput.getVoxel(indice, j-1, k) == 0 || imageStackInput.getVoxel(indice, j+1, k) == 0||
@@ -281,8 +281,10 @@ et on cherche la détermination + ou - 2*k*pi qui se trouve dans [0, 2*pi[
 						double anglePlusPiSurDeux = angle -_pi/2;
 						if (anglePlusPiSurDeux < -_pi)
 							anglePlusPiSurDeux += 2*_pi;
+					//	IJ.log(lVoxelBoundary.get(i)._i+" "+lVoxelBoundary.get(i)._j+" "+lVoxelBoundary.get(i)._k+" angle: "+angleMinPiSurDeux+" distance: "+maxLength);
 				  	  	if(anglePlusPiSurDeux <= angleMinPiSurDeux)
 				  	  	{
+				  	  
 				  	  		if(anglePlusPiSurDeux < angleMinPiSurDeux)
 				  	  		{
 				  	  			maxLength = distance;

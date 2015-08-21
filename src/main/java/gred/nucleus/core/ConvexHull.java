@@ -44,71 +44,129 @@ public class ConvexHull
 	 * @return
 	 */
 	
-	public ImagePlus imageMakingUnion (ImagePlus imagePlusInput, ArrayList<VoxelRecord> convexHullXY,ArrayList<VoxelRecord> convexHullYZ ,ArrayList<VoxelRecord> convexHullXZ )
+	public ImagePlus imageMakingUnion (ImagePlus imagePlusInput, ArrayList<VoxelRecord> convexHullXY,ArrayList<VoxelRecord> convexHullXZ ,ArrayList<VoxelRecord> convexHullYZ )
 	{
+		ImagePlus imagePlusXY = imageMaker(convexHullXY,"xy",imagePlusInput.getWidth(),imagePlusInput.getHeight(),imagePlusInput.getNSlices());
+		imagePlusXY.show();
+		ImagePlus imagePlusXZ = imageMaker(convexHullXZ,"xz",imagePlusInput.getWidth(),imagePlusInput.getNSlices(),imagePlusInput.getHeight());	
+		imagePlusXZ.setTitle("xz");
+		imagePlusXZ.show();
+		ImagePlus imagePlusYZ = imageMaker (convexHullYZ,"yz",imagePlusInput.getHeight(),imagePlusInput.getNSlices(),imagePlusInput.getWidth());
+		imagePlusYZ.setTitle("yz");
+		imagePlusYZ.show();
+		ImageStack imageStackXY= imagePlusXY.getStack();
+		ImageStack imageStackXZ= imagePlusXZ.getStack();
+		ImageStack imageStackYZ= imagePlusYZ.getStack();
+		/*
+		for (int k = 0; k < imagePlusXY.getNSlices();++k)
+		{
+			for (int i = 0; i < imagePlusXY.getWidth(); ++i)
+			{
+				for (int j = 0; j < imagePlusXY.getHeight();++j)
+				{
+					if (imageStackXZ.getVoxel(i, k, j) != 0 && imageStackYZ.getVoxel(j, k, i) != 0)
+					{	
+							if(imageStackXY.getVoxel(i, j, k) == 0)
+							{
+								imageStackXY.setVoxel(i, j, k, 125);
+							}
+					}
+						
+				}
+			}
+				
+		}*/
+		
+		return imagePlusInput;
+	}
 
-		ImagePlus imagePlusCorrected = imagePlusInput;
-		ImageStack imageStackOutput = new ImageStack(imagePlusInput.getWidth(),imagePlusInput.getHeight());
+	
+	
+	
+	/**
+	 * 
+	 * @param imagePlusInput
+	 * @param convexHull
+	 * @return
+	 */
+	public ImagePlus imageMaker (ArrayList<VoxelRecord> convexHull, String axesName ,int width, int height, int nbSlice)
+	{
+		ImagePlus imagePlusCorrected = new ImagePlus();
+		ImageStack imageStackOutput = new ImageStack(width, height);
 				
 		
-		for (int k = 0 ;  k < imagePlusInput.getNSlices(); ++k)
+		for (int index = 0 ; index < nbSlice; ++index)
 		{
 			ImagePlus ip = new ImagePlus();
-			IJ.log("quel plan "+k);
 			ArrayList<VoxelRecord> plopi = new ArrayList<VoxelRecord>();
-			IJ.log("J'en suis a XY");
-			/*for(int i = 0; i < convexHullXY.size(); ++i)
+			BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+			for(int i = 0; i < convexHull.size(); ++i)
 			{
-				if (convexHullXY.get(i)._k == (double) k)
+				if(axesName == "xy")
 				{
-					plopi.add(convexHullXY.get(i));
-					IJ.log("x "+convexHullXY.get(i)._i+" y "+convexHullXY.get(i)._j);
-					convexHullXY.remove(i);
-				}
-				
-			}
-			IJ.log("J'en suis a XZ");
-			for(int i = 0; i < convexHullXZ.size(); ++i)
-			{
-				if (convexHullXZ.get(i)._k == (double) k)
-				{
-					if (testVoxel(plopi,convexHullXZ.get(i)) == -1)
+					if (convexHull.get(i)._k == (double) index)
 					{
-						plopi.add(convexHullXZ.get(i));
-						IJ.log("x "+convexHullXZ.get(i)._i+" y "+convexHullXZ.get(i)._j);
+						plopi.add(convexHull.get(i));
+						convexHull.remove(i);
 					}
-					convexHullXZ.remove(i);
 				}
-				
-			}*/
-			IJ.log("J'en suis a YZ");
-			for(int i = 0; i < convexHullYZ.size(); ++i)
-			{
-				if (convexHullYZ.get(i)._k == (double) k)
+				else if (axesName == "xz")
 				{
-					if (testVoxel(plopi,convexHullYZ.get(i)) == -1)
+					if (convexHull.get(i)._j == (double) index)
 					{
-						plopi.add(convexHullYZ.get(i));
-						IJ.log("x "+convexHullYZ.get(i)._i+" y "+convexHullYZ.get(i)._j);
-					}
-						convexHullYZ.remove(i);
+						plopi.add(convexHull.get(i));
+						convexHull.remove(i);
+					}	
 				}
-				
+				else if (axesName == "yz")
+				{
+					if (convexHull.get(i)._i == (double) index)
+					{
+						plopi.add(convexHull.get(i));
+						convexHull.remove(i);
+					}
+				}
 			}
 			if (plopi.size()>0)
 			{
-				BufferedImage bufferedImage = new BufferedImage(imagePlusInput.getWidth(), imagePlusInput.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
-				int []tablex = new int[plopi.size()+1];
-				int []tabley = new int[plopi.size()+1];
+				
+				int []tableWidth = new int[plopi.size()+1];
+				int []tableHeight = new int[plopi.size()+1];
 				for (int i = 0; i < plopi.size();++i)
 				{
-					tablex[i] = (int) plopi.get(i)._i;
-					tabley[i] = (int) plopi.get(i)._j;
+					if(axesName == "xy")
+					{
+						tableWidth[i] = (int) plopi.get(i)._i;
+						tableHeight[i] = (int) plopi.get(i)._j;
+					}
+					else if (axesName == "xz")
+					{
+						tableWidth[i] = (int) plopi.get(i)._i;
+						tableHeight[i] = (int) plopi.get(i)._k;
+					}
+					else if (axesName == "yz")
+					{
+						tableWidth[i] = (int) plopi.get(i)._j;
+						tableHeight[i] = (int) plopi.get(i)._k;
+					}
+					
 				}
-				tablex[plopi.size()] = (int) plopi.get(0)._i;
-				tabley[plopi.size()] = (int) plopi.get(0)._j;
-				IJ.log("Je suis "+k+ " et je passes par la");
-				Polygon p = new Polygon(tablex, tabley,tablex.length );
+				if(axesName == "xy")
+				{
+					tableWidth[plopi.size()] = (int) plopi.get(0)._i;
+					tableHeight[plopi.size()] = (int) plopi.get(0)._j;
+				}
+				else if (axesName == "xz")
+				{
+					tableWidth[plopi.size()] = (int) plopi.get(0)._i;
+					tableHeight[plopi.size()] = (int) plopi.get(0)._k;
+				}
+				else if (axesName == "yz")
+				{
+					tableWidth[plopi.size()] = (int) plopi.get(0)._j;
+					tableHeight[plopi.size()] = (int) plopi.get(0)._k;
+				}
+				Polygon p = new Polygon(tableWidth, tableHeight,tableWidth.length );
 				Graphics2D g2d = bufferedImage.createGraphics();
 				g2d.drawPolygon(p);
 				g2d.fillPolygon(p);
@@ -116,52 +174,19 @@ public class ConvexHull
 				g2d.dispose();
 
 				ip.setImage(bufferedImage);
-				//ip.setTitle("plop"+k);
-				//ip.show();
 			}
 			else
 			{
-				BufferedImage bufferedImage = new BufferedImage(imagePlusInput.getWidth(), imagePlusInput.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
 				Graphics2D g2d = bufferedImage.createGraphics();
 				ip = new ImagePlus();
 				ip.setImage(bufferedImage);
-				//ip.setTitle("plop"+k);
-				//ip.show();
 			}
 			imageStackOutput.addSlice(ip.getProcessor());
 		}
 		imagePlusCorrected.setStack(imageStackOutput);
+
 		return imagePlusCorrected;
-	}
 	
-	/**
-	 * 
-	 * @param table
-	 * @return
-	 */
-	private int[] convertObjectInInt(Object[]table)
-	{
-		int[] tableInt = new int[table.length];
-		for(int i = 0; i < table.length; ++i)
-		{
-			tableInt[i] = Integer.parseInt(table[i].toString());
-			IJ.log("point "+i+" "+table[i]);
-		}
-		return tableInt;
 	}
-	
-	private int testVoxel(ArrayList<VoxelRecord> listVoxel, VoxelRecord voxel)
-	{
-		int plop = -1;
-		for (int x = 0; x < listVoxel.size(); ++x )
-		{
-			if (voxel.compareCooridnatesTo(listVoxel.get(x)) == 0)
-			{
-				plop = 0;
-				break;
-			}
-		}
-		return plop;
 		
-	}
 }
