@@ -51,17 +51,16 @@ public class ConvexeHullDetection
 		int x = imagePlusInput.getWidth();
 		int y = imagePlusInput.getHeight();
 		int z =imagePlusInput.getNSlices();
-		double equivalentSphericalRadius = (mesure3d.equivalentSphericalRadius(imagePlusInput))/3;
-		//IJ.log("ers " +equivalentSphericalRadius);
-		/*if (_axes =="xy")
+		double equivalentSphericalRadius = (mesure3d.equivalentSphericalRadius(imagePlusInput)/2);
+		if (_axes =="xy")
 		{
-			for (int k = 0; k < z; ++k )
+			for (int k = 39; k < 42; ++k )
 			{
 				ArrayList<VoxelRecord> lVoxelBoundary = detectVoxelBoudary(imagePlusInput,k);
 				//IJ.log("boundary "+lVoxelBoundary.size());
 				if (lVoxelBoundary.size() > 10)
 				{
-					//IJ.log("start point "+_p0._i+" "+_p0._j+" "+_p0._k);
+					IJ.log("start point "+_p0._i+" "+_p0._j+" "+_p0._k);
 					convexHull.add(_p0);
 					VoxelRecord vectorTest = new VoxelRecord();
 					vectorTest.setLocation (-10, 0, 0);
@@ -85,23 +84,20 @@ public class ConvexeHullDetection
 				}
 			}
 		}
-		else*/ if (_axes =="yz")
+		else if (_axes =="yz")
 			{
-				for (int i = 79; i < 81; ++i )
+				for (int i = 0; i < x; ++i )
 				{
 					ArrayList<VoxelRecord> lVoxelBoundary = detectVoxelBoudary(imagePlusInput,i);
 					//IJ.log("boundary "+lVoxelBoundary.size());
 					if (lVoxelBoundary.size() > 10)
 					{
-						IJ.log("start point "+_p0._i+" "+_p0._j+" "+_p0._k);
-						for (int j = 0; j < lVoxelBoundary.size(); ++j )
-						{
-							IJ.log("x: "+lVoxelBoundary.get(j)._i+" y: "+lVoxelBoundary.get(j)._j+" z: "+lVoxelBoundary.get(j)._k);
-						}
+						//IJ.log("start point "+_p0._i+" "+_p0._j+" "+_p0._k);
+						
 						convexHull.add(_p0);
 						VoxelRecord vectorTest = new VoxelRecord();
 						vectorTest.setLocation (0, -10, 0);
-						//convexHull = findConvexeHull(convexHull, lVoxelBoundary, vectorTest, calibration,equivalentSphericalRadius);
+						convexHull = findConvexeHull(convexHull, lVoxelBoundary, vectorTest, calibration,equivalentSphericalRadius);
 					}
 				}
 			}
@@ -266,7 +262,7 @@ et on cherche la détermination + ou - 2*k*pi qui se trouve dans [0, 2*pi[
 		double xcal = calibration.pixelWidth;
 		double ycal = calibration.pixelHeight;
 		double zcal = calibration.pixelDepth;
-		while(anglesSum < 2*_pi)
+		while(anglesSum < 20*_pi)
 		{
 			double angleMin = 0;
 			double maxLength = 0;
@@ -314,8 +310,8 @@ et on cherche la détermination + ou - 2*k*pi qui se trouve dans [0, 2*pi[
 				  	  	}
 					}
 					
-					(angleMinPiSurDeux == 2*_pi)
-					{
+					//(angleMinPiSurDeux == 2*_pi)
+					//{
 				}
 			}
 			++compteur;

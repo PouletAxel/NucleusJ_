@@ -31,8 +31,8 @@ public class ConvexHull
 		ArrayList<VoxelRecord> convexHullXZ = nuc.giftWrapping(imagePlusInput);
 		nuc.setAxes("yz");
 		ArrayList<VoxelRecord> convexHullYZ = nuc.giftWrapping(imagePlusInput);
-		ImagePlus imagePlusOutput = imageMakingUnion(imagePlusInput, convexHullXY, convexHullXZ, convexHullYZ);
-		return imagePlusOutput;
+		
+		return imageMakingUnion(imagePlusInput, convexHullXY, convexHullXZ, convexHullYZ);
 	}
 
 
@@ -46,17 +46,17 @@ public class ConvexHull
 	
 	public ImagePlus imageMakingUnion (ImagePlus imagePlusInput, ArrayList<VoxelRecord> convexHullXY,ArrayList<VoxelRecord> convexHullXZ ,ArrayList<VoxelRecord> convexHullYZ )
 	{
+		ImagePlus imagePlusOutput = imagePlusInput.duplicate();
 		ImagePlus imagePlusXY = imageMaker(convexHullXY,"xy",imagePlusInput.getWidth(),imagePlusInput.getHeight(),imagePlusInput.getNSlices());
-		//imagePlusXY.show();
+		imagePlusXY.show();
 		ImagePlus imagePlusXZ = imageMaker(convexHullXZ,"xz",imagePlusInput.getWidth(),imagePlusInput.getNSlices(),imagePlusInput.getHeight());	
-		imagePlusXZ.setTitle("xz");
-		//imagePlusXZ.show();
+		imagePlusXZ.show();
 		ImagePlus imagePlusYZ = imageMaker (convexHullYZ,"yz",imagePlusInput.getHeight(),imagePlusInput.getNSlices(),imagePlusInput.getWidth());
-		imagePlusYZ.setTitle("yz");
-		//imagePlusYZ.show();
+		imagePlusYZ.show();
 		ImageStack imageStackXY= imagePlusXY.getStack();
 		ImageStack imageStackXZ= imagePlusXZ.getStack();
 		ImageStack imageStackYZ= imagePlusYZ.getStack();
+		ImageStack imageStackOutput = imagePlusOutput.getStack();
 		
 		for (int k = 0; k < imagePlusXY.getNSlices();++k)
 		{
@@ -64,20 +64,34 @@ public class ConvexHull
 			{
 				for (int j = 0; j < imagePlusXY.getHeight();++j)
 				{
-					if (imageStackXZ.getVoxel(i, k, j) != 0 || imageStackYZ.getVoxel(j, k, i) != 0)
+					
+					if (imageStackXY.getVoxel(i, j, k) != 0 )
 					{	
-							if(imageStackXY.getVoxel(i, j, k) == 0)
+							if(imageStackOutput.getVoxel(i, j, k) == 0)
 							{
-								//imageStackXY.setVoxel(i, j, k, 125);
+								imageStackOutput.setVoxel(i, j, k, 50);
 							}
 					}
-						
+					if (imageStackYZ.getVoxel(j, k, i) != 0)
+					{
+						if(imageStackOutput.getVoxel(i, j, k) == 0)
+						{
+							imageStackOutput.setVoxel(i, j, k, 100);
+						}
+					}
+					if (imageStackXZ.getVoxel(i, k, j) != 0)	
+					{
+						if(imageStackOutput.getVoxel(i, j, k) == 0)
+						{
+							imageStackOutput.setVoxel(i, j, k, 150);
+						}
+					}
 				}
 			}
 				
 		}
 		
-		return imagePlusXY;
+		return imagePlusOutput;
 	}
 
 	
