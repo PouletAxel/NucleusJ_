@@ -51,9 +51,9 @@ public class ConvexeHullDetection
 		int x = imagePlusInput.getWidth();
 		int y = imagePlusInput.getHeight();
 		int z =imagePlusInput.getNSlices();
-		double equivalentSphericalRadius = mesure3d.equivalentSphericalRadius(imagePlusInput);
+		double equivalentSphericalRadius = (mesure3d.equivalentSphericalRadius(imagePlusInput))/3;
 		//IJ.log("ers " +equivalentSphericalRadius);
-		if (_axes =="xy")
+		/*if (_axes =="xy")
 		{
 			for (int k = 0; k < z; ++k )
 			{
@@ -85,19 +85,23 @@ public class ConvexeHullDetection
 				}
 			}
 		}
-		else if (_axes =="yz")
+		else*/ if (_axes =="yz")
 			{
-				for (int i = 0; i < x; ++i )
+				for (int i = 79; i < 81; ++i )
 				{
 					ArrayList<VoxelRecord> lVoxelBoundary = detectVoxelBoudary(imagePlusInput,i);
 					//IJ.log("boundary "+lVoxelBoundary.size());
 					if (lVoxelBoundary.size() > 10)
 					{
-						//IJ.log("start point "+_p0._i+" "+_p0._j+" "+_p0._k);
+						IJ.log("start point "+_p0._i+" "+_p0._j+" "+_p0._k);
+						for (int j = 0; j < lVoxelBoundary.size(); ++j )
+						{
+							IJ.log("x: "+lVoxelBoundary.get(j)._i+" y: "+lVoxelBoundary.get(j)._j+" z: "+lVoxelBoundary.get(j)._k);
+						}
 						convexHull.add(_p0);
 						VoxelRecord vectorTest = new VoxelRecord();
 						vectorTest.setLocation (0, -10, 0);
-						convexHull = findConvexeHull(convexHull, lVoxelBoundary, vectorTest, calibration,equivalentSphericalRadius);
+						//convexHull = findConvexeHull(convexHull, lVoxelBoundary, vectorTest, calibration,equivalentSphericalRadius);
 					}
 				}
 			}
@@ -132,7 +136,9 @@ et on cherche la détermination + ou - 2*k*pi qui se trouve dans [0, 2*pi[
 		double zcal = calibration.pixelDepth;
 		double normeVector1 = Math.sqrt(vector1._i*xcal*vector1._i*xcal+vector1._j*ycal*vector1._j*ycal+vector1._k*zcal*vector1._k*zcal);
 		double normeVector2 = Math.sqrt(vector2._i*xcal*vector2._i*xcal+vector2._j*ycal*vector2._j*ycal+vector2._k*zcal*vector2._k*zcal);
+		
 		double normesProduct = normeVector1*normeVector2;
+		
 		double sinAlpha = 0, cosAlpha=0;
 		
 		if (_axes == "xy") 
@@ -150,6 +156,8 @@ et on cherche la détermination + ou - 2*k*pi qui se trouve dans [0, 2*pi[
 			sinAlpha = ((vector1._j*ycal)*(vector2._k*zcal)-(vector1._k*zcal)*(vector2._j*ycal))/normesProduct;
 			cosAlpha = ((vector1._j*ycal)*(vector2._j*ycal)+(vector1._k*zcal)*(vector2._k*zcal))/normesProduct;
 		}	
+		if (cosAlpha > 1 ) cosAlpha=1;
+		else if(cosAlpha < -1 ) cosAlpha=-1;
 		double acos = Math.acos(cosAlpha);
 		double alpha;
 		if (sinAlpha < 0)
@@ -198,7 +206,8 @@ et on cherche la détermination + ou - 2*k*pi qui se trouve dans [0, 2*pi[
 							VoxelRecord voxelTest = new VoxelRecord();
 							voxelTest.setLocation(i, j,indice);
 							lVoxelBoundary.add(voxelTest);
-							if (j >= _p0._j)
+							if (j > _p0._j)		_p0.setLocation(i, j,indice);
+							else if (j ==_p0._j)
 								if(i > _p0._i)	_p0.setLocation(i, j,indice);
 						}
 
@@ -214,8 +223,9 @@ et on cherche la détermination + ou - 2*k*pi qui se trouve dans [0, 2*pi[
 							VoxelRecord voxelTest = new VoxelRecord();
 							voxelTest.setLocation(i, indice, k);
 							lVoxelBoundary.add(voxelTest);
-							if (k >= _p0._k)
-								if(i > _p0._i)	_p0.setLocation (i, indice, k);
+							if (k > _p0._k)		_p0.setLocation (i, indice, k);
+							else if (k ==_p0._k)
+									if(i > _p0._i)	_p0.setLocation(i, indice,k);
 						}
 
 		}
@@ -230,7 +240,8 @@ et on cherche la détermination + ou - 2*k*pi qui se trouve dans [0, 2*pi[
 							VoxelRecord voxelTest = new VoxelRecord();
 							voxelTest.setLocation(indice, j, k);
 							lVoxelBoundary.add(voxelTest);
-							if (k >= _p0._k)
+							if (k > _p0._k) 	_p0.setLocation ( indice,j , k);
+							else if (k ==_p0._k)
 								if(j > _p0._j)	_p0.setLocation ( indice,j , k);
 						}
 
@@ -274,14 +285,13 @@ et on cherche la détermination + ou - 2*k*pi qui se trouve dans [0, 2*pi[
 					if(_axes == "xy")	distance = Math.sqrt(vectorCourant._i*xcal*vectorCourant._i*xcal+vectorCourant._j*ycal*vectorCourant._j*ycal);
 					else if (_axes == "xz")	distance = Math.sqrt(vectorCourant._i*xcal*vectorCourant._i*xcal+vectorCourant._k*zcal*vectorCourant._k*zcal);
 					else if (_axes == "yz")	distance = Math.sqrt(vectorCourant._k*zcal*vectorCourant._k*zcal+vectorCourant._j*ycal*vectorCourant._j*ycal);
-					//int sens = orientation(voxelPrecedent,voxelTest, lVoxelBoundary.get(i));
 					if (distance <= ers )
 					{
 						double angle = computeAngle(vectorTest,vectorCourant,calibration); 
 						double anglePlusPiSurDeux = angle -_pi/2;
 						if (anglePlusPiSurDeux < -_pi)
 							anglePlusPiSurDeux += 2*_pi;
-					//	IJ.log(lVoxelBoundary.get(i)._i+" "+lVoxelBoundary.get(i)._j+" "+lVoxelBoundary.get(i)._k+" angle: "+angleMinPiSurDeux+" distance: "+maxLength);
+						//IJ.log(lVoxelBoundary.get(i)._i+" "+lVoxelBoundary.get(i)._j+" "+lVoxelBoundary.get(i)._k+" angle: "+anglePlusPiSurDeux+" angleMin: "+angleMinPiSurDeux+" distance: "+distance+" "+maxLength+" ers "+ers);
 				  	  	if(anglePlusPiSurDeux <= angleMinPiSurDeux)
 				  	  	{
 				  	  
@@ -310,11 +320,18 @@ et on cherche la détermination + ou - 2*k*pi qui se trouve dans [0, 2*pi[
 			voxelTest = voxelMin;
 			lVoxelBoundary.remove(iMin);
 			anglesSum += angleMin;
+			if (voxelMin.compareCooridnatesTo(_p0) == 0)
+			{
+				//IJ.log("\\\\\\\\\\\\\\point num: "+compteur+" "+voxelMin._i+" "+voxelMin._j+" "+voxelMin._k+" angle: "+angleMinPiSurDeux+" distance: "+maxLength+" angle sum"+anglesSum);
+				break;
+			}
+			//IJ.log("start point "+_p0._i+" "+_p0._j+" "+_p0._k);
 			if (anglesSum < 2*_pi)
 			{
 				convexHull.add(voxelMin);
-				//IJ.log("point num: "+compteur+" "+voxelMin._i+" "+voxelMin._j+" "+voxelMin._k+" angle: "+angleMinPiSurDeux+" distance: "+maxLength+" angle sum"+anglesSum);
+				IJ.log("point num: "+compteur+" "+voxelMin._i+" "+voxelMin._j+" "+voxelMin._k+" angle: "+angleMinPiSurDeux+" distance: "+maxLength+" angle sum"+anglesSum);
 			}
+			
 		}
 		return convexHull;
 	}
