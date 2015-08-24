@@ -313,6 +313,9 @@ et on cherche la détermination + ou - 2*k*pi qui se trouve dans [0, 2*pi[
 				  	  		}
 				  	  	}
 					}
+					
+					(angleMinPiSurDeux == 2*_pi)
+					{
 				}
 			}
 			++compteur;
@@ -331,7 +334,6 @@ et on cherche la détermination + ou - 2*k*pi qui se trouve dans [0, 2*pi[
 				convexHull.add(voxelMin);
 				IJ.log("point num: "+compteur+" "+voxelMin._i+" "+voxelMin._j+" "+voxelMin._k+" angle: "+angleMinPiSurDeux+" distance: "+maxLength+" angle sum"+anglesSum);
 			}
-			
 		}
 		return convexHull;
 	}
