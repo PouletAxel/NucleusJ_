@@ -1,6 +1,7 @@
 package gred.nucleus.core;
 
 import gred.nucleus.utils.ConvexeHullDetection;
+import gred.nucleus.utils.ConvexeHullImageMaker;
 import gred.nucleus.utils.VoxelRecord;
 import ij.IJ;
 import ij.ImagePlus;
@@ -14,7 +15,7 @@ import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-public class ConvexHull
+public class ConvexHullSegmentation
 {
 	
 	/**
@@ -24,15 +25,21 @@ public class ConvexHull
 	public ImagePlus run(ImagePlus imagePlusInput)
 	{
 		
-	    ConvexeHullDetection nuc = new ConvexeHullDetection();
-	    nuc.setAxes("xy");
-	    ArrayList<VoxelRecord> convexHullXY = nuc.giftWrapping(imagePlusInput);
-		nuc.setAxes("xz");
-		ArrayList<VoxelRecord> convexHullXZ = nuc.giftWrapping(imagePlusInput);
-		nuc.setAxes("yz");
-		ArrayList<VoxelRecord> convexHullYZ = nuc.giftWrapping(imagePlusInput);
+		ConvexeHullImageMaker nuc = new ConvexeHullImageMaker();
+	  /*  nuc.setAxes("xy");
+	   	ImagePlus imagePlusXY = nuc.giftWrapping(imagePlusInput);
+	   	imagePlusXY.setTitle("xy");
+	   	imagePlusXY.show();*/
+	   	nuc.setAxes("xz");
+	   	ImagePlus imagePlusXZ = nuc.giftWrapping(imagePlusInput);
+	   	imagePlusXZ.setTitle("xz");
+	   	imagePlusXZ.show();
+		/*nuc.setAxes("yz");
+		ImagePlus imagePlusYZ = nuc.giftWrapping(imagePlusInput);
+	   	imagePlusYZ.setTitle("yz");
+	   	imagePlusYZ.show();*/
 		
-		return imageMakingUnion(imagePlusInput, convexHullXY, convexHullXZ, convexHullYZ);
+		return  imagePlusInput;//imageMakingUnion(imagePlusInput, convexHullXY, convexHullXZ, convexHullYZ);
 	}
 
 

@@ -22,7 +22,7 @@ public class ConvexHullPlugin_  implements PlugIn
 	       IJ.noImage();
 	       return;
 	    }		
-	    ConvexHull nuc = new ConvexHull();
+	    ConvexHullSegmentation nuc = new ConvexHullSegmentation();
 	    ImagePlus plopi = nuc.run(_imagePlusInput);
 	   plopi.setTitle("test");
 	   plopi.show();
