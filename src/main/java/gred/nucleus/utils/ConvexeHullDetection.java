@@ -1,17 +1,10 @@
 package gred.nucleus.utils;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Polygon;
-import java.awt.image.BufferedImage;
+
 import java.util.ArrayList;
 
-import gred.nucleus.core.Measure3D;
 import ij.IJ;
-import ij.ImagePlus;
-import ij.ImageStack;
 import ij.measure.Calibration;
-import inra.ijpb.binary.ConnectedComponents;
 
 public class ConvexeHullDetection
 {
@@ -70,6 +63,7 @@ public class ConvexeHullDetection
 		VoxelRecord voxelTest = new VoxelRecord();
 		VoxelRecord voxelPrecedent = new VoxelRecord();
 		voxelTest = _p0;
+		IJ.log("plopi voxeldepart : "+_p0._i+" "+_p0._j+" "+_p0._k);
 		double xcal = calibration.pixelWidth;
 		double ycal = calibration.pixelHeight;
 		double zcal = calibration.pixelDepth;
@@ -96,9 +90,9 @@ public class ConvexeHullDetection
 					{
 						double angle = computeAngle(vectorTest,vectorCourant,calibration); 
 						double anglePlusPiSurDeux = angle -_pi/2;
-						if (anglePlusPiSurDeux < -_pi)
+						if (anglePlusPiSurDeux <= -_pi)
 							anglePlusPiSurDeux += 2*_pi;
-						//IJ.log(lVoxelBoundary.get(i)._i+" "+lVoxelBoundary.get(i)._j+" "+lVoxelBoundary.get(i)._k+" angle: "+anglePlusPiSurDeux+" angleMin: "+angleMinPiSurDeux+" distance: "+distance+" "+maxLength+" ers "+ers);
+						//IJ.log(lVoxelBoundary.get(i)._i+" "+lVoxelBoundary.get(i)._j+" "+lVoxelBoundary.get(i)._k+" angle: "+anglePlusPiSurDeux+" angleMin: "+angleMinPiSurDeux+" angle "+angle);
 				  	  	if(anglePlusPiSurDeux <= angleMinPiSurDeux)
 				  	  	{
 				  	   		if(anglePlusPiSurDeux < angleMinPiSurDeux)
@@ -126,13 +120,9 @@ public class ConvexeHullDetection
 			voxelTest = voxelMin;
 			lVoxelBoundary.remove(iMin);
 			anglesSum += angleMin;
-			if (voxelMin.compareCooridnatesTo(_p0) == 0)
-			{
-				//IJ.log("\\\\\\\\\\\\\\point num: "+compteur+" "+voxelMin._i+" "+voxelMin._j+" "+voxelMin._k+" angle: "+angleMinPiSurDeux+" distance: "+maxLength+" angle sum"+anglesSum);
-				break;
-			}
-			//IJ.log("start point "+_p0._i+" "+_p0._j+" "+_p0._k);
-			if (anglesSum < 2*_pi)
+			if (voxelMin.compareCooridnatesTo(_p0) == 0)	break;
+		
+			if (anglesSum <= 2*_pi)
 			{
 				convexHull.add(voxelMin);
 				IJ.log("point num: "+compteur+" "+voxelMin._i+" "+voxelMin._j+" "+voxelMin._k+" angle: "+angleMinPiSurDeux+" distance: "+maxLength+" angle sum"+anglesSum);
@@ -196,10 +186,6 @@ public class ConvexeHullDetection
 		else if (turn < 0) return -1;
 		else return 0;
 	}
-	
-
-	
-
 	
 	public String getAxes () {return _axesName;}
 	public void setAxes(String axes){ _axesName=axes;}

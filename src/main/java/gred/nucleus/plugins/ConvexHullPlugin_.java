@@ -2,6 +2,7 @@ package gred.nucleus.plugins;
 import gred.nucleus.core.*;
 import gred.nucleus.utils.ConvexeHullDetection;
 import ij.*;
+import ij.measure.Calibration;
 import ij.plugin.*;
 
 public class ConvexHullPlugin_  implements PlugIn
@@ -21,9 +22,14 @@ public class ConvexHullPlugin_  implements PlugIn
 	    {
 	       IJ.noImage();
 	       return;
-	    }		
+	    }
+
+		ImagePlus imagePlusSegmented= _imagePlusInput;
+		NucleusSegmentation nucleusSegmentation = new NucleusSegmentation();
+		nucleusSegmentation.setVolumeRange(8, 200);
+		imagePlusSegmented = nucleusSegmentation.applySegmentation(imagePlusSegmented);
 	    ConvexHullSegmentation nuc = new ConvexHullSegmentation();
-	    ImagePlus plopi = nuc.run(_imagePlusInput);
+	    ImagePlus plopi = nuc.run(imagePlusSegmented);
 	   plopi.setTitle("test");
 	   plopi.show();
 	}

@@ -27,7 +27,6 @@ public class ConvexeHullImageMaker
 	public  ImagePlus giftWrapping (ImagePlus imagePlusBinary)
 	{
 		_calibration = imagePlusBinary.getCalibration();
-		ImageStack imageStackInput = imagePlusBinary.getStack();
 		Measure3D mesure3d = new Measure3D();
 		double equivalentSphericalRadius = (mesure3d.equivalentSphericalRadius(imagePlusBinary)/2);
 		ImagePlus imagePlusCorrected = new ImagePlus();
@@ -57,7 +56,7 @@ public class ConvexeHullImageMaker
 		Graphics2D blackImage = bufferedImage.createGraphics();
 		imagePlusBlack.setImage(bufferedImage);
 		ImageStack imageStackOutput = new ImageStack(width, height);
-		for (int k = 0; k < indice; ++k )
+		for (int k = 34; k < 36; ++k )
 		{
 			ImagePlus ip = imagePlusBlack.duplicate();
 			double[][] image = giveTable(imagePlusBinary, width, height, k);
@@ -112,25 +111,31 @@ public class ConvexeHullImageMaker
 				  if ( image[i-1][j] == 0 || image[i+1][j] == 0|| image[i][j-1] == 0|| image[i][j+1]== 0)
 				  {
 					  VoxelRecord voxelTest = new VoxelRecord();
-					  if(_axesName == "xy")	voxelTest.setLocation(i, j,indice);
-					  else if(_axesName == "xz")	voxelTest.setLocation(i, indice,j);
-					  else	voxelTest.setLocation(indice,i,j);
-					  lVoxelBoundary.add(voxelTest);	
-					  if (j > _p0._j)
+					  if(_axesName == "xy")
 					  {
-						  if(_axesName == "xy")	_p0.setLocation(i, j,indice);
-						  else if(_axesName == "xz")	_p0.setLocation(i, indice,j);
-						  else	_p0.setLocation(indice,i,j);
+						  voxelTest.setLocation(i, j,indice);
+						  
+						  if (j > _p0._j) _p0.setLocation(i, j,indice);
+						  else if (j ==_p0._j)
+							  if(i > _p0._i)	_p0.setLocation(i,j, indice);
 					  }
-					  else if (j ==_p0._j)
-						  if(i > _p0._i)
-						  {
-							  if(_axesName == "xy")	_p0.setLocation(i, j,indice);
-							  else if(_axesName == "xz")	_p0.setLocation(i, indice,j);
-							  else	_p0.setLocation(indice,i,j);
-						  }
+					  else if(_axesName == "xz")
+					  {
+						  voxelTest.setLocation(i, indice,j);
+						  if (j > _p0._k) _p0.setLocation(i, indice,j);
+						  else if (j ==_p0._k)
+							  if(i > _p0._i)	_p0.setLocation(i, indice,j);
+						  
+					  }
+					  else
+					  {
+						  voxelTest.setLocation(indice,i,j);
+						  if (j > _p0._k) _p0.setLocation(indice, i,j);
+						  else if (j ==_p0._k)
+							  if(i > _p0._j)	_p0.setLocation(indice, i,j);
+					  }
+					  lVoxelBoundary.add(voxelTest);
 				  }
-		IJ.log("voxeldepart : "+_p0._i+" "+_p0._j+" "+_p0._k);
 		return lVoxelBoundary;
 	}
 	/**
