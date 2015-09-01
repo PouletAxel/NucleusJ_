@@ -63,7 +63,7 @@ public class ConvexeHullDetection
 		VoxelRecord voxelTest = new VoxelRecord();
 		VoxelRecord voxelPrecedent = new VoxelRecord();
 		voxelTest = _p0;
-		IJ.log("plopi voxeldepart : "+_p0._i+" "+_p0._j+" "+_p0._k);
+		//IJ.log("plopi voxeldepart : "+_p0._i+" "+_p0._j+" "+_p0._k);
 		double xcal = calibration.pixelWidth;
 		double ycal = calibration.pixelHeight;
 		double zcal = calibration.pixelDepth;
@@ -75,6 +75,7 @@ public class ConvexeHullDetection
 			double angleMinPiSurDeux = 2*_pi;
 			VoxelRecord voxelMin= new VoxelRecord();
 			int iMin=0;
+			int aMin = 0;
 			if (compteur != 0)  vectorTest.setLocation(voxelTest._i-voxelPrecedent._i,voxelTest._j-voxelPrecedent._j, voxelTest._k-voxelPrecedent._k);
 						
 			for(int i=0; i<lVoxelBoundary.size(); i++)
@@ -88,11 +89,15 @@ public class ConvexeHullDetection
 					else if (_axesName == "yz")	distance = Math.sqrt(vectorCourant._k*zcal*vectorCourant._k*zcal+vectorCourant._j*ycal*vectorCourant._j*ycal);
 					if (distance <= ers )
 					{
+						int a = orientation(voxelPrecedent,voxelTest,lVoxelBoundary.get(i));
 						double angle = computeAngle(vectorTest,vectorCourant,calibration); 
 						double anglePlusPiSurDeux = angle -_pi/2;
+						//IJ.log("orientation "+a+" "+lVoxelBoundary.get(i)._i+" "+lVoxelBoundary.get(i)._j+" "+lVoxelBoundary.get(i)._k+" angle: "+anglePlusPiSurDeux+" angleMin: "+angleMinPiSurDeux+" angle "+angle);
 						if (anglePlusPiSurDeux <= -_pi)
 							anglePlusPiSurDeux += 2*_pi;
-						//IJ.log(lVoxelBoundary.get(i)._i+" "+lVoxelBoundary.get(i)._j+" "+lVoxelBoundary.get(i)._k+" angle: "+anglePlusPiSurDeux+" angleMin: "+angleMinPiSurDeux+" angle "+angle);
+						
+						
+						
 				  	  	if(anglePlusPiSurDeux <= angleMinPiSurDeux)
 				  	  	{
 				  	   		if(anglePlusPiSurDeux < angleMinPiSurDeux)
@@ -102,6 +107,7 @@ public class ConvexeHullDetection
 				  	  			angleMin = angle;
 				  	  			voxelMin = lVoxelBoundary.get(i);
 				  	  			iMin = i;
+				  	  		    aMin = a;
 				  	  		}
 				  	  		else if (anglePlusPiSurDeux == angleMinPiSurDeux && distance > maxLength)
 				  	  		{
@@ -110,6 +116,7 @@ public class ConvexeHullDetection
 				  	  			angleMin = angle;
 				  	  			voxelMin =lVoxelBoundary.get(i);
 				  	  			iMin = i;
+				  	  			aMin = a;
 				  	  		}
 				  	  	}
 					}
@@ -125,7 +132,7 @@ public class ConvexeHullDetection
 			if (anglesSum <= 2*_pi)
 			{
 				convexHull.add(voxelMin);
-				IJ.log("point num: "+compteur+" "+voxelMin._i+" "+voxelMin._j+" "+voxelMin._k+" angle: "+angleMinPiSurDeux+" distance: "+maxLength+" angle sum"+anglesSum);
+				//IJ.log("point num: "+compteur+" orietation "+aMin+" "+voxelMin._i+" "+voxelMin._j+" "+voxelMin._k+" angle: "+angleMinPiSurDeux+" distance: "+maxLength+" angle sum"+anglesSum);
 			}
 		}
 		return convexHull;

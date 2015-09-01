@@ -56,7 +56,7 @@ public class ConvexeHullImageMaker
 		Graphics2D blackImage = bufferedImage.createGraphics();
 		imagePlusBlack.setImage(bufferedImage);
 		ImageStack imageStackOutput = new ImageStack(width, height);
-		for (int k = 34; k < 36; ++k )
+		for (int k = 0; k < indice; ++k )
 		{
 			ImagePlus ip = imagePlusBlack.duplicate();
 			double[][] image = giveTable(imagePlusBinary, width, height, k);
