@@ -1,3 +1,4 @@
+
 package gred.nucleus.utils;
 
 
@@ -63,7 +64,7 @@ public class ConvexeHullDetection
 		VoxelRecord voxelTest = new VoxelRecord();
 		VoxelRecord voxelPrecedent = new VoxelRecord();
 		voxelTest = _p0;
-		//IJ.log("plopi voxeldepart : "+_p0._i+" "+_p0._j+" "+_p0._k);
+		IJ.log("plopi voxeldepart : "+_p0._i+" "+_p0._j+" "+_p0._k);
 		double xcal = calibration.pixelWidth;
 		double ycal = calibration.pixelHeight;
 		double zcal = calibration.pixelDepth;
@@ -91,14 +92,12 @@ public class ConvexeHullDetection
 					{
 						int a = orientation(voxelPrecedent,voxelTest,lVoxelBoundary.get(i));
 						double angle = computeAngle(vectorTest,vectorCourant,calibration); 
-						double anglePlusPiSurDeux = angle -_pi/2;
-						//IJ.log("orientation "+a+" "+lVoxelBoundary.get(i)._i+" "+lVoxelBoundary.get(i)._j+" "+lVoxelBoundary.get(i)._k+" angle: "+anglePlusPiSurDeux+" angleMin: "+angleMinPiSurDeux+" angle "+angle);
-						if (anglePlusPiSurDeux <= -_pi)
-							anglePlusPiSurDeux += 2*_pi;
+						double anglePlusPiSurDeux = angle +_pi/2;
 						
-						
-						
-				  	  	if(anglePlusPiSurDeux <= angleMinPiSurDeux)
+						if (anglePlusPiSurDeux >= _pi)
+							anglePlusPiSurDeux -= 2*_pi;
+						IJ.log("orientation "+a+" "+lVoxelBoundary.get(i)._i+" "+lVoxelBoundary.get(i)._j+" "+lVoxelBoundary.get(i)._k+" angle: "+anglePlusPiSurDeux+" angleMin: "+angleMinPiSurDeux+" angle "+angle);
+					  	if(anglePlusPiSurDeux <= angleMinPiSurDeux)
 				  	  	{
 				  	   		if(anglePlusPiSurDeux < angleMinPiSurDeux)
 				  	  		{
@@ -132,7 +131,7 @@ public class ConvexeHullDetection
 			if (anglesSum <= 2*_pi)
 			{
 				convexHull.add(voxelMin);
-				//IJ.log("point num: "+compteur+" orietation "+aMin+" "+voxelMin._i+" "+voxelMin._j+" "+voxelMin._k+" angle: "+angleMinPiSurDeux+" distance: "+maxLength+" angle sum"+anglesSum);
+				IJ.log("point num: "+compteur+" orietation "+aMin+" "+voxelMin._i+" "+voxelMin._j+" "+voxelMin._k+" angle: "+angleMinPiSurDeux+" distance: "+maxLength+" angle sum"+anglesSum);
 			}
 		}
 		return convexHull;
@@ -198,4 +197,29 @@ public class ConvexeHullDetection
 	public void setAxes(String axes){ _axesName=axes;}
 	public void setInitialVoxel (VoxelRecord voxelRecord){_p0=voxelRecord;}
 
+	/*Soit d notre seuil de distance et C(v, D) le carré de centre v et de rayon d (dans le plan considéré).
+
+	Copier l'image dans le carré C(v, D) dans une petite image I_c
+
+	inverser les zéros et les uns dans I_c
+	Mettre v (où plutôt le voxel qui lui correspond qui doit être le centre de I_c) à 1.
+	Etiqueter à 2 la composante connexe des 1 qui contient v dans I_c (faire un parcours breadthFirstSerach comme l'autre jour)
+	Pour chaque voxel  w du bord de I_c qui est à 2, calculer 
+	double angleEntreZeroEt2pi = computeAngle(vectorTest,w-v,calibration) + _pi
+	Calculer angleEntreZeroEt2piMax le maximum des angles obtenus.
+	thresholdAngle = (angleEntreZeroEt2piMax).
+	si (thresholdAngle >= _pi)
+	thresholdAngle -= 2pi */
+	
+	private double angleThreshold(double[][] square)
+	{
+		double angleThreshold = 0;
+		
+		
+		
+		
+		return 	angleThreshold;	
+		
+	}
+	
 }
