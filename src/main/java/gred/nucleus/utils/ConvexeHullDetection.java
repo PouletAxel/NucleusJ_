@@ -1,4 +1,3 @@
-
 package gred.nucleus.utils;
 
 
@@ -57,14 +56,14 @@ public class ConvexeHullDetection
 	 * @param calibration
 	 */
 	
-	public ArrayList <VoxelRecord> findConvexeHull(ArrayList<VoxelRecord> convexHull, ArrayList<VoxelRecord> lVoxelBoundary,  VoxelRecord vectorTest, Calibration calibration, double ers )
+	public ArrayList <VoxelRecord> findConvexeHull(double[][] image,ArrayList<VoxelRecord> convexHull, ArrayList<VoxelRecord> lVoxelBoundary,  VoxelRecord vectorTest, Calibration calibration, double ers )
 	{
 		double anglesSum = 0.0;	
 		int compteur = 0;
 		VoxelRecord voxelTest = new VoxelRecord();
 		VoxelRecord voxelPrecedent = new VoxelRecord();
 		voxelTest = _p0;
-		IJ.log("plopi voxeldepart : "+_p0._i+" "+_p0._j+" "+_p0._k);
+		//IJ.log("plopi voxeldepart : "+_p0._i+" "+_p0._j+" "+_p0._k);
 		double xcal = calibration.pixelWidth;
 		double ycal = calibration.pixelHeight;
 		double zcal = calibration.pixelDepth;
@@ -96,8 +95,10 @@ public class ConvexeHullDetection
 						
 						if (anglePlusPiSurDeux >= _pi)
 							anglePlusPiSurDeux -= 2*_pi;
-						IJ.log("orientation "+a+" "+lVoxelBoundary.get(i)._i+" "+lVoxelBoundary.get(i)._j+" "+lVoxelBoundary.get(i)._k+" angle: "+anglePlusPiSurDeux+" angleMin: "+angleMinPiSurDeux+" angle "+angle);
-					  	if(anglePlusPiSurDeux <= angleMinPiSurDeux)
+						//IJ.log("orientation "+a+" "+lVoxelBoundary.get(i)._i+" "+lVoxelBoundary.get(i)._j+" "+lVoxelBoundary.get(i)._k+" angle: "+anglePlusPiSurDeux+" angleMin: "+angleMinPiSurDeux+" angle "+angle);
+					  	
+						angleThreshold(image, lVoxelBoundary.get(i),calibration, ers);
+						if(anglePlusPiSurDeux <= angleMinPiSurDeux)
 				  	  	{
 				  	   		if(anglePlusPiSurDeux < angleMinPiSurDeux)
 				  	  		{
@@ -131,7 +132,7 @@ public class ConvexeHullDetection
 			if (anglesSum <= 2*_pi)
 			{
 				convexHull.add(voxelMin);
-				IJ.log("point num: "+compteur+" orietation "+aMin+" "+voxelMin._i+" "+voxelMin._j+" "+voxelMin._k+" angle: "+angleMinPiSurDeux+" distance: "+maxLength+" angle sum"+anglesSum);
+				//IJ.log("point num: "+compteur+" orietation "+aMin+" "+voxelMin._i+" "+voxelMin._j+" "+voxelMin._k+" angle: "+angleMinPiSurDeux+" distance: "+maxLength+" angle sum"+anglesSum);
 			}
 		}
 		return convexHull;
@@ -198,9 +199,7 @@ public class ConvexeHullDetection
 	public void setInitialVoxel (VoxelRecord voxelRecord){_p0=voxelRecord;}
 
 	/*Soit d notre seuil de distance et C(v, D) le carré de centre v et de rayon d (dans le plan considéré).
-
 	Copier l'image dans le carré C(v, D) dans une petite image I_c
-
 	inverser les zéros et les uns dans I_c
 	Mettre v (où plutôt le voxel qui lui correspond qui doit être le centre de I_c) à 1.
 	Etiqueter à 2 la composante connexe des 1 qui contient v dans I_c (faire un parcours breadthFirstSerach comme l'autre jour)
@@ -211,11 +210,71 @@ public class ConvexeHullDetection
 	si (thresholdAngle >= _pi)
 	thresholdAngle -= 2pi */
 	
-	private double angleThreshold(double[][] square)
+	
+	private double angleThreshold (double[][] image, VoxelRecord voxelRecod, Calibration calibration, double distance)
 	{
 		double angleThreshold = 0;
+		int nbPixelWidth = (int) (distance/calibration.pixelWidth);
+		int nbPixelHeight = (int) (distance/calibration.pixelHeight);
+		int i=(int)voxelRecod._i;
+		int j=(int)voxelRecod._j;
+		if (_axesName == "xz")
+		{
+			j=(int)voxelRecod._k;
+			nbPixelHeight = (int) (distance/calibration.pixelDepth);
+		}
+		else if (_axesName == "yz")
+		{
+			i=(int)voxelRecod._j;
+			j=(int)voxelRecod._k;
+			nbPixelWidth = (int)(distance/calibration.pixelHeight);
+			nbPixelHeight = (int)(distance/calibration.pixelDepth);
+		}
+		double value = image[i][j];
+		int minWidth = i - nbPixelWidth;
+		int maxWidth = i + nbPixelWidth;
+		int minHeight = j - nbPixelHeight;
+		int maxHeight = j + nbPixelHeight;
+		if (minWidth < 0) minWidth = 0;
+		if (maxWidth >= image.length) minWidth = image.length-1;
+		if (minHeight < 0) minHeight = 0;
+		if (maxHeight >= image[0].length) maxHeight = image[0].length-1;
+		double[][] i_c = new double[nbPixelWidth*2][nbPixelHeight*2];
+		IJ.log("width "+minWidth+" "+maxWidth+" height "+minHeight+" "+maxHeight+" ers "+distance+" plop "+ calibration.pixelWidth);
+		int k=0;
+		int cmpt=0;
+		for (i = minWidth;i <maxWidth;++i)
+		{
+			int l=0;
+			for (j = minHeight;j < maxHeight;++j)
+			{
+				if (image[i][j]== value) i_c[k][l] = 0;
+				else
+				{
+					i_c[k][l] = 1;
+					cmpt++;
+				}
+				++l;
+			}
+			++k;
+		}
+		image[nbPixelWidth][nbPixelHeight]=1;		
 		
-		
+		ComponentConnexe componentConnexe = new ComponentConnexe();
+		componentConnexe.setImageTable(i_c);
+		  componentConnexe.getListLabel(1);
+		i_c = componentConnexe.getImageTable();
+		String plop="";
+		for (int m = 0; m < 28;++ m)
+			plop += m+" ";
+		IJ.log(plop);
+		for (i = 0; i < i_c.length; ++i)
+		{
+			plop="";
+			for (j = 0;j < i_c[0].length; ++j)
+				plop += i_c[i][j]+" ";
+			IJ.log(plop);
+		}
 		
 		
 		return 	angleThreshold;	

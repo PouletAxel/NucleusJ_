@@ -56,7 +56,7 @@ public class ConvexeHullImageMaker
 		Graphics2D blackImage = bufferedImage.createGraphics();
 		imagePlusBlack.setImage(bufferedImage);
 		ImageStack imageStackOutput = new ImageStack(width, height);
-		for (int k = 27; k < 32; ++k )
+		for (int k = 31; k < 32; ++k )
 		{
 			ImagePlus ip = imagePlusBlack.duplicate();
 			double[][] image = giveTable(imagePlusBinary, width, height, k);
@@ -64,7 +64,7 @@ public class ConvexeHullImageMaker
 			{
 				ArrayList<VoxelRecord> lVoxelBoundary = detectVoxelBoudary(image,_listLabel.get(0),k);
 				if (lVoxelBoundary.size() > 3)
-					ip = imageMaker(lVoxelBoundary , width, height, equivalentSphericalRadius);
+					ip = imageMaker(image,lVoxelBoundary , width, height, equivalentSphericalRadius);
 				else
 					ip = imagePlusBlack.duplicate() ;
 			}
@@ -76,7 +76,7 @@ public class ConvexeHullImageMaker
 					ArrayList<VoxelRecord> lVoxelBoundary = detectVoxelBoudary(image,_listLabel.get(i),k);
 					if (lVoxelBoundary.size() > 3)
 					{						
-						ImageStack imageTempStack = imageMaker(lVoxelBoundary , width, height, equivalentSphericalRadius).getStack();
+						ImageStack imageTempStack = imageMaker(image,lVoxelBoundary , width, height, equivalentSphericalRadius).getStack();
 						for (int l = 0; l < width; ++l)
 							for (int m = 0; m < height; ++m)
 								if (imageTempStack.getVoxel(l, m, 0)> 0)
@@ -146,7 +146,7 @@ public class ConvexeHullImageMaker
 	 * @param equivalentSphericalRadius
 	 * @return
 	 */
-	public ImagePlus imageMaker (ArrayList<VoxelRecord> lVoxelBoundary ,int width, int height,double equivalentSphericalRadius)
+	public ImagePlus imageMaker (double[][] image, ArrayList<VoxelRecord> lVoxelBoundary ,int width, int height,double equivalentSphericalRadius)
 	{
 		ArrayList<VoxelRecord> convexHull = new ArrayList<VoxelRecord> ();
 		convexHull.add(_p0);
@@ -159,7 +159,7 @@ public class ConvexeHullImageMaker
 		ConvexeHullDetection convexHullDetection = new ConvexeHullDetection();
 		convexHullDetection.setInitialVoxel(_p0);
 		convexHullDetection.setAxes(_axesName);
-		convexHull = convexHullDetection.findConvexeHull (convexHull,lVoxelBoundary, vectorTest, _calibration,equivalentSphericalRadius);
+		convexHull = convexHullDetection.findConvexeHull (image, convexHull,lVoxelBoundary, vectorTest, _calibration,equivalentSphericalRadius);
 		ImagePlus ip =  makerPolygon ( convexHull , width, height);
 		return ip;
 	}
@@ -247,7 +247,7 @@ public class ConvexeHullImageMaker
 	
 		ComponentConnexe componentConnexe = new ComponentConnexe();
 		componentConnexe.setImageTable(image);
-		_listLabel = componentConnexe.getListLabel();
+		_listLabel = componentConnexe.getListLabel(255);
 		image = componentConnexe.getImageTable();
 		return image;
 	}
