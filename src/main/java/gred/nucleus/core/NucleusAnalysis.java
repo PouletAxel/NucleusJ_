@@ -83,21 +83,18 @@ public class NucleusAnalysis
 	   */
 	  public void nucleusParameter3D (ImagePlus imagePlusRaw, ImagePlus imagePlusSegmented)
 	  {
+		  IJ.log("3D parameters");
 		  Measure3D measure3D = new Measure3D();
 		  double volume = measure3D.computeVolumeObject(imagePlusSegmented,255);
-		  double surfaceArea = measure3D.computeSurfaceObject(imagePlusSegmented,255);
 		  double bis = measure3D.computeComplexSurface(imagePlusRaw, imagePlusSegmented);
-		  IJ.log("3D parameters");
-		  IJ.log("NucleusFileName Volume Flatness Elongation Sphericity Esr SurfaceArea");
+		  IJ.log("NucleusFileName volume	surface	flatness	elongation	sphericity");
 		  IJ.log
 		  (
 				  imagePlusSegmented.getTitle()+" "
-				  +measure3D.computeVolumeObject(imagePlusSegmented,255)+" "
+				  +measure3D.computeVolumeObject(imagePlusSegmented,255)+" "+bis+" "
 				  +measure3D.computeFlatnessAndElongation(imagePlusSegmented,255)[0]+" "
 	    		  +measure3D.computeFlatnessAndElongation(imagePlusSegmented,255)[1]+" "
-				  +measure3D.computeSphericity(volume, surfaceArea)+" "
-				  +measure3D.equivalentSphericalRadius(volume)+" "
-				  +surfaceArea+" "+bis+"\n"
+	    		  +measure3D.computeSphericity(volume, bis)+"\n"
 		  );
 	  }
 

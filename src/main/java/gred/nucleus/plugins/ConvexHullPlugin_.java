@@ -25,9 +25,9 @@ public class ConvexHullPlugin_  implements PlugIn
 	    }
 
 		ImagePlus imagePlusSegmented= _imagePlusInput;
-		/*NucleusSegmentation nucleusSegmentation = new NucleusSegmentation();
+		NucleusSegmentation nucleusSegmentation = new NucleusSegmentation();
 		nucleusSegmentation.setVolumeRange(8, 200);
-		imagePlusSegmented = nucleusSegmentation.applySegmentation(imagePlusSegmented);*/
+		imagePlusSegmented = nucleusSegmentation.applySegmentation(imagePlusSegmented);
 	    ConvexHullSegmentation nuc = new ConvexHullSegmentation();
 	    ImagePlus plopi = nuc.run(imagePlusSegmented);
 	   plopi.setTitle("test");

@@ -139,6 +139,22 @@ public class NucleusSegmentation
 		return imagePlusSegmented;
 	}
 
+	/**
+	 * 
+	 * @param imagePlusInput
+	 * @return
+	 */
+	public ImagePlus applyOtsuSegmentation (ImagePlus imagePlusInput)
+	{
+		Calibration calibration = imagePlusInput.getCalibration();
+		ImagePlus imagePlusSegmented = new ImagePlus();
+		imagePlusSegmented = generateSegmentedImage(imagePlusInput,computeOtsuThreshold(imagePlusInput));
+		imagePlusSegmented = ConnectedComponents.computeLabels(imagePlusSegmented, 26, 32);
+		deleteArtefact(imagePlusSegmented);
+		imagePlusSegmented.setCalibration(calibration);
+		morphologicalCorrection(imagePlusSegmented);
+		return imagePlusSegmented;
+	}
 	
 	/**
 	 * Compute the beginig threshold value
@@ -146,7 +162,7 @@ public class NucleusSegmentation
 	 * @param imagePlusInput raw image
 	 * @return
 	 */
-	private int computeThreshold (ImagePlus imagePlusInput)
+	private int computeOtsuThreshold (ImagePlus imagePlusInput)
 	{
 		AutoThresholder autoThresholder = new AutoThresholder();
 		ImageStatistics imageStatistics = new StackStatistics(imagePlusInput);
@@ -187,7 +203,7 @@ public class NucleusSegmentation
 	private ArrayList<Integer> computeMinMaxThreshold(ImagePlus imagePlusInput)
 	{
 		ArrayList<Integer> arrayListMinMaxThreshold = new ArrayList<Integer>();
-		int threshold = computeThreshold (imagePlusInput);
+		int threshold = computeOtsuThreshold (imagePlusInput);
 		StackStatistics stackStatistics = new StackStatistics(imagePlusInput);
 		double stdDev =stackStatistics.stdDev ;
 		double min = threshold - stdDev*2;

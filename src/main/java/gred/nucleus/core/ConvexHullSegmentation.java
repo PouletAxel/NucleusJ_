@@ -25,15 +25,14 @@ public class ConvexHullSegmentation
 		ConvexeHullImageMaker nuc = new ConvexeHullImageMaker();
 		nuc.setAxes("xy");
 	   	ImagePlus imagePlusXY = nuc.giftWrapping(imagePlusInput);
-	   	imagePlusXY.show();
-	   /*	IJ.log(imagePlusInput.getTitle()+" xz ");
+	   	IJ.log(imagePlusInput.getTitle()+" xz ");
 	   	nuc.setAxes("xz");
 	   	ImagePlus imagePlusXZ = nuc.giftWrapping(imagePlusInput);
 	   	IJ.log(imagePlusInput.getTitle()+" yz ");
 	   	nuc.setAxes("yz");
-		ImagePlus imagePlusYZ = nuc.giftWrapping(imagePlusInput);*/
+		ImagePlus imagePlusYZ = nuc.giftWrapping(imagePlusInput);
 		
-		return imagePlusInput;//imageMakingUnion(imagePlusInput, imagePlusXY, imagePlusXZ, imagePlusYZ);
+		return imageMakingUnion(imagePlusInput, imagePlusXY, imagePlusXZ, imagePlusYZ);
 	}
 
 

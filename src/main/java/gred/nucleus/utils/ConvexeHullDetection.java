@@ -1,4 +1,3 @@
-
 package gred.nucleus.utils;
 
 
@@ -57,14 +56,14 @@ public class ConvexeHullDetection
 	 * @param calibration
 	 */
 	
-	public ArrayList <VoxelRecord> findConvexeHull(double[][] image,ArrayList<VoxelRecord> convexHull, ArrayList<VoxelRecord> lVoxelBoundary,  VoxelRecord vectorTest, Calibration calibration, double ers )
+	public ArrayList <VoxelRecord> findConvexeHull(double[][] image,ArrayList<VoxelRecord> convexHull, ArrayList<VoxelRecord> lVoxelBoundary,  VoxelRecord vectorTest, Calibration calibration, double distanceThreshold )
 	{
 		double anglesSum = 0.0;	
 		int compteur = 0;
 		VoxelRecord voxelTest = new VoxelRecord();
 		VoxelRecord voxelPrecedent = new VoxelRecord();
 		voxelTest = _p0;
-		IJ.log("plopi voxeldepart : "+_p0._i+" "+_p0._j+" "+_p0._k);
+		//IJ.log("plopi voxeldepart : "+_p0._i+" "+_p0._j+" "+_p0._k);
 		double xcal = calibration.pixelWidth;
 		double ycal = calibration.pixelHeight;
 		double zcal = calibration.pixelDepth;
@@ -87,16 +86,16 @@ public class ConvexeHullDetection
 					if(_axesName == "xy")	distance = Math.sqrt(vectorCourant._i*xcal*vectorCourant._i*xcal+vectorCourant._j*ycal*vectorCourant._j*ycal);
 					else if (_axesName == "xz")	distance = Math.sqrt(vectorCourant._i*xcal*vectorCourant._i*xcal+vectorCourant._k*zcal*vectorCourant._k*zcal);
 					else if (_axesName == "yz")	distance = Math.sqrt(vectorCourant._k*zcal*vectorCourant._k*zcal+vectorCourant._j*ycal*vectorCourant._j*ycal);
-					if (distance <= ers )
+					if (distance <= distanceThreshold )
 					{
-						
 						double angle = computeAngle(vectorTest,vectorCourant,calibration); 
-						double anglePlusPiSurDeux = angle +_pi/2;
-						double angleThreshold  = angleThreshold (image, voxelTest,vectorTest, calibration, ers);
-						if (anglePlusPiSurDeux >= _pi)
-							anglePlusPiSurDeux -= 2*_pi;
-						//IJ.log("	angleThreshold "+angleThreshold (image, voxelTest,vectorTest, calibration, ers)+" plopi "+lVoxelBoundary.get(i)._i+" "+lVoxelBoundary.get(i)._j+" "+lVoxelBoundary.get(i)._k+" angle: "+anglePlusPiSurDeux+" angleMin: "+angleMinPiSurDeux+" angle "+angle);
-					  	if(angleThreshold < anglePlusPiSurDeux  && anglePlusPiSurDeux <= angleMinPiSurDeux)
+						double anglePlusPiSurDeux = angle -_pi/2;
+						if (anglePlusPiSurDeux <= -_pi)
+							anglePlusPiSurDeux += 2*_pi;
+						double threshold = angleThreshold(image, voxelTest, vectorTest, calibration, distanceThreshold);
+						//IJ.log("     "+lVoxelBoundary.get(i)._i+" "+lVoxelBoundary.get(i)._j+" "+lVoxelBoundary.get(i)._k+" angle: "+anglePlusPiSurDeux+" angleMin: "+angleMinPiSurDeux+" angle "+angle+" seuil "+threshold);
+						// angle > threshold &&
+				  	  	if( anglePlusPiSurDeux <= angleMinPiSurDeux)
 				  	  	{
 				  	   		if(anglePlusPiSurDeux < angleMinPiSurDeux)
 				  	  		{
@@ -105,7 +104,6 @@ public class ConvexeHullDetection
 				  	  			angleMin = angle;
 				  	  			voxelMin = lVoxelBoundary.get(i);
 				  	  			iMin = i;
-				  	  		    
 				  	  		}
 				  	  		else if (anglePlusPiSurDeux == angleMinPiSurDeux && distance > maxLength)
 				  	  		{
@@ -114,7 +112,6 @@ public class ConvexeHullDetection
 				  	  			angleMin = angle;
 				  	  			voxelMin =lVoxelBoundary.get(i);
 				  	  			iMin = i;
-
 				  	  		}
 				  	  	}
 					}
@@ -196,6 +193,8 @@ public class ConvexeHullDetection
 	public void setAxes(String axes){ _axesName=axes;}
 	public void setInitialVoxel (VoxelRecord voxelRecord){_p0=voxelRecord;}
 
+
+
 	/*Soit d notre seuil de distance et C(v, D) le carré de centre v et de rayon d (dans le plan considéré).
 	Copier l'image dans le carré C(v, D) dans une petite image I_c
 	inverser les zéros et les uns dans I_c
@@ -245,7 +244,7 @@ public class ConvexeHullDetection
 			if(angleEntreZeroEt2pi > angleMax)
 				angleMax = angleEntreZeroEt2pi;
 		}
-		if (angleMax >= _pi)
+		if (angleMax > _pi)
 			angleMax -= 2*_pi;
 				
 		return 	angleMax;	
