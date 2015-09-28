@@ -1,10 +1,12 @@
 package gred.nucleus.core;
 
 import gred.nucleus.utils.ConvexeHullImageMaker;
+import gred.nucleus.utils.FillingHoles;
 import gred.nucleus.utils.VoxelRecord;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
+import ij.plugin.Filters3D;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -25,18 +27,46 @@ public class ConvexHullSegmentation
 		ConvexeHullImageMaker nuc = new ConvexeHullImageMaker();
 		nuc.setAxes("xy");
 	   	ImagePlus imagePlusXY = nuc.giftWrapping(imagePlusInput);
+	   	//imagePlusXY.setTitle("xy");
+	   	//imagePlusXY.show();
 	   	IJ.log(imagePlusInput.getTitle()+" xz ");
 	   	nuc.setAxes("xz");
 	   	ImagePlus imagePlusXZ = nuc.giftWrapping(imagePlusInput);
+	   	//imagePlusXZ.setTitle("xz");
+	   	//imagePlusXZ.show();
 	   	IJ.log(imagePlusInput.getTitle()+" yz ");
 	   	nuc.setAxes("yz");
 		ImagePlus imagePlusYZ = nuc.giftWrapping(imagePlusInput);
-		
-		return imageMakingUnion(imagePlusInput, imagePlusXY, imagePlusXZ, imagePlusYZ);
+		//imagePlusYZ.setTitle("yz");
+	   	//imagePlusYZ.show();
+		ImagePlus imagePlusSegmented = union( imagePlusXY, imagePlusXZ, imagePlusYZ);
+		//morphologicalCorrection(imagePlusSegmented);
+		return imagePlusSegmented;
 	}
 
 
 
+	public static ImagePlus union(ImagePlus imagePlusXY, ImagePlus imagePlusYZ, ImagePlus imagePlusXZ){
+		ImagePlus imagePlusResultat = imagePlusXY;
+		imagePlusResultat.setTitle("Result Union Correct");
+		
+		for (int z = 0 ; z < imagePlusResultat.getNSlices() ; z++){
+			for (int x=0 ; x<imagePlusResultat.getWidth() ; x++){
+				for (int y=0 ; y<imagePlusResultat.getHeight();y++){
+					imagePlusResultat.setZ(z);
+					imagePlusYZ.setZ(x);
+					imagePlusXZ.setZ(y);
+					if (imagePlusResultat.getPixel(x, y)[0]==0){
+						if (imagePlusYZ.getPixel(y, z)[0] != 0 || imagePlusXZ.getPixel(x, z)[0] != 0){
+							imagePlusResultat.getPixel(x, y)[0]=255;
+						}
+					}
+				}
+			}
+		}
+		
+		return imagePlusResultat;
+	}
 	/**
 	 * 
 	 * @param imagePlusInput
@@ -59,6 +89,45 @@ public class ConvexHullSegmentation
 						if(imageStackOutput.getVoxel(i, j, k) == 0)
 							imageStackOutput.setVoxel(i, j, k, 255);
 		return imagePlusOutput;
+	}
+	
+	/**
+	 * 	 method to realise sevral morphological correction ( filling holes and top hat)
+	 * 
+	 * @param imagePlusSegmented image to be correct
+	 */
+	private void morphologicalCorrection (ImagePlus imagePlusSegmented)
+	{
+		FillingHoles holesFilling = new FillingHoles();
+		computeOpening(imagePlusSegmented);
+		computeClosing(imagePlusSegmented);
+		imagePlusSegmented = holesFilling.apply2D(imagePlusSegmented);
+	}
+	
+	/**
+	 * compute closing with the segmented image
+	 * 
+	 * @param imagePlusInput image segmented
+	 */
+	private void computeClosing (ImagePlus imagePlusInput)
+	{
+		ImageStack imageStackInput = imagePlusInput.getImageStack();
+		imageStackInput = Filters3D.filter(imageStackInput, Filters3D.MAX,1,1,(float)0.5);
+		imageStackInput = Filters3D.filter(imageStackInput, Filters3D.MIN,1,1,(float)0.5);
+		imagePlusInput.setStack(imageStackInput);
+	}
+
+	/**
+	 * compute opening with the segmented image 
+	 * 
+	 * @param imagePlusInput image segmented
+	 */
+	private void computeOpening (ImagePlus imagePlusInput)
+	{
+		ImageStack imageStackInput = imagePlusInput.getImageStack();
+		imageStackInput = Filters3D.filter(imageStackInput, Filters3D.MIN,1,1,(float)0.5);
+		imageStackInput = Filters3D.filter(imageStackInput, Filters3D.MAX,1,1,(float)0.5);
+		imagePlusInput.setStack(imageStackInput);
 	}
 
 }

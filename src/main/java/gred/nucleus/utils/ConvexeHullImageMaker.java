@@ -131,7 +131,7 @@ public class ConvexeHullImageMaker
 							  else	_p0.setLocation(indice,i,j);
 						  }
 				  }
-		IJ.log("voxeldepart : "+_p0._i+" "+_p0._j+" "+_p0._k);
+		//IJ.log("voxeldepart : "+_p0._i+" "+_p0._j+" "+_p0._k);
 		return lVoxelBoundary;
 	}
 	/**

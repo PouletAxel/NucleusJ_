@@ -127,7 +127,7 @@ public class ConvexeHullDetection
 			if (anglesSum <= 2*_pi)
 			{
 				convexHull.add(voxelMin);
-				IJ.log("point num: "+compteur+" "+voxelMin._i+" "+voxelMin._j+" "+voxelMin._k+" angle: "+angleMinPiSurDeux+" distance: "+maxLength+" angle sum"+anglesSum);
+				//IJ.log("point num: "+compteur+" "+voxelMin._i+" "+voxelMin._j+" "+voxelMin._k+" angle: "+angleMinPiSurDeux+" distance: "+maxLength+" angle sum"+anglesSum);
 			}
 		}
 		return convexHull;
