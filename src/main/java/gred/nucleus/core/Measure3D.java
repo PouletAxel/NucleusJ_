@@ -275,7 +275,7 @@ public class Measure3D
 		sy /= count;
 		sz /= count;
 		voxelRecordBarycenter.setLocation(sx, sy, sz);
-		if (unit) voxelRecordBarycenter.Multiplie(xCalibration, yCalibration,zCalibration);
+		if (unit) voxelRecordBarycenter.multiplie(xCalibration, yCalibration,zCalibration);
 		return voxelRecordBarycenter;
   	}
 	

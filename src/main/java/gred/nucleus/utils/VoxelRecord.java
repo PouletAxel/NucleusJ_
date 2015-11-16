@@ -112,11 +112,11 @@ public class VoxelRecord implements Comparable
    * @param c
    */
   
-  public void Multiplie (double a, double b, double c ) {  this.setLocation(this._i*a,this._j*b, this._k*c); }
+  public void multiplie (double a, double b, double c ) {  this.setLocation(this._i*a,this._j*b, this._k*c); }
 
   /**
   * Multiplied the coordinates of voxel with a same factor for each coordinates
    * @param a
    */
-  public void Multiplie (double a)  {  this.setLocation(this._i*a,this._j*a,this._k*a);  }
+  public void multiplie (double a)  {  this.setLocation(this._i*a,this._j*a,this._k*a);  }
 }
