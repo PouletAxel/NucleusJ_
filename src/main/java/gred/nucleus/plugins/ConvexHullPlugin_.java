@@ -35,7 +35,7 @@ public class ConvexHullPlugin_  implements PlugIn
 	public static ImagePlus processImage(ImagePlus inputImage)
 	{
 		NucleusSegmentation nucleusSegmentation = new NucleusSegmentation();
-		nucleusSegmentation.setVolumeRange(8, 200);
+		nucleusSegmentation.setVolumeRange(8, 2000);
 		inputImage = nucleusSegmentation.applySegmentation(inputImage);
 	    ConvexHullSegmentation nuc = new ConvexHullSegmentation();
 	    ImagePlus plopi = nuc.run(inputImage);

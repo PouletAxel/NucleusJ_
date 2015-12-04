@@ -29,13 +29,7 @@ public class NucleusOtsuSegmentation_ implements PlugIn
 		       IJ.noImage();
 		       return;
 		    }
-		    else if (_imagePlusInput.getStackSize() == 1 || (_imagePlusInput.getType() != ImagePlus.GRAY8 && _imagePlusInput.getType() != ImagePlus.GRAY16))
-			{
-		    	IJ.error("image format", "No images in gray scale 8bits or 16 bits in 3D");
-		        return;
-		    }
-		    if (IJ.versionLessThan("1.32c"))
-		    	return;
+		    
 		    NucleusSegmentationDialog nucleusSegmentationDialog = new NucleusSegmentationDialog(_imagePlusInput.getCalibration());
 		    while( nucleusSegmentationDialog.isShowing())
 			{

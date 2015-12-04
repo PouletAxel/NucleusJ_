@@ -241,7 +241,7 @@ public class ConvexeHullImageMaker
 					image[i][j] = imageStackInput.getVoxel(indice,i,j);
 			}
 	
-		ComponentConnexe componentConnexe = new ComponentConnexe();
+		ConnectedComponent componentConnexe = new ConnectedComponent(image);
 		componentConnexe.setImageTable(image);
 		_listLabel = componentConnexe.getListLabel(255);
 		image = componentConnexe.getImageTable();

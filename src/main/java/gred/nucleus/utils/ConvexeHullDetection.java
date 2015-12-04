@@ -279,9 +279,9 @@ public class ConvexeHullDetection
 		
 		VoxelRecord voxelRecord = new VoxelRecord();
 		voxelRecord.setLocation(nbPixelWidth, nbPixelHeight, 0);
-		ComponentConnexe componentConnexe = new ComponentConnexe();
+		ConnectedComponent componentConnexe = new ConnectedComponent(i_c);
 		componentConnexe.setImageTable(i_c);
-		componentConnexe.computeLabelOfOneObject(1, voxelRecord);
+		componentConnexe.computeLabelOfOneObject2D(1, voxelRecord);
 		return componentConnexe.getBoudaryVoxel(2);
 	}
 	
