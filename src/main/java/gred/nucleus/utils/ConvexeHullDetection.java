@@ -92,7 +92,7 @@ public class ConvexeHullDetection
 						double anglePlusPiSurDeux = angle -_pi/2;
 						if (anglePlusPiSurDeux <= -_pi)
 							anglePlusPiSurDeux += 2*_pi;
-						double threshold = angleThreshold(image, voxelTest, vectorTest, calibration, distanceThreshold);
+						//double threshold = angleThreshold(image, voxelTest, vectorTest, calibration, distanceThreshold);
 						//IJ.log("     "+lVoxelBoundary.get(i)._i+" "+lVoxelBoundary.get(i)._j+" "+lVoxelBoundary.get(i)._k+" angle: "+anglePlusPiSurDeux+" angleMin: "+angleMinPiSurDeux+" angle "+angle+" seuil "+threshold);
 						// angle > threshold &&
 				  	  	if( anglePlusPiSurDeux <= angleMinPiSurDeux)
@@ -209,7 +209,7 @@ public class ConvexeHullDetection
 	
 	
 	
-	
+/*	
 	private double angleThreshold (double[][] image, VoxelRecord voxelRecord, VoxelRecord vectorTest, Calibration calibration, double distance)
 	{
 		int nbPixelWidth = (int) (distance/calibration.pixelWidth);
@@ -283,6 +283,6 @@ public class ConvexeHullDetection
 		componentConnexe.setImageTable(i_c);
 		componentConnexe.computeLabelOfOneObject2D(1, voxelRecord);
 		return componentConnexe.getBoudaryVoxel(2);
-	}
+	}*/
 	
 }

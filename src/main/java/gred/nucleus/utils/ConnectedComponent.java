@@ -29,6 +29,7 @@ public class ConnectedComponent
 			ImageProcessor iLabel= _ipLabel.getProcessor();
 			int width = _ip.getWidth();
 			int height = _ip.getHeight();
+			IJ.log(width+ " "+height);
 			_image2D = new double [width][height]; 
 			for (int i = 0; i < width; ++i )
 				for (int j = 0; j < height; ++j)
@@ -45,7 +46,7 @@ public class ConnectedComponent
 			int width = _ip.getWidth();
 			int height = _ip.getHeight();
 			int depth = _ip.getNSlices();
-			_image3D = new double [width+1][height+1][depth+1]; 
+			_image3D = new double [width][height][depth]; 
 			for (int i = 0; i < width; ++i )
 				for (int j = 0; j < height; ++j)
 					for (int k = 0; k < depth; ++k)
@@ -158,52 +159,13 @@ public class ConnectedComponent
 	 * @param voxelRecord
 	 * @param currentLabel
 	 */
-	private ArrayList<VoxelRecord> detectVoxelBoudary2D (double label)
-	{
-		ArrayList<VoxelRecord> lVoxelBoundary = new ArrayList<VoxelRecord>();
-		for(int i = 0; i < _image2D.length; ++i )
-			for(int j = 0; j < _image2D[i].length; ++j )
-			{     
-				if (_image2D[i][j] == label)
-				{
-					if (i > 0 && i < _image2D.length-1 && j > 0 && j < _image2D[i].length-1)
-					{
-						if ( _image2D[i-1][j] == 0 || _image2D[i+1][j] == 0|| _image2D[i][j-1] == 0|| _image2D[i][j+1] == 0)
-						{
-							VoxelRecord voxelTest = new VoxelRecord();
-							voxelTest.setLocation(i, j,0);
-							lVoxelBoundary.add(voxelTest);	
-						}
-					}
-					else if(i == 0 || j == 0 ||i ==_image2D.length || j == _image2D[0].length )
-					{
-						_border = true;
-						VoxelRecord voxelTest = new VoxelRecord();
-						voxelTest.setLocation(i, j,0);
-						lVoxelBoundary.add(voxelTest);	
-					}
-				}
-			}
-		return lVoxelBoundary;
-	}
-	
-	
-	/**
-	 * 
-	 * @param labelIni
-	 * @param voxelRecord
-	 * @param currentLabel
-	 */
 	
 	private void breadthFirstSearch2D( double labelIni,VoxelRecord voxelRecord, int currentLabel)
 	{
-		ArrayList<VoxelRecord> voxelBoundary = detectVoxelBoudary2D(labelIni);
-		IJ.log("je detect les voxel frontiere");
+		ArrayList<VoxelRecord> voxelBoundary = new ArrayList<VoxelRecord>();
 		voxelBoundary.add(0, voxelRecord);
-		IJ.log("je finis la detection les voxel frontiere");
 		_image2D[(int)voxelRecord._i][(int)voxelRecord._j] = currentLabel;
 		int nbOfPoint = 1;
-		IJ.log("debut du while");
 		while (! voxelBoundary.isEmpty())
 		{
 			VoxelRecord voxelRemove= voxelBoundary.remove(0);
@@ -219,9 +181,10 @@ public class ConnectedComponent
 								{
 									if (l >= 0 && l < _image2D.length && m >= 0 && m < _image2D[0].length)
 									{
-										
 										if (_image2D[l][m] == currentLabel)
 										{
+											if(ii == 0 || jj == 0 ||ii ==_image2D.length-1 || jj == _image2D[0].length-1 )
+												_border = true;
 											_image2D[ii][jj] = currentLabel;
 											VoxelRecord voxel = new VoxelRecord();
 											voxel.setLocation(ii, jj,0);
@@ -248,7 +211,6 @@ public class ConnectedComponent
 	void computeLabel3D(double labelIni)
 	{
 		int currentLabel=2;
-		IJ.log("debut label");
 		for(int i = 0; i < _image3D.length; ++i )
 			for(int j = 0; j < _image3D[i].length; ++j )
 				for(int k = 0; k < _image3D[i][j].length; ++k )
@@ -264,41 +226,8 @@ public class ConnectedComponent
 				}
 		IJ.log("fin label");
 	}
-	/**
-	 * 
-	 * @param label
-	 * @return
-	 */
-	private ArrayList<VoxelRecord> detectVoxelBoudary3D (double label)
-	{
-		ArrayList<VoxelRecord> lVoxelBoundary = new ArrayList<VoxelRecord>();
-		for(int i = 0; i < _image3D.length; ++i )
-			for(int j = 0; j < _image3D[i].length; ++j )
-				for(int k = 0; k < _image3D[i][j].length; ++k )
-				{     
-					if (_image3D[i][j][k] == label)
-					{
-						if (i > 0 && i < _image3D.length && j > 0 && j < _image3D[i].length &&  k > 0 && k < _image3D[i][j].length )
-						{
-							if ( _image3D[i-1][j][k] == 0 || _image3D[i+1][j][k] == 0|| _image3D[i][j-1][k] == 0|| _image3D[i][j+1][k] == 0)
-							{
-								VoxelRecord voxelTest = new VoxelRecord();
-								voxelTest.setLocation(i, j,k);
-								lVoxelBoundary.add(voxelTest);	
-							}
-						}
-						else if(i == 0 || j == 0 || k == 0||i ==_image3D.length || j == _image3D[0].length || k == _image3D[0][0].length )
-						{
-							_border = true;
-							VoxelRecord voxelTest = new VoxelRecord();
-							voxelTest.setLocation(i, j,k);
-							lVoxelBoundary.add(voxelTest);	
-						}
-					}
-				}
-		
-		return lVoxelBoundary;
-	}
+	
+	
 
 	
 	/**
@@ -310,9 +239,8 @@ public class ConnectedComponent
 	
 	private void breadthFirstSearch3D( double labelIni,VoxelRecord voxelRecord, int currentLabel)
 	{
-		IJ.log("debut boundary");
-		ArrayList<VoxelRecord> voxelBoundary = detectVoxelBoudary3D(labelIni);
-		IJ.log("fin boundary");
+
+		ArrayList<VoxelRecord> voxelBoundary =  new ArrayList<VoxelRecord>();
 		voxelBoundary.add(0, voxelRecord);
 		_image3D[(int)voxelRecord._i][(int)voxelRecord._j][(int)voxelRecord._k] = currentLabel;
 		int nbOfPoint = 1;
@@ -322,7 +250,8 @@ public class ConnectedComponent
 			for (int ii = (int)voxelRemove._i-1;ii <= (int)voxelRemove._i+1; ++ii)
 				for (int jj = (int)voxelRemove._j-1; jj <= (int)voxelRemove._j+1; ++jj)
 					for (int kk = (int)voxelRemove._k-1; kk <= (int)voxelRemove._k+1; ++kk)
-						if (ii >= 0 && ii <= _image3D.length-1 && jj >= 0 && jj <= _image3D[0].length-1 && kk >= 0 && kk <= _image3D[0][0].length-1)
+						if (ii >= 0 && ii < _image3D.length && jj >= 0 && jj < _image3D[0].length && kk >= 0 &&
+								kk < _image3D[0][0].length)
 							if (_image3D[ii][jj][kk]==labelIni)
 							{
 								boolean testBreak = false;
@@ -332,9 +261,13 @@ public class ConnectedComponent
 									{
 										for (int n = kk-1; n <= kk+1; ++n)
 										{
-											if (l >= 0 && l <= _image3D.length-1 && m >= 0 && m <= _image3D[0].length-1 && n >= 0 && n <= _image3D[0][0].length-1)
+											if (l >= 0 && l < _image3D.length && m >= 0 && m < _image3D[0].length && n >= 0 && n < _image3D[0][0].length)
 												if (_image3D[l][m][n] == currentLabel)
 												{
+													if(ii == 0 || jj == 0 || kk==0 ||ii ==_image3D.length-1 || jj == _image3D[0].length-1
+															|| kk == _image3D[0][0].length-1 )
+														_border = true;
+																										
 													_image3D[ii][jj][kk] = currentLabel;
 													VoxelRecord voxel = new VoxelRecord();
 													voxel.setLocation(ii, jj, kk);
@@ -350,7 +283,6 @@ public class ConnectedComponent
 								}
 							}
 		}
-		IJ.log("label: "+currentLabel+" nbOfPoint: "+nbOfPoint+" Au bord "+_border);
 		ComponentInfo ci = new ComponentInfo (currentLabel,nbOfPoint,voxelRecord,_border);
 		m_tComponentInfo.add(ci);
 	}
@@ -400,12 +332,6 @@ public class ConnectedComponent
 		return _image2D;		
 	}
 	
-	/**
-	 * 
-	 * @param label
-	 * @return
-	 */
-	public ArrayList<VoxelRecord> getBoudaryVoxel (int label)	{return detectVoxelBoudary2D(label);}
 	
 	/**
 	 * 
