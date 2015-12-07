@@ -1,6 +1,7 @@
 package gred.nucleus.plugins;
 import gred.nucleus.core.*;
 import gred.nucleus.dialogs.NucleusSegmentationDialog;
+import gred.nucleus.utils.ConnectedComponent;
 import ij.*;
 import ij.measure.Calibration;
 import ij.plugin.*;
@@ -51,11 +52,9 @@ public class NucleusOtsuSegmentation_ implements PlugIn
 				calibration.setUnit(unit);
 				_imagePlusInput.setCalibration(calibration);
 				ImagePlus imagePlusSegmented= _imagePlusInput;
-				NucleusSegmentation nucleusSegmentation = new NucleusSegmentation();
-				nucleusSegmentation.setVolumeRange(volumeMin, volumeMax);
-				imagePlusSegmented = nucleusSegmentation.applyOtsuSegmentation(imagePlusSegmented);
-				
-				imagePlusSegmented = nucleusSegmentation.applyOtsuSegmentation(imagePlusSegmented);
+				ConnectedComponent cc = new ConnectedComponent(imagePlusSegmented);
+				cc.labelImage(true, 0);
+				imagePlusSegmented = cc.getLabelImage();
 				imagePlusSegmented.setTitle("Segmented"+_imagePlusInput.getTitle());
 				imagePlusSegmented.show();
 			}
