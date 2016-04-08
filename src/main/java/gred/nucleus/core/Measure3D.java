@@ -17,7 +17,7 @@ import Jama.Matrix;
 
 public class Measure3D
 {
-	public Measure3D () { }
+	public Measure3D() { }
 
 	/**
 	 * Scan of image and if the voxel belong to theobject of interest, looking,
