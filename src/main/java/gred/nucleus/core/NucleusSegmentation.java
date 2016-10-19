@@ -114,7 +114,7 @@ public class NucleusSegmentation
 			Measure3D measure3D = new Measure3D();
 			volume = measure3D.computeVolumeObject(imagePlusSegmentedTemp,255);
 			if (testRelativeObjectVolume(volume,imageVolume) &&
-				isVoxelThresholded(imagePlusSegmentedTemp,255,0)==false &&
+				isVoxelThresholded(imagePlusSegmentedTemp,255,1)==false &&
 				isVoxelThresholded(imagePlusSegmentedTemp,255,imagePlusSegmentedTemp.getStackSize())==false)
 			{	
 				morphologicalCorrection (imagePlusSegmentedTemp);

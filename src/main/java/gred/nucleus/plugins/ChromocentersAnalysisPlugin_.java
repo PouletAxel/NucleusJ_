@@ -57,7 +57,7 @@ public class ChromocentersAnalysisPlugin_   implements PlugIn
 		genericDialog.addChoice("Raw image",titles,titles[indiceRawImage]);
 		genericDialog.addChoice("Nucleus Segmented",titles,titles[indiceSegmentedImage]);
 		genericDialog.addChoice("Chromocenters image Segmented",titles,titles[indiceCcImage]);
-		genericDialog.addNumericField("x calibartion", xCalibration,3);
+		genericDialog.addNumericField("x calibration", xCalibration,3);
       	genericDialog.addNumericField("y calibration", yCalibration, 3);
       	genericDialog.addNumericField("z calibration).",zCalibration, 3);
     	genericDialog.addStringField("Unit",unit,10);

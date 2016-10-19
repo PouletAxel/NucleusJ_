@@ -40,14 +40,14 @@ public class NucleusSegmentationBatchPlugin_ implements PlugIn
 			{
 				if(IJ.openImage(tRawImageFile[0].toString()).getType() == ImagePlus.GRAY32 )
 				{
-			    	IJ.error("image format", "No images in gray scale 8bits or 16 bits in 3D");
+			    	IJ.error("Image format", "No image in gray scale 8bits or 16 bits in 3D");
 			        return;
 			    }
 				ProcessImageSegmentaion processImageSegmentation = new ProcessImageSegmentaion();
 				try 
 				{	
 					processImageSegmentation.go(this, tRawImageFile,false);
-					IJ.log("End of the nucleus segmentation , the results are in "+getWorkDirectory());
+					IJ.log("End of Nuclear segmentation. Results are in "+getWorkDirectory());
 				} 
 				catch (InterruptedException e) { e.printStackTrace(); }
 			}

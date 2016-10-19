@@ -30,12 +30,12 @@ public class NucleusSegmentationAndAnalysisBatchPlugin_ implements PlugIn
 	    }	
 		if (_nucleusPipelineBatchDialog.isStart())
 		{
-			IJ.log("Begining of the segmentation of nuclei, the data are in "+_nucleusPipelineBatchDialog.getRawDataDirectory());
+			IJ.log("Begining of the segmentation of nuclei, data are in "+_nucleusPipelineBatchDialog.getRawDataDirectory());
 			FileList fileList = new FileList ();
 			File[] tFileRawImage = fileList.run(_nucleusPipelineBatchDialog.getRawDataDirectory());
 			if(IJ.openImage(tFileRawImage[0].toString()).getType() == ImagePlus.GRAY32 )
 			{
-		    	IJ.error("image format", "No images in gray scale 8bits or 16 bits in 3D");
+		    	IJ.error("image format", "No image in gray scale 8bits or 16 bits in 3D");
 		        return;
 		    }
 			
@@ -45,7 +45,7 @@ public class NucleusSegmentationAndAnalysisBatchPlugin_ implements PlugIn
 				processImageSegmentation.go(this, tFileRawImage,true);
 			} 
 			catch (InterruptedException e) { e.printStackTrace(); }
-			IJ.log("End of the segmentation the nuclei, the results are in "+_nucleusPipelineBatchDialog.getWorkDirectory());
+			IJ.log("End of nuclear segmentation. Results are in "+_nucleusPipelineBatchDialog.getWorkDirectory());
 		}
 	}
 	

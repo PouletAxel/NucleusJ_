@@ -31,7 +31,7 @@ public class NucleusSegmentationPlugin_ implements PlugIn
 	    }
 	    else if (_imagePlusInput.getStackSize() == 1 || (_imagePlusInput.getType() != ImagePlus.GRAY8 && _imagePlusInput.getType() != ImagePlus.GRAY16))
 		{
-	    	IJ.error("image format", "No images in gray scale 8bits or 16 bits in 3D");
+	    	IJ.error("Image format", "No image in gray scale 8bits or 16 bits in 3D");
 	        return;
 	    }
 	    if (IJ.versionLessThan("1.32c"))
@@ -64,7 +64,7 @@ public class NucleusSegmentationPlugin_ implements PlugIn
 				IJ.showMessageWithCancel
 				(
 					"Segmentation error",
-					"No object is detected between "
+					"No object detected between "
 					+nucleusSegmentationDialog.getMinVolume()
 					+"and"+nucleusSegmentationDialog.getMaxVolume()
 					+" "+unit

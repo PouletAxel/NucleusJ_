@@ -31,7 +31,7 @@ public class NucleusSegmentationAndAnalysisPlugin_ implements PlugIn
 		}
 		else if (_imagePlusInput.getStackSize() == 1 || (_imagePlusInput.getType() != ImagePlus.GRAY8 && _imagePlusInput.getType() != ImagePlus.GRAY16))
 		{
-			IJ.error("image format", "No images in 8 or 16 bits gray scale  in 3D");
+			IJ.error("Image format", "No image in 8 or 16 bits gray scale  in 3D");
 			return;
 		}
 		if (IJ.versionLessThan("1.32c"))

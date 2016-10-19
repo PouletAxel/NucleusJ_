@@ -142,7 +142,7 @@ public class ChromocentersAnalysisBatchPlugin_ implements PlugIn
 					else
 					{
 						IJ.log("Image name problem :  the image "+pathImageChromocenter
-							+" is not find in the directory SegmentedDataNucleus or RawDataNucleus, see nameProblem.txt in "
+							+" is not found in the directory SegmentedDataNucleus or RawDataNucleus, see nameProblem.txt in "
 							+workDirectory);
 						BufferedWriter bufferedWriterLogFile;
 					    try
@@ -157,7 +157,7 @@ public class ChromocentersAnalysisBatchPlugin_ implements PlugIn
 				}
 				IJ.log("End of the chromocenter analysis , the results are in "+chromocentersPipelineBatchDialog.getWorkDirectory());
 			}
-			else	{	IJ.showMessage("There are no the three subdirectories  (See the directory name) or subDirectories are empty"); }
+			else	{	IJ.showMessage("There are not the three subdirectories  (See the directory name) or subDirectories are empty"); }
 		}
 	}
 }

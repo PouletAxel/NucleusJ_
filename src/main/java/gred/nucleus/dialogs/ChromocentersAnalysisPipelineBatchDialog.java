@@ -322,7 +322,7 @@ public class ChromocentersAnalysisPipelineBatchDialog extends JFrame
 	   			new Insets(30, 10, 0, 0), 0, 0
 	   		)
 	   	);
-	   	_jLabelAnalysis.setText("Type of Relative Heterochromatin Fraction:");
+	   	_jLabelAnalysis.setText("Relative Heterochromatin Fraction:");
 	   
 	   	_buttonGroupChoiceRhf.add(_jRadioButtonRhfV);
 		_buttonGroupChoiceRhf.add(_jRadioButtonRhfI);
@@ -377,7 +377,7 @@ public class ChromocentersAnalysisPipelineBatchDialog extends JFrame
 	   			new Insets(95, 10, 0, 0), 0, 0
 	   		)
 	   	);
-	   	_jLabelAnalysis.setText("Results file of interest: ");
+	   	_jLabelAnalysis.setText("Results of interest: ");
 	   
 	   	buttonGroupChoiceAnalysis.add(_jRadioButtonNucCc);
 	   	buttonGroupChoiceAnalysis.add(_jRadioButtonCc);

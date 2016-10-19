@@ -54,8 +54,8 @@ public class ChromocenterSegmentationPlugin_ implements PlugIn
 		
 		GenericDialog genericDialog = new GenericDialog("Chromocenter Segmentation", IJ.getInstance());
 		genericDialog.addChoice("Raw image",titles,titles[indiceRawImage]);
-		genericDialog.addChoice("Nucleus segmeneted image",titles,titles[indiceSementedImage]);
-		genericDialog.addNumericField("x calibartion", xCalibration,3);
+		genericDialog.addChoice("Nucleus segmented image",titles,titles[indiceSementedImage]);
+		genericDialog.addNumericField("x calibration", xCalibration,3);
 		genericDialog.addNumericField("y calibration", yCalibration, 3);
 		genericDialog.addNumericField("z calibration",zCalibration, 3);
 		genericDialog.addStringField("Unit",unit,10);

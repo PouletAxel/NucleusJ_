@@ -67,9 +67,9 @@ public class ChromocenterSegmentationBatchPlugin_ implements PlugIn
 						saveFile (imagePlusConstraste,workDirectory+File.separator+"ConstrastDataNucleus");
 					}
 				}
-				IJ.log("End of the chromocenter segmentation , the results are in "+_chromocenterSegmentationPipelineBatchDialog.getWorkDirectory());
+				IJ.log("End of the chromocenter segmentation , results are in "+_chromocenterSegmentationPipelineBatchDialog.getWorkDirectory());
 			}
-			else	{	IJ.showMessage("There are no the two subdirectories (See the directory name) or subDirectories are empty"); }		
+			else	{	IJ.showMessage("There are not the two subdirectories (See the directory name) or subdirectories are empty"); }		
 			
 		}
 	}
