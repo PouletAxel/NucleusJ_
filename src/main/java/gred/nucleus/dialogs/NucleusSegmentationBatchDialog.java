@@ -328,7 +328,7 @@ public class NucleusSegmentationBatchDialog extends JFrame
 				new Insets(40, 320, 0, 0), 0, 0
 			)
 		);
-		_jTextFieldMin.setText("15");
+		_jTextFieldMin.setText("7");
 		_jTextFieldMin.setPreferredSize(new java.awt.Dimension( 60, 21));
 
 		_jLabelVolumeMax = new JLabel();
