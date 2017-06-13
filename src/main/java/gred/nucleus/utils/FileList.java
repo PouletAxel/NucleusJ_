@@ -1,7 +1,5 @@
 package gred.nucleus.utils;
 
-import ij.IJ;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
