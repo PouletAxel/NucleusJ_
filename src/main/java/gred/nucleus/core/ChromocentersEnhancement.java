@@ -34,7 +34,8 @@ public class ChromocentersEnhancement
 	    regionalExtremaFilter.setMask(imagePlusSegmented);
 	    ImagePlus imagePlusExtrema = regionalExtremaFilter.applyWithMask( imagePlusGradient);
 	    ImagePlus imagePlusLabels = ConnectedComponents.computeLabels(imagePlusExtrema, 26, 32);
-	    ImagePlus imagePlusWatershed = Watershed.computeWatershed(imagePlusGradient,imagePlusLabels,imagePlusSegmented, 26,true,false);
+	    @SuppressWarnings("deprecation")
+		ImagePlus imagePlusWatershed = Watershed.computeWatershed(imagePlusGradient,imagePlusLabels,imagePlusSegmented, 26,true,false);
 		double [] contrast = computeContrast (imagePlusRaw,imagePlusWatershed);
 		ImagePlus imagePlusContrast = computeImage (imagePlusWatershed, contrast);
 		return imagePlusContrast;
@@ -56,9 +57,9 @@ public class ChromocentersEnhancement
 		Calibration calibration = imagePlusWatershed.getCalibration();
 		double volumeVoxel = calibration.pixelWidth * calibration.pixelHeight * calibration.pixelDepth;
 		ImageStack imageStackWatershed = imagePlusWatershed.getStack();
-		for (int k = 0; k < imagePlusWatershed.getNSlices(); ++k)
-			for (int i = 0; i < imagePlusWatershed.getWidth(); ++i)
-				for (int j = 0; j < imagePlusWatershed.getHeight(); ++j)
+		for (int k = 1; k < imagePlusWatershed.getNSlices()-1; ++k)
+			for (int i = 1; i < imagePlusWatershed.getWidth()-1; ++i)
+				for (int j = 1; j < imagePlusWatershed.getHeight()-1; ++j)
 				{
 					voxelValue = (int)imageStackWatershed.getVoxel(i,j,k);
 					for (int kk = k - 1; kk <= k + 1; kk += 2)
