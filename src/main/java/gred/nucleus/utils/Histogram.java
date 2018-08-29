@@ -12,34 +12,32 @@ import java.util.HashMap;
  *    
  * @author Axel Poulet
  */
-public class Histogram
-{
+public class Histogram{
 	/** HashMap which stock the diffents value voxel and the number of voxel for each value present on the image*/
-	private  HashMap<Double , Integer> _hHistogram = new HashMap <Double , Integer>() ;
+	private  HashMap<Double , Integer> m_hHistogram = new HashMap <Double , Integer>() ;
 	/** All the value present on the image */
-    private double [] _label;
+    private double [] m_label;
     /** */
-    private double _labelMax = -1;
-    private int _nbLabel = 0;
+    private double m_labelMax = -1;
+    private int m_nbLabel = 0;
     
     /**
      * 
      */
-    public Histogram () {    }
+    public Histogram(){    }
    
     /**
      * 
      * @param imagePlusInput
      */
-    public void run(ImagePlus imagePlusInput)
-    {
+    public void run(ImagePlus imagePlusInput){
     	Object[] tTemp = computeHistogram(imagePlusInput).keySet().toArray();
-    	_label = new double[tTemp.length];
+    	m_label = new double[tTemp.length];
     	for (int i = 0; i < tTemp.length; ++i)
-    		_label[i] = Double.parseDouble(tTemp[i].toString());
-    	Arrays.sort(_label);
-    	if (_nbLabel > 0)
-    		_labelMax = _label[_label.length-1];
+    		m_label[i] = Double.parseDouble(tTemp[i].toString());
+    	Arrays.sort(m_label);
+    	if (m_nbLabel > 0)
+    		m_labelMax = m_label[m_label.length-1];
     }
     
     /**
@@ -48,49 +46,56 @@ public class Histogram
      * @param imagePlusInput
      * @return
      */
-    private HashMap<Double , Integer> computeHistogram(ImagePlus imagePlusInput)
-    {
+    private HashMap<Double , Integer> computeHistogram(ImagePlus imagePlusInput){
     	double voxelValue;
         ImageStack imageStackInput = imagePlusInput.getImageStack();
         for (int k = 0; k < imagePlusInput.getNSlices(); ++k)
-        	for (int i = 0; i < imagePlusInput.getWidth(); ++i )
-                for (int j = 0; j < imagePlusInput.getHeight();++j )
-                {
+        	for (int i = 0; i < imagePlusInput.getWidth(); ++i)
+                for (int j = 0; j < imagePlusInput.getHeight();++j){
                     voxelValue = imageStackInput.getVoxel(i,j,k);
-                    if (voxelValue > 0 )
-                    {
-                        if (_hHistogram.containsKey(voxelValue))
-                        {
-                            int nbVoxel = _hHistogram.get(voxelValue);
+                    if (voxelValue > 0 ){
+                        if (m_hHistogram.containsKey(voxelValue)){
+                            int nbVoxel = m_hHistogram.get(voxelValue);
                             ++nbVoxel;
-                            _hHistogram.put(voxelValue, nbVoxel);
+                            m_hHistogram.put(voxelValue, nbVoxel);
                         }
-                        else
-                        {
-                        	_hHistogram.put(voxelValue, 1);
-                        	++_nbLabel;
+                        else{
+                        	m_hHistogram.put(voxelValue, 1);
+                        	++m_nbLabel;
                         }
                     }
                 }
-        return _hHistogram;
+        return m_hHistogram;
     }
     
     /**
      * this method return a double table which contain the all the value voxel present on the input image 
      * @return
      */
-    public double [] getLabels ()    { 	return _label; }
+    public double [] getLabels(){
+    	return m_label;
+    }
     
     /**
      * 
      * @return
      */
-    public HashMap<Double , Integer> getHistogram() { 	return _hHistogram; }
+    public HashMap<Double , Integer> getHistogram(){
+    	return m_hHistogram;
+    }
     /**
      * 
      * @return
      */
-    public double getLabelMax()  {    	return _labelMax;}
+    public double getLabelMax(){
+    	return m_labelMax;
+    }
     
-    public int getNbLabels()   { 	return _nbLabel;}
+    /**
+     * 
+     * @return
+     */
+    public int getNbLabels(){
+    	return m_nbLabel;
+    }
 }

@@ -13,39 +13,30 @@ import ij.plugin.PlugIn;
  * @author Poulet Axel
  *
  */
-public class NucleusSegmentationBatchPlugin_ implements PlugIn
-{
+public class NucleusSegmentationBatchPlugin_ implements PlugIn{
 
-	private NucleusSegmentationBatchDialog _nucleusSegmentationBatchDialog = new NucleusSegmentationBatchDialog();
+	private NucleusSegmentationBatchDialog m_nuc = new NucleusSegmentationBatchDialog();
 	
 	/**
 	 * 
 	 */
-	public void run(String arg)
-	{
-		while( _nucleusSegmentationBatchDialog.isShowing())
-		{
+	public void run(String arg){
+		while(m_nuc.isShowing()){
 			try {Thread.sleep(1);}
 			catch (InterruptedException e) {e.printStackTrace();}
 		}	
-		if (_nucleusSegmentationBatchDialog.isStart())
-		{
+		if(m_nuc.isStart()){
 			FileList fileList = new FileList ();
-			File[] tRawImageFile = fileList.run(_nucleusSegmentationBatchDialog.getRawDataDirectory());
+			File[] tRawImageFile = fileList.run(m_nuc.getRawDataDirectory());
 			if (tRawImageFile.length==0)
-			{
-				IJ.showMessage("There are no image in "+_nucleusSegmentationBatchDialog.getRawDataDirectory());
-			}
-			else
-			{
-				if(IJ.openImage(tRawImageFile[0].toString()).getType() == ImagePlus.GRAY32 )
-				{
+				IJ.showMessage("There are no image in "+m_nuc.getRawDataDirectory());
+			else{
+				if(IJ.openImage(tRawImageFile[0].toString()).getType() == ImagePlus.GRAY32 ){
 			    	IJ.error("Image format", "No image in gray scale 8bits or 16 bits in 3D");
 			        return;
 			    }
 				ProcessImageSegmentaion processImageSegmentation = new ProcessImageSegmentaion();
-				try 
-				{	
+				try{	
 					processImageSegmentation.go(this, tRawImageFile,false);
 					IJ.log("End of Nuclear segmentation. Results are in "+getWorkDirectory());
 				} 
@@ -53,12 +44,61 @@ public class NucleusSegmentationBatchPlugin_ implements PlugIn
 			}
 		}
 	}
-	public int getNbCpu(){return _nucleusSegmentationBatchDialog.getNbCpu();}
-	public double getZCalibration(){return _nucleusSegmentationBatchDialog.getZCalibration();}
-	public double getXCalibration(){return _nucleusSegmentationBatchDialog.getXCalibration();}
-	public double getYCalibration(){return _nucleusSegmentationBatchDialog.getYCalibration();}
-	public String getUnit(){return _nucleusSegmentationBatchDialog.getUnit();}
-	public double getMinVolume(){return _nucleusSegmentationBatchDialog.getMinVolume();}
-	public double getMaxVolume(){return _nucleusSegmentationBatchDialog.getMaxVolume();}
-	public String getWorkDirectory() {return _nucleusSegmentationBatchDialog.getWorkDirectory();}
+	/**
+	 * 
+	 * @return
+	 */
+	public int getNbCpu(){
+		return m_nuc.getNbCpu();
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public double getZCalibration(){
+		return m_nuc.getZCalibration();
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public double getXCalibration(){
+		return m_nuc.getXCalibration();
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public double getYCalibration(){
+		return m_nuc.getYCalibration();
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public String getUnit(){
+		return m_nuc.getUnit();
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public double getMinVolume(){
+		return m_nuc.getMinVolume();
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public double getMaxVolume(){
+		return m_nuc.getMaxVolume();
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	
+	public String getWorkDirectory(){
+		return m_nuc.getWorkDirectory();
+	}
 }

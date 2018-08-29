@@ -8,19 +8,18 @@ import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
 
 /**
- * Class NucleusMeasure : allow the compute of severals 3Dparameters (shape, lenght) in
- * binary object
  * 
+ * Class 3D measure contains methods for the computation of different 3D characteristics of 3D binary objects
+ *  
  * @author Poulet Axel
  */
 
 
-public class Measure3D
-{
+public class Measure3D{
 	public Measure3D() { }
 
 	/**
-	 * Scan of image and if the voxel belong to theobject of interest, looking,
+	 * Scan of image and if the voxel belong to the object of interest, looking,
 	 * if in his neighborhood there are voxel value == 0 then it is a boundary voxel.
 	 * Adding the surface of the face of the voxel frontier, which are in contact
 	 * with the background of the image, to the surface total.
@@ -30,8 +29,7 @@ public class Measure3D
 	 * @return the surface
 	 */
 
-	public double computeSurfaceObject (ImagePlus imagePlusInput, double label)
-	{
+	public double computeSurfaceObject(ImagePlus imagePlusInput, double label){
 		Calibration calibration= imagePlusInput.getCalibration();
 		ImageStack imageStackInput = imagePlusInput.getStack();
 		double xCalibration = calibration.pixelWidth;
@@ -40,25 +38,20 @@ public class Measure3D
 		double surfaceArea = 0,voxelValue, neighborVoxelValue;
 		for (int k = 0; k < imagePlusInput.getStackSize(); ++k)
 			for (int i = 0; i < imagePlusInput.getWidth(); ++i)
-				for (int j = 0; j < imagePlusInput.getHeight(); ++j)
-				{
+				for (int j = 0; j < imagePlusInput.getHeight(); ++j){
 					voxelValue = imageStackInput.getVoxel(i, j, k);
-					if (voxelValue == label)
-					{
-						for (int kk = k-1; kk <= k+1; kk+=2)
-						{
+					if (voxelValue == label){
+						for (int kk = k-1; kk <= k+1; kk += 2){
 							neighborVoxelValue = imageStackInput.getVoxel(i, j, kk);
 							if (voxelValue != neighborVoxelValue)
 								surfaceArea = surfaceArea + xCalibration * yCalibration;
 						}
-						for (int ii=i-1; ii<=i+1; ii+=2)
-						{
+						for (int ii=i-1; ii<=i+1; ii+=2){
 							neighborVoxelValue =  imageStackInput.getVoxel(ii, j, k);
 							if (voxelValue != neighborVoxelValue)
 								surfaceArea = surfaceArea + xCalibration * zCalibration;
 						}
-						for (int jj = j-1; jj <= j+1; jj+=2)
-						{
+						for (int jj = j-1; jj <= j+1; jj+=2){
 							neighborVoxelValue = imageStackInput.getVoxel(i, jj, k);
 							if (voxelValue != neighborVoxelValue)
 								surfaceArea = surfaceArea + yCalibration * zCalibration;
@@ -70,14 +63,12 @@ public class Measure3D
 
 
 	/**
-	 * This Method compute the volume of each segmented objects
-	 * in imagePlus
+	 * Compute volume in each object conatain in an image
 	 * 
 	 * @param imagePlusInput segmented image
-	 * @return double table which contain the volume of each image object
+	 * @return double table containing the volume of each objects
 	 */
-	public double[] computeVolumeofAllObjects (ImagePlus imagePlusInput)
-	{
+	public double[] computeVolumeofAllObjects(ImagePlus imagePlusInput){
 		Calibration calibration= imagePlusInput.getCalibration();
 		double xCalibration = calibration.pixelWidth;
 		double yCalibration = calibration.pixelHeight;
@@ -87,8 +78,7 @@ public class Measure3D
 		double []tlabel = histogram.getLabels();
 		double [] tObjectVolume = new double[tlabel.length];
 		HashMap<Double , Integer> hashHisto = histogram.getHistogram();
-		for(int i=0; i < tlabel.length; ++i)
-	    {
+		for(int i=0; i < tlabel.length; ++i){
 	        int nbVoxel = hashHisto.get(tlabel[i]); 
 			tObjectVolume[i] = nbVoxel*xCalibration*yCalibration*zCalibration;
 	    }
@@ -96,13 +86,12 @@ public class Measure3D
 	} 
 
 	/**
-	 * Compute the volume of one object with this label
-	 * @param imagePlusInput
-	 * @param label 
-	 * @return the volume
+	 * Compute the volume of object with the input label
+	 * @param  imagePlusInput ImagePlus
+	 * @param  label double
+	 * @return double volume
 	 */
-	public double computeVolumeObject (ImagePlus imagePlusInput, double label)
-	{
+	public double computeVolumeObject(ImagePlus imagePlusInput, double label){
 		Calibration calibration= imagePlusInput.getCalibration();
 		double xCalibration = calibration.pixelWidth;
 		double yCalibration = calibration.pixelHeight;
@@ -116,14 +105,12 @@ public class Measure3D
 	}
     
 	/**
+	 * method for the ERS
 	 * 
-	 * @param imagePlusInput
-	 * @param label
-	 * @return
+	 * @param volume double
+	 * @return double ERS
 	 */
-
-	public double equivalentSphericalRadius (double volume)
-	{
+	public double equivalentSphericalRadius(double volume){
 		double radius =  (3 * volume) / (4 * Math.PI);
 		radius = Math.pow(radius, 1.0/3.0);
 		return radius;
@@ -157,8 +144,7 @@ public class Measure3D
 	 * @return
 	 */
 
-	public double [] computeEigenValue3D (ImagePlus imagePlusInput, double label)
-	{
+	public double [] computeEigenValue3D(ImagePlus imagePlusInput, double label){
 		ImageStack imageStackInput = imagePlusInput.getImageStack();
 		VoxelRecord barycenter = computeBarycenter3D (true,imagePlusInput,label);
 		Calibration calibration= imagePlusInput.getCalibration();
@@ -173,17 +159,13 @@ public class Measure3D
 		double zz = 0;
 		int compteur = 0;
 		double voxelValue;
-		for (int k = 0; k < imagePlusInput.getStackSize(); ++k)
-		{
+		for (int k = 0; k < imagePlusInput.getStackSize(); ++k){
 			double dz = ((zCalibration * (double) k)-barycenter.getK());
-			for (int i = 0; i < imagePlusInput.getWidth(); ++i)
-			{
+			for (int i = 0; i < imagePlusInput.getWidth(); ++i){
 				double dx = ((xCalibration * (double) i)-barycenter.getI());
-				for (int j = 0; j < imagePlusInput.getHeight(); ++j)
-				{
+				for (int j = 0; j < imagePlusInput.getHeight(); ++j){
 					voxelValue = imageStackInput.getVoxel(i,j,k);
-					if (voxelValue == label)
-					{ 
+					if (voxelValue == label){ 
 						double dy = ((yCalibration * (double) j)-barycenter.getJ());
 						xx+= dx * dx;
 						yy+= dy * dy;
@@ -210,8 +192,7 @@ public class Measure3D
 	 * @param label
 	 * @return
 	 */
-	public double [] computeFlatnessAndElongation (ImagePlus imagePlusInput, double label)
-	{
+	public double [] computeFlatnessAndElongation(ImagePlus imagePlusInput, double label){
 		double [] shapeParameters = new double[2];
 		double [] tEigenValues = computeEigenValue3D (imagePlusInput,label);
 		shapeParameters [0] = Math.sqrt(tEigenValues[1] / tEigenValues[0]);
@@ -227,8 +208,7 @@ public class Measure3D
 	 * @param label
 	 * @return
 	 */
-	public VoxelRecord computeBarycenter3D (boolean unit,ImagePlus imagePlusInput, double label)
-  	{
+	public VoxelRecord computeBarycenter3D(boolean unit,ImagePlus imagePlusInput, double label){
 		ImageStack imageStackInput = imagePlusInput.getImageStack();
 		Calibration calibration= imagePlusInput.getCalibration();
 		double xCalibration = calibration.pixelWidth;
@@ -242,11 +222,9 @@ public class Measure3D
 		double voxelValue;
 		for (int k = 0; k < imagePlusInput.getStackSize(); ++k)
 			for (int i = 0; i < imagePlusInput.getWidth(); ++i)
-				for (int j = 0; j < imagePlusInput.getHeight(); ++j)
-				{
+				for (int j = 0; j < imagePlusInput.getHeight(); ++j){
 					voxelValue = imageStackInput.getVoxel(i,j,k);
-					if (voxelValue == label )
-					{
+					if (voxelValue == label ){
 						sx +=i;
 						sy +=j;
 						sz +=k;
@@ -269,16 +247,13 @@ public class Measure3D
 	 * @param unit
 	 * @return
 	 */
-	public VoxelRecord[] computeObjectBarycenter (ImagePlus imagePlusInput, boolean unit)
-	{
+	public VoxelRecord[] computeObjectBarycenter(ImagePlus imagePlusInput, boolean unit){
 		Histogram histogram = new Histogram();
 		histogram.run(imagePlusInput);
 		double []tlabel = histogram.getLabels();
 		VoxelRecord [] tVoxelRecord = new VoxelRecord [ tlabel.length];
 		for(int i = 0; i < tlabel.length; ++i)
-	    {
 			tVoxelRecord[i] = computeBarycenter3D(unit, imagePlusInput,tlabel[i] );
-		}
 		return tVoxelRecord;
 	}
 	
@@ -290,9 +265,8 @@ public class Measure3D
 	 * @param imagePlusChromocenter
 	 * @return
 	 */
-	public double computeIntensityRHF (ImagePlus imagePlusInput, ImagePlus imagePlusSegmented, ImagePlus imagePlusChromocenter )
-	  {
-	    double chromocenterIntensity = 0;
+	public double computeIntensityRHF(ImagePlus imagePlusInput, ImagePlus imagePlusSegmented, ImagePlus imagePlusChromocenter ){
+		double chromocenterIntensity = 0;
 	    double nucleusIntensity = 0;
 	    double voxelValueChromocenter;
 	    double voxelValueInput;
@@ -301,49 +275,44 @@ public class Measure3D
 	    ImageStack imageStackSegmented = imagePlusSegmented.getStack();
 	    ImageStack imageStackInput = imagePlusInput.getStack();
 	    for (int k = 0; k < imagePlusInput.getNSlices(); ++k)
-	      for (int i = 0; i < imagePlusInput.getWidth(); ++i )
-	        for (int j = 0; j < imagePlusInput.getHeight(); ++j )
-	        {
-	          voxelValueSegmented = imageStackSegmented.getVoxel(i, j, k);
-	          voxelValueInput = imageStackInput.getVoxel(i, j, k);
-	          voxelValueChromocenter = imageStackChromocenter.getVoxel(i,j,k);
-	     
-	          if (voxelValueSegmented > 0)
-	          {
-	            if (voxelValueChromocenter > 0){ chromocenterIntensity+=voxelValueInput;}
-	            nucleusIntensity += voxelValueInput;
-	          }
-	        }
+	    	for (int i = 0; i < imagePlusInput.getWidth(); ++i )
+	    		for (int j = 0; j < imagePlusInput.getHeight(); ++j ){
+	    			voxelValueSegmented = imageStackSegmented.getVoxel(i, j, k);
+	    			voxelValueInput = imageStackInput.getVoxel(i, j, k);
+	    			voxelValueChromocenter = imageStackChromocenter.getVoxel(i,j,k);  
+	    			if (voxelValueSegmented > 0){
+	    				if (voxelValueChromocenter > 0)
+	    					chromocenterIntensity+=voxelValueInput;
+	    				nucleusIntensity += voxelValueInput;
+	    			}
+	    		}
 	    return chromocenterIntensity / nucleusIntensity;
-	  }
+	}
 
 	  /**
 	   * Method which compute the RHF (total chromocenters volume / nucleus volume)
-	   * @return RHF
 	   *
 	   * @param imagePlusSegmented
 	   * @param imagePlusChomocenters
-	   * @return
+	   * @return RHF
 	   */
-	  public double computeVolumeRHF (ImagePlus imagePlusSegmented, ImagePlus imagePlusChomocenters)
-	  {
-	    double volumeCc = 0;
-	    double [] tVolumeChromocenter = computeVolumeofAllObjects(imagePlusChomocenters);
-	    for (int i = 0; i < tVolumeChromocenter.length; ++i) 
-	    	volumeCc += tVolumeChromocenter[i];
-	    double []tVolumeSegmented = computeVolumeofAllObjects(imagePlusSegmented);
-	    return volumeCc / tVolumeSegmented[0];
+	  public double computeVolumeRHF(ImagePlus imagePlusSegmented, ImagePlus imagePlusChomocenters){
+		  double volumeCc = 0;
+		  double [] tVolumeChromocenter = computeVolumeofAllObjects(imagePlusChomocenters);
+		  for (int i = 0; i < tVolumeChromocenter.length; ++i) 
+			  volumeCc += tVolumeChromocenter[i];
+		  double []tVolumeSegmented = computeVolumeofAllObjects(imagePlusSegmented);
+		  return volumeCc / tVolumeSegmented[0];
 	  } 
 	  
 	  /**
 	   * Detect the number of object on segmented imaeg 
 	   * @param imagePlusInput
-	   * @return
+	   * @return int nnbof object detected
 	   */
-	  public int getNumberOfObject (ImagePlus imagePlusInput)
-	  {
-	    Histogram histogram = new Histogram ();
-		histogram.run(imagePlusInput);
-		return histogram.getNbLabels();
+	  public int getNumberOfObject (ImagePlus imagePlusInput){
+		  Histogram histogram = new Histogram ();
+		  histogram.run(imagePlusInput);
+		  return histogram.getNbLabels();
 	  } 
 }

@@ -13,64 +13,57 @@ import ij.plugin.PlugIn;
  * @author Poulet Axel
  *
  */
-public class NucleusSegmentationAndAnalysisPlugin_ implements PlugIn
-{
+public class NucleusSegmentationAndAnalysisPlugin_ implements PlugIn{
 	 /** image to process*/
-	ImagePlus _imagePlusInput;
+	ImagePlus m_imgPlus;
 	
 	/**
 	 * 
 	 */
 	public void run(String arg)
 	{
-		_imagePlusInput = WindowManager.getCurrentImage();
-		if (null == _imagePlusInput)
-		{
+		m_imgPlus = WindowManager.getCurrentImage();
+		if(null == m_imgPlus){
 			IJ.noImage();
 			return;
 		}
-		else if (_imagePlusInput.getStackSize() == 1 || (_imagePlusInput.getType() != ImagePlus.GRAY8 && _imagePlusInput.getType() != ImagePlus.GRAY16))
-		{
+		else if(m_imgPlus.getStackSize() == 1 || (m_imgPlus.getType() != ImagePlus.GRAY8 && m_imgPlus.getType() != ImagePlus.GRAY16)){
 			IJ.error("Image format", "No image in 8 or 16 bits gray scale  in 3D");
 			return;
 		}
-		if (IJ.versionLessThan("1.32c"))
+		if(IJ.versionLessThan("1.32c"))
 			return;
-		NucleusSegmentationAndAnalysisDialog nucleusSegmentationAndAnalysisDialog = new NucleusSegmentationAndAnalysisDialog(_imagePlusInput.getCalibration());
-		while( nucleusSegmentationAndAnalysisDialog.isShowing())
-		{
+		NucleusSegmentationAndAnalysisDialog nuc = new NucleusSegmentationAndAnalysisDialog(m_imgPlus.getCalibration());
+		while(nuc.isShowing()){
 	    	 try {Thread.sleep(1);}
 	    	 catch (InterruptedException e) {e.printStackTrace();}
 	    }
 	   
-		if (nucleusSegmentationAndAnalysisDialog.isStart())
-		{
-			double xCalibration =nucleusSegmentationAndAnalysisDialog.getXCalibration();
-			double yCalibration = nucleusSegmentationAndAnalysisDialog.getYCalibration();
-			double zCalibration = nucleusSegmentationAndAnalysisDialog.getZCalibration();
-			String unit = nucleusSegmentationAndAnalysisDialog.getUnit();
-			double volumeMin = nucleusSegmentationAndAnalysisDialog.getMinVolume();
-			double volumeMax = nucleusSegmentationAndAnalysisDialog.getMaxVolume();
+		if(nuc.isStart()){
+			double xCalibration =nuc.getXCalibration();
+			double yCalibration = nuc.getYCalibration();
+			double zCalibration = nuc.getZCalibration();
+			String unit = nuc.getUnit();
+			double volumeMin = nuc.getMinVolume();
+			double volumeMax = nuc.getMaxVolume();
 			Calibration calibration = new Calibration();
 			calibration.pixelDepth = zCalibration;
 			calibration.pixelWidth = xCalibration;
 			calibration.pixelHeight = yCalibration;
 			calibration.setUnit(unit);
-			_imagePlusInput.setCalibration(calibration);
-			IJ.log("Begin image processing "+_imagePlusInput.getTitle());
+			m_imgPlus.setCalibration(calibration);
+			IJ.log("Begin image processing "+m_imgPlus.getTitle());
 			NucleusSegmentation nucleusSegmentation = new NucleusSegmentation();
 			nucleusSegmentation.setVolumeRange(volumeMin, volumeMax);
-			ImagePlus imagePlusSegmented = nucleusSegmentation.run(_imagePlusInput);
-			if (nucleusSegmentation.getBestThreshold() > 0)
-			{
+			ImagePlus imagePlusSegmented = nucleusSegmentation.run(m_imgPlus);
+			if (nucleusSegmentation.getBestThreshold() > 0){
 				imagePlusSegmented.show();
 				NucleusAnalysis nucleusAnalysis = new NucleusAnalysis();
-				if (nucleusSegmentationAndAnalysisDialog.is2D3DAnalysis())
-				{
+				if (nuc.is2D3DAnalysis()){
 					nucleusAnalysis.nucleusParameter3D(imagePlusSegmented);
 					nucleusAnalysis.nucleusParameter2D(imagePlusSegmented);
 				}
-				else if(nucleusSegmentationAndAnalysisDialog.is3D())
+				else if(nuc.is3D())
 					nucleusAnalysis.nucleusParameter3D(imagePlusSegmented);
 				else
 					nucleusAnalysis.nucleusParameter2D(imagePlusSegmented);

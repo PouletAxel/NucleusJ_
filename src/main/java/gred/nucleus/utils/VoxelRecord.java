@@ -5,8 +5,7 @@ package gred.nucleus.utils;
  * @author Philippe Andrey and Poulet Axel
  */
 @SuppressWarnings("rawtypes")
-public class VoxelRecord implements Comparable
-{
+public class VoxelRecord implements Comparable{
   /** Coordinates voxel*/
   public double _i, _j, _k;
   /** Voxel value*/
@@ -19,8 +18,7 @@ public class VoxelRecord implements Comparable
    * @param j Coordinates y of voxel
    * @param k Coordinates z of voxel
    */
-  public void setLocation(double i, double j, double k)
-  {
+  public void setLocation(double i, double j, double k){
     this._i = i;
     this._j = j;
     this._k = k;
@@ -29,35 +27,45 @@ public class VoxelRecord implements Comparable
    * Return the x coordinates of a voxel
    * @return 
    */
-  public double getI() {   return _i;  }
+  public double getI(){
+	  return _i;
+  }
 
   /**
    * Return the y coordinates of a voxel
    * @return
    */
   
-  public double getJ()  {  return _j; }
+  public double getJ(){
+	  	return _j;
+  }
 
   /**
    * Return the z coordinates of a voxel
    * @return 
    */
   
-  public double getK() {  return _k;  }
+  public double getK(){
+	  return _k;
+  }
 
   /**
    * Initialise the voxel value
    * @param value
    */
   
-  public void setValue(double value) {   this._value = value; }
+  public void setValue(double value){
+	  this._value = value;
+  }
 
   /**
    * Return the voxel value
    * @return
    */
 
-  public double getValue() {  return _value;  }
+  public double getValue(){
+	  return _value;
+  }
 
   /**
    * Compare the values of two voxel
@@ -68,8 +76,7 @@ public class VoxelRecord implements Comparable
    * @return results of comparaison
    */
 
-  public int compareTo(Object object)
-  {
+  public int compareTo(Object object){
     VoxelRecord voxelRecord = (VoxelRecord)object;
 
     if ( _value == voxelRecord._value )
@@ -85,7 +92,9 @@ public class VoxelRecord implements Comparable
    * @param p a VoxelRecord
    */
 
-  public void shiftCoordinates (VoxelRecord p) {   this.setLocation(  this._i+p._i, this._j+p._j, this._k+p._k); }
+  public void shiftCoordinates (VoxelRecord p){
+	  this.setLocation(  this._i+p._i, this._j+p._j, this._k+p._k);
+  }
 
   /**
    * Multiplied the coordinates of voxel with a differnts factor for each coordinates
@@ -94,11 +103,15 @@ public class VoxelRecord implements Comparable
    * @param c
    */
   
-  public void Multiplie (double a, double b, double c ) {  this.setLocation(this._i*a,this._j*b, this._k*c); }
+  public void Multiplie (double a, double b, double c ){
+	  this.setLocation(this._i*a,this._j*b, this._k*c);
+  }
 
   /**
   * Multiplied the coordinates of voxel with a same factor for each coordinates
    * @param a
    */
-  public void Multiplie (double a)  {  this.setLocation(this._i*a,this._j*a,this._k*a);  }
+  public void Multiplie (double a){
+	  this.setLocation(this._i*a,this._j*a,this._k*a);
+  }
 }

@@ -22,31 +22,25 @@ import gred.nucleus.utils.FileList;
  *
  */
 
-public class ChromocentersAnalysisBatchPlugin_ implements PlugIn
-{
+public class ChromocentersAnalysisBatchPlugin_ implements PlugIn{
 		
 	/**
 	 * 
 	 * Run the the analyse, call the graphical windows
 	 * 
 	 */
-	public void run(String arg)
-	{
+	public void run(String arg){
 		ChromocentersAnalysisPipelineBatchDialog chromocentersPipelineBatchDialog = new ChromocentersAnalysisPipelineBatchDialog();
-		while( chromocentersPipelineBatchDialog.isShowing())
-		{
+		while( chromocentersPipelineBatchDialog.isShowing()){
 			try {Thread.sleep(1);}
 			catch (InterruptedException e) {e.printStackTrace();}
 	    }	
-		if (chromocentersPipelineBatchDialog.isStart())
-		{
+		if (chromocentersPipelineBatchDialog.isStart()){
 			FileList fileList = new FileList ();
 			File[] tFileRawImage = fileList.run(chromocentersPipelineBatchDialog.getRawDataDirectory());
 			
-			if(	fileList.isDirectoryOrFileExist(".+RawDataNucleus.+",tFileRawImage) && 
-				fileList.isDirectoryOrFileExist(".+SegmentedDataNucleus.+",tFileRawImage)&&
-				fileList.isDirectoryOrFileExist(".+SegmentedDataCc.+",tFileRawImage))
-			{
+			if(fileList.isDirectoryOrFileExist(".+RawDataNucleus.+",tFileRawImage) && fileList.isDirectoryOrFileExist(".+SegmentedDataNucleus.+",tFileRawImage)&&
+					fileList.isDirectoryOrFileExist(".+SegmentedDataCc.+",tFileRawImage)){
 				double xCalibration = chromocentersPipelineBatchDialog.getXCalibration();
 				double yCalibration = chromocentersPipelineBatchDialog.getYCalibration();
 				double zCalibration = chromocentersPipelineBatchDialog.getZCalibration();
@@ -64,20 +58,16 @@ public class ChromocentersAnalysisBatchPlugin_ implements PlugIn
 				String nameFileChromocenterAndNucleus = workDirectory+File.separator+"NucAndCcParameters.tab";
 				String nameFileChromocenter = workDirectory+File.separator+"CcParameters.tab";
 				
-				for (int i = 0; i < arrayListImageChromocenter.size(); ++i)
-				{
+				for(int i = 0; i < arrayListImageChromocenter.size(); ++i){
 					IJ.log("image"+(i+1)+" / "+arrayListImageChromocenter.size());
 					String pathImageChromocenter = arrayListImageChromocenter.get(i);
 					String pathNucleusRaw = pathImageChromocenter.replaceAll("SegmentedDataCc", "RawDataNucleus");
 					String pathNucleusSegmented= pathImageChromocenter.replaceAll("SegmentedDataCc", "SegmentedDataNucleus");
 					IJ.log(pathNucleusRaw);
 					IJ.log(pathNucleusSegmented);
-					if (fileList.isDirectoryOrFileExist(pathNucleusRaw,tFileRawImage) &&
-						fileList.isDirectoryOrFileExist(pathNucleusSegmented,tFileRawImage))
-					{
+					if(fileList.isDirectoryOrFileExist(pathNucleusRaw,tFileRawImage) && fileList.isDirectoryOrFileExist(pathNucleusSegmented,tFileRawImage)){
 						ImagePlus imagePlusInput = IJ.openImage(pathNucleusRaw);
-						if (imagePlusInput.getType() == ImagePlus.GRAY32)
-						{
+						if (imagePlusInput.getType() == ImagePlus.GRAY32){
 						    	IJ.error("image format", "No images in gray scale 8bits in 3D");
 						        return;
 						}
@@ -91,73 +81,44 @@ public class ChromocentersAnalysisBatchPlugin_ implements PlugIn
 						imagePlusChromocenter.setCalibration(calibration);
 						imagePlusSegmented.setCalibration(calibration);
 						imagePlusInput.setCalibration(calibration);
-						try
-						{
-							if (chromocentersPipelineBatchDialog.isNucAndCcAnalysis())
-							{
+						try{
+							if(chromocentersPipelineBatchDialog.isNucAndCcAnalysis()){
 								ChromocenterAnalysis chromocenterAnalysis = new ChromocenterAnalysis();
-								chromocenterAnalysis.computeParametersChromocenter
-								(
-									nameFileChromocenter,
-									imagePlusSegmented,
-									imagePlusChromocenter
-								);
+								chromocenterAnalysis.computeParametersChromocenter(nameFileChromocenter, imagePlusSegmented, imagePlusChromocenter);
 								IJ.log("chromocenterAnalysis is computing ...");
 								NucleusChromocentersAnalysis nucleusChromocenterAnalysis = new NucleusChromocentersAnalysis(); 
 								IJ.log("nucleusChromocenterAnalysis is computing...");
-								nucleusChromocenterAnalysis.computeParameters
-								(
-									nameFileChromocenterAndNucleus,
-									rhfChoice,
-									imagePlusInput,
-									imagePlusSegmented,
-									imagePlusChromocenter
-								);
+								nucleusChromocenterAnalysis.computeParameters(nameFileChromocenterAndNucleus, rhfChoice, imagePlusInput, imagePlusSegmented, imagePlusChromocenter);
 							}
-							else if (chromocentersPipelineBatchDialog.isCcAnalysis())
-							{
+							else if(chromocentersPipelineBatchDialog.isCcAnalysis()){
 								ChromocenterAnalysis chromocenterAnalysis = new ChromocenterAnalysis();
-								chromocenterAnalysis.computeParametersChromocenter
-								(
-									nameFileChromocenter,
-									imagePlusSegmented,
-									imagePlusChromocenter
-								);
+								chromocenterAnalysis.computeParametersChromocenter(nameFileChromocenter, imagePlusSegmented, imagePlusChromocenter);
 							}
-							else
-							{
+							else{
 								NucleusChromocentersAnalysis nucleusChromocenterAnalysis = new NucleusChromocentersAnalysis(); 
-								nucleusChromocenterAnalysis.computeParameters
-								(
-									nameFileChromocenterAndNucleus,
-									rhfChoice,
-									imagePlusInput,
-									imagePlusSegmented,
-									imagePlusChromocenter
-								);
+								nucleusChromocenterAnalysis.computeParameters(nameFileChromocenterAndNucleus, rhfChoice, imagePlusInput, imagePlusSegmented, imagePlusChromocenter);
 							}
 						}
 						catch (IOException e) {	e.printStackTrace(); }
 					}
-					else
-					{
+					else{
 						IJ.log("Image name problem :  the image "+pathImageChromocenter
 							+" is not found in the directory SegmentedDataNucleus or RawDataNucleus, see nameProblem.txt in "
 							+workDirectory);
 						BufferedWriter bufferedWriterLogFile;
-					    try
-					    {
-					    	 bufferedWriterLogFile = new BufferedWriter(new FileWriter(workDirectory+File.separator+"logNameProblem.log", true));
-					    	 bufferedWriterLogFile.write(pathImageChromocenter+"\n");
-					    	 bufferedWriterLogFile.flush();
-					    	 bufferedWriterLogFile.close();  
+					    try{
+					    	bufferedWriterLogFile = new BufferedWriter(new FileWriter(workDirectory+File.separator+"logNameProblem.log", true));
+					    	bufferedWriterLogFile.write(pathImageChromocenter+"\n");
+					    	bufferedWriterLogFile.flush();
+					    	bufferedWriterLogFile.close();  
 					    }
 					    catch (IOException e) {	e.printStackTrace();}
 					 } 	  
 				}
 				IJ.log("End of the chromocenter analysis , the results are in "+chromocentersPipelineBatchDialog.getWorkDirectory());
 			}
-			else	{	IJ.showMessage("There are not the three subdirectories  (See the directory name) or subDirectories are empty"); }
+			else
+				IJ.showMessage("There are not the three subdirectories  (See the directory name) or subDirectories are empty");
 		}
 	}
 }

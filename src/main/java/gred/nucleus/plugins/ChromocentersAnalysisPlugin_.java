@@ -14,34 +14,27 @@ import gred.nucleus.core.NucleusChromocentersAnalysis;
  * @author Poulet Axel
  *
  */
-public class ChromocentersAnalysisPlugin_   implements PlugIn
-{
+public class ChromocentersAnalysisPlugin_   implements PlugIn{
 	
 	/**
 	 * 
 	 */
-	public void run(String arg)
-	{
+	public void run(String arg){
 		int indiceCcImage = 0;
 		int indiceRawImage = 0;
 		int indiceSegmentedImage = 0;
 		double xCalibration = 1,yCalibration=1,zCalibration=1;
 		String unit = "pixel";
 		int[] wList = WindowManager.getIDList();
-		if (wList == null)
-		{
+		if(wList == null){
 			IJ.noImage();
 			return;
 		}
 		String[] titles = new String[wList.length];
-		for (int i = 0; i < wList.length; i++)
-		{
+		for(int i = 0; i < wList.length; i++){
 			ImagePlus imagePlus = WindowManager.getImage(wList[i]);
-			
-			if (imagePlus != null)
-			{
-				if (i == 0)
-				{
+			if(imagePlus != null){
+				if(i == 0){
 					Calibration cal = imagePlus.getCalibration();
 					xCalibration = cal.pixelWidth;
 					yCalibration= cal.pixelHeight;
@@ -61,22 +54,17 @@ public class ChromocentersAnalysisPlugin_   implements PlugIn
       	genericDialog.addNumericField("y calibration", yCalibration, 3);
       	genericDialog.addNumericField("z calibration).",zCalibration, 3);
     	genericDialog.addStringField("Unit",unit,10);
-       	genericDialog.addRadioButtonGroup
-       	(
-       		"Type of RHF ",
-       		new String[]{"Volume and intensity","Volume","Intensity"}
-       		, 1, 3,
-       		"Volume and intensity"
+       	genericDialog.addRadioButtonGroup(
+       		"Type of RHF ", new String[]{"Volume and intensity","Volume","Intensity"}
+       		, 1, 3, "Volume and intensity"
        	);
-     	genericDialog.addRadioButtonGroup
-     	(
-     		"Type of results ",
-     		new String[]{"Nucleus and chromocenter parameters","Chromocenter parameters","Nucleus parameters"}
-     		, 3, 1,
-     		"Nucleus and chromocenter parameters"
+     	genericDialog.addRadioButtonGroup(
+     		"Type of results ", new String[]{"Nucleus and chromocenter parameters","Chromocenter parameters","Nucleus parameters"}
+     		, 3, 1, "Nucleus and chromocenter parameters"
      	);
 		genericDialog.showDialog();
-        if (genericDialog.wasCanceled())   return;
+        if(genericDialog.wasCanceled())
+        	return;
         ImagePlus imagePlusInput =  WindowManager.getImage(wList[genericDialog.getNextChoiceIndex()]);
         ImagePlus imagePlusSegmented =  WindowManager.getImage(wList[genericDialog.getNextChoiceIndex()]);
         ImagePlus imagePlusChromocenter =  WindowManager.getImage(wList[genericDialog.getNextChoiceIndex()]);
@@ -95,34 +83,19 @@ public class ChromocentersAnalysisPlugin_   implements PlugIn
         imagePlusChromocenter.setCalibration(calibration);
         imagePlusSegmented.setCalibration(calibration);
         
-        if (analysisChoice.equals("Nucleus and chromocenter parameters"))
-        {
+        if(analysisChoice.equals("Nucleus and chromocenter parameters")){
         	 ChromocenterAnalysis chromocenterAnalysis = new ChromocenterAnalysis();
              chromocenterAnalysis.computeParametersChromocenter(imagePlusSegmented,imagePlusChromocenter);
              NucleusChromocentersAnalysis nucleusChromocentersAnalysis = new NucleusChromocentersAnalysis(); 
-             nucleusChromocentersAnalysis.computeParameters
-             (
-            	rhfChoice,
-            	imagePlusInput,
-            	imagePlusSegmented,
-            	imagePlusChromocenter
-             );
+             nucleusChromocentersAnalysis.computeParameters( rhfChoice, imagePlusInput, imagePlusSegmented, imagePlusChromocenter);
         }
-        else if (analysisChoice.equals("Chromocenter parameters"))
-        {
+        else if(analysisChoice.equals("Chromocenter parameters")){
         	ChromocenterAnalysis chromocenterAnalysis = new ChromocenterAnalysis();
             chromocenterAnalysis.computeParametersChromocenter(imagePlusSegmented,imagePlusChromocenter);
         }
-        else
-        {
+        else{
             NucleusChromocentersAnalysis nucleusChromocentersAnalysis = new NucleusChromocentersAnalysis(); 
-            nucleusChromocentersAnalysis.computeParameters
-            (
-            	rhfChoice,
-            	imagePlusInput,
-            	imagePlusSegmented,
-            	imagePlusChromocenter
-            );
+            nucleusChromocentersAnalysis.computeParameters(rhfChoice, imagePlusInput, imagePlusSegmented, imagePlusChromocenter);
         }
 	}
 }

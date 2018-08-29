@@ -48,8 +48,8 @@ public class RunnableImageSegmentation extends Thread implements Runnable
 	 */
 	public void run()
 	{
-		ProcessImageSegmentaion._nbLance++;
-		ProcessImageSegmentaion._continuer = true;
+		ProcessImageSegmentaion.m_nbLance++;
+		ProcessImageSegmentaion.m_continuer = true;
 		NucleusSegmentation nucleusSegmentation = new NucleusSegmentation();
 		nucleusSegmentation.setLogErrorSegmentationFile(_workDirectory+File.separator+"logErrorSegmentation.txt");
 		nucleusSegmentation.setVolumeRange(_volumeMin, _volumeMax);
@@ -76,7 +76,7 @@ public class RunnableImageSegmentation extends Thread implements Runnable
 				catch (IOException e) {	e.printStackTrace();	}
 			}
 		}
-		ProcessImageSegmentaion._nbLance--;
+		ProcessImageSegmentaion.m_nbLance--;
 	}
 	
 	/**

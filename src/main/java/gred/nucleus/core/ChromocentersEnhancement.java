@@ -8,13 +8,13 @@ import inra.ijpb.binary.ConnectedComponents;
 import inra.ijpb.watershed.Watershed;
 
 /**
- * Several method to create the image of contrasted regions
+ * Class for the CC enhancement
  * 
  * @author Poulet Axel
 
  */
-public class ChromocentersEnhancement
-{
+@SuppressWarnings("deprecation")
+public class ChromocentersEnhancement{
 	public ChromocentersEnhancement (){	}
 
 
@@ -26,16 +26,14 @@ public class ChromocentersEnhancement
 	 * @return image of the cotrasted region
 	 */
 
-	public ImagePlus applyEnhanceChromocenters(ImagePlus imagePlusRaw,ImagePlus imagePlusSegmented)
-	{
+	public ImagePlus applyEnhanceChromocenters(ImagePlus imagePlusRaw,ImagePlus imagePlusSegmented){
 		MyGradient myGradient = new MyGradient (imagePlusRaw,imagePlusSegmented);
 		ImagePlus imagePlusGradient = myGradient.run();
 		RegionalExtremaFilter regionalExtremaFilter = new RegionalExtremaFilter();
 	    regionalExtremaFilter.setMask(imagePlusSegmented);
 	    ImagePlus imagePlusExtrema = regionalExtremaFilter.applyWithMask( imagePlusGradient);
 	    ImagePlus imagePlusLabels = ConnectedComponents.computeLabels(imagePlusExtrema, 26, 32);
-	    @SuppressWarnings("deprecation")
-		ImagePlus imagePlusWatershed = Watershed.computeWatershed(imagePlusGradient,imagePlusLabels,imagePlusSegmented, 26,true,false);
+	    ImagePlus imagePlusWatershed = Watershed.computeWatershed(imagePlusGradient,imagePlusLabels,imagePlusSegmented, 26,true,false);
 		double [] contrast = computeContrast (imagePlusRaw,imagePlusWatershed);
 		ImagePlus imagePlusContrast = computeImage (imagePlusWatershed, contrast);
 		return imagePlusContrast;
@@ -48,8 +46,7 @@ public class ChromocentersEnhancement
 	 * @param imagePlusWatershed image results of the watershed
 	 * @return a float table which contain the value of the contrast between each region
 	 */
-	public double [][] getRegionAdjacencyGraph (ImagePlus imagePlusWatershed)
-	{
+	public double [][] getRegionAdjacencyGraph(ImagePlus imagePlusWatershed){
 		int voxelValue;
 		int neighborVoxelValue;
 		ImageStatistics imageStatistics = new StackStatistics(imagePlusWatershed);
@@ -62,20 +59,17 @@ public class ChromocentersEnhancement
 				for (int j = 1; j < imagePlusWatershed.getHeight()-1; ++j)
 				{
 					voxelValue = (int)imageStackWatershed.getVoxel(i,j,k);
-					for (int kk = k - 1; kk <= k + 1; kk += 2)
-					{
+					for (int kk = k-1; kk <= k+1; kk += 2){
 						neighborVoxelValue = (int) imageStackWatershed.getVoxel(i,j,kk);
 						if (neighborVoxelValue > 0 && voxelValue != neighborVoxelValue)
 							tRegionAdjacencyGraph[voxelValue][neighborVoxelValue] += volumeVoxel;
 					}
-					for (int jj = j - 1; jj <= j + 1; jj += 2)
-					{
+					for (int jj = j-1; jj <= j+1; jj += 2){
 						neighborVoxelValue = (int) imageStackWatershed.getVoxel(i,jj,k);
 						if (neighborVoxelValue > 0 && voxelValue != neighborVoxelValue)
 							tRegionAdjacencyGraph[voxelValue][neighborVoxelValue] += volumeVoxel;
 					}
-					for (int ii = i - 1; ii <= i + 1; ii += 2)
-					{
+					for (int ii = i-1; ii <= i+1; ii += 2){
 						neighborVoxelValue = (int) imageStackWatershed.getVoxel(ii,j,k);
 						if (neighborVoxelValue > 0 && voxelValue != neighborVoxelValue)
 							tRegionAdjacencyGraph[voxelValue][neighborVoxelValue] += volumeVoxel;
@@ -92,26 +86,23 @@ public class ChromocentersEnhancement
 	 * @return table of constrast
 	 */
 	
-	public double [] computeContrast (ImagePlus imagePlusRaw,ImagePlus imagePlusRegions)
-	{
+	public double [] computeContrast(ImagePlus imagePlusRaw,ImagePlus imagePlusRegions){
 		double [][] tRegionAdjacencyGraph = getRegionAdjacencyGraph(imagePlusRegions);
 		double [] tMean = computeMeanIntensity (imagePlusRaw,imagePlusRegions);
 		double [] tContrast= new double [tRegionAdjacencyGraph.length+1];
 		double neighborVolumeTotal;
-		for(int i = 1; i < tRegionAdjacencyGraph.length; ++i)
-		{
+		for(int i = 1; i < tRegionAdjacencyGraph.length; ++i){
 			neighborVolumeTotal = 0;
-			for(int j = 1; j < tRegionAdjacencyGraph[i].length; ++j)
-			{
-				if (tRegionAdjacencyGraph[i][j] > 0 && i != j)
-				{
+			for(int j = 1; j < tRegionAdjacencyGraph[i].length; ++j){
+				if(tRegionAdjacencyGraph[i][j] > 0 && i != j){
 					tContrast[i] +=  tRegionAdjacencyGraph[i][j]*(tMean[i]-tMean[j]);
 					neighborVolumeTotal += tRegionAdjacencyGraph[i][j];
 				}
 			}
-			if (tContrast[i] <= 0)  tContrast[i] = 0;
-			else tContrast[i] = tContrast[i] / neighborVolumeTotal;
-			
+			if(tContrast[i] <= 0)
+				tContrast[i] = 0;
+			else 
+				tContrast[i] = tContrast[i] / neighborVolumeTotal;
 		}
 		return tContrast;
    }
@@ -126,15 +117,14 @@ public class ChromocentersEnhancement
 	 * @return
 	 */
 
-	public double [] filterMaxRegionAdjacencyGraph (double []tMeanIntensity, double [][] tRegionAdjacencyGraph )
+	public double [] filterMaxRegionAdjacencyGraph(double []tMeanIntensity, double [][] tRegionAdjacencyGraph )
 	{
 		double [] tOutput = new double [tRegionAdjacencyGraph.length];
 		double max;
-		for(int i = 1; i < tRegionAdjacencyGraph.length; ++i)
-		{
+		for(int i = 1; i < tRegionAdjacencyGraph.length; ++i){
 			max = tMeanIntensity[i];
 			for(int j = 1; j < tRegionAdjacencyGraph.length; ++j) 
-				if  (tMeanIntensity[j] > max && tRegionAdjacencyGraph[i][j]>0 )
+				if (tMeanIntensity[j] > max && tRegionAdjacencyGraph[i][j] > 0 )
 					max = tMeanIntensity[j];
 			tOutput[i] = max;
 		}
@@ -148,7 +138,7 @@ public class ChromocentersEnhancement
 	 * @param tRegionAdjacencyGraph
 	 * @return
 	 */
-	public double [] filterMinRegionAdjacencyGraph (double [] tMeanIntensity, double [][] tRegionAdjacencyGraph)
+	public double [] filterMinRegionAdjacencyGraph(double [] tMeanIntensity, double [][] tRegionAdjacencyGraph)
 	{
 		double tOutput[] = new double [tRegionAdjacencyGraph.length];
 		double min;
@@ -171,8 +161,7 @@ public class ChromocentersEnhancement
 	 * @return
 	 */
 	
-	public double [] computeMeanIntensity (ImagePlus imagePlusInput,ImagePlus imagePlusWatershed)
-	{
+	public double [] computeMeanIntensity(ImagePlus imagePlusInput,ImagePlus imagePlusWatershed){
 		ImageStatistics imageStatistics = new StackStatistics(imagePlusWatershed);
 		ImageStack imageStackWatershed = imagePlusWatershed.getStack();
 		ImageStack imageStackInput = imagePlusInput.getStack();
@@ -182,11 +171,9 @@ public class ChromocentersEnhancement
 		int voxelValue;
 		for (int k = 0; k < imagePlusWatershed.getNSlices(); ++k)
 			for (int i = 0; i < imagePlusWatershed.getWidth(); ++i)
-				for (int j = 0; j < imagePlusWatershed.getHeight(); ++j)
-				{
+				for (int j = 0; j < imagePlusWatershed.getHeight(); ++j){
 					voxelValue = (int) imageStackWatershed.getVoxel(i,j,k);
-					if (voxelValue > 0)
-					{
+					if (voxelValue > 0){
 						tIntensityTotal [voxelValue] += imageStackInput.getVoxel(i,j,k);
 						++tNbVoxelInEachRegion [voxelValue];
 					}
@@ -195,6 +182,7 @@ public class ChromocentersEnhancement
 			tIntensityMean[i] = tIntensityTotal[i] / tNbVoxelInEachRegion [i];
 		return tIntensityMean;
 	}
+	
 	/**
 	 * Creation of the image of contrasted regions
 	 * 
@@ -202,15 +190,13 @@ public class ChromocentersEnhancement
 	 * @param tVoxelValue
 	 * @return
 	 */
-	public ImagePlus computeImage (ImagePlus imagePlusInput, double [] tVoxelValue)
-	{
+	public ImagePlus computeImage(ImagePlus imagePlusInput, double [] tVoxelValue){
 		double voxelValue;
 		ImagePlus imagePlusContrast = imagePlusInput.duplicate();
 		ImageStack imageStackConstrast = imagePlusContrast.getStack();
 		for (int k = 0; k < imagePlusContrast.getNSlices(); ++k)
 			for (int i = 0; i < imagePlusContrast.getWidth(); ++i)
-				for (int j = 0; j < imagePlusContrast.getHeight(); ++j)
-				{
+				for (int j = 0; j < imagePlusContrast.getHeight(); ++j){
 					voxelValue = imageStackConstrast.getVoxel(i, j, k);
 					if (voxelValue > 0) imageStackConstrast.setVoxel(i, j, k, tVoxelValue[(int)voxelValue]);
 				}

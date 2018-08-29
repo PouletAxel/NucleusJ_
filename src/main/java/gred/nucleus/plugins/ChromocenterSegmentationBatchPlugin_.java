@@ -16,42 +16,34 @@ import java.util.ArrayList;
  * @author Poulet Axel
  *
  */
-public class ChromocenterSegmentationBatchPlugin_ implements PlugIn
-{
+public class ChromocenterSegmentationBatchPlugin_ implements PlugIn{
 
 	/**
 	 *  
 	 * 
 	 */
-	public void run(String arg)
-	{
-		ChromocenterSegmentationPipelineBatchDialog _chromocenterSegmentationPipelineBatchDialog = new ChromocenterSegmentationPipelineBatchDialog();
-		while( _chromocenterSegmentationPipelineBatchDialog.isShowing())
-		{
+	public void run(String arg){
+		ChromocenterSegmentationPipelineBatchDialog chromo = new ChromocenterSegmentationPipelineBatchDialog();
+		while(chromo.isShowing()){
 			try {Thread.sleep(1);}
 			catch (InterruptedException e) {e.printStackTrace();}
 		}	
-		if (_chromocenterSegmentationPipelineBatchDialog.isStart())
-		{
+		if(chromo.isStart()){
 			FileList fileList = new FileList ();
-			File[] tFileRawData =fileList.run(_chromocenterSegmentationPipelineBatchDialog.getRawDataDirectory());
-			if (fileList.isDirectoryOrFileExist(".+RawDataNucleus.+",tFileRawData) &&
-				fileList.isDirectoryOrFileExist(".+SegmentedDataNucleus.+",tFileRawData))
-			{
-				double xCalibration =_chromocenterSegmentationPipelineBatchDialog.getXCalibration();
-				double yCalibration = _chromocenterSegmentationPipelineBatchDialog.getYCalibration();
-				double zCalibration = _chromocenterSegmentationPipelineBatchDialog.getZCalibration();
-				String unit = _chromocenterSegmentationPipelineBatchDialog.getUnit();
+			File[] tFileRawData =fileList.run(chromo.getRawDataDirectory());
+			if(fileList.isDirectoryOrFileExist(".+RawDataNucleus.+",tFileRawData) && fileList.isDirectoryOrFileExist(".+SegmentedDataNucleus.+",tFileRawData)){
+				double xCalibration =chromo.getXCalibration();
+				double yCalibration = chromo.getYCalibration();
+				double zCalibration = chromo.getZCalibration();
+				String unit = chromo.getUnit();
 				ArrayList<String> arrayListImageSegmenetedDataNucleus = fileList.fileSearchList(".+SegmentedDataNucleus.+",tFileRawData);
-				String workDirectory = _chromocenterSegmentationPipelineBatchDialog.getWorkDirectory();
-				for (int i = 0; i < arrayListImageSegmenetedDataNucleus.size(); ++i)
-				{
+				String workDirectory = chromo.getWorkDirectory();
+				for(int i = 0; i < arrayListImageSegmenetedDataNucleus.size(); ++i){
 					IJ.log("image"+(i+1)+" / "+arrayListImageSegmenetedDataNucleus.size());
 					String pathImageSegmentedNucleus = arrayListImageSegmenetedDataNucleus.get(i);
 					String pathNucleusRaw = pathImageSegmentedNucleus.replaceAll("SegmentedDataNucleus", "RawDataNucleus");
 					IJ.log(pathNucleusRaw);
-					if (fileList.isDirectoryOrFileExist(pathNucleusRaw,tFileRawData))
-					{
+					if(fileList.isDirectoryOrFileExist(pathNucleusRaw,tFileRawData)){
 						ImagePlus imagePlusSegmented = IJ.openImage(pathImageSegmentedNucleus);
 						ImagePlus imagePlusInput = IJ.openImage(pathNucleusRaw);
 						Calibration calibration = new Calibration();
@@ -67,9 +59,10 @@ public class ChromocenterSegmentationBatchPlugin_ implements PlugIn
 						saveFile (imagePlusConstraste,workDirectory+File.separator+"ConstrastDataNucleus");
 					}
 				}
-				IJ.log("End of the chromocenter segmentation , results are in "+_chromocenterSegmentationPipelineBatchDialog.getWorkDirectory());
+				IJ.log("End of the chromocenter segmentation , results are in "+chromo.getWorkDirectory());
 			}
-			else	{	IJ.showMessage("There are not the two subdirectories (See the directory name) or subdirectories are empty"); }		
+			else
+				IJ.showMessage("There are not the two subdirectories (See the directory name) or subdirectories are empty");		
 			
 		}
 	}
@@ -80,14 +73,12 @@ public class ChromocenterSegmentationBatchPlugin_ implements PlugIn
 	 * @param imagePlus imagePus to save 
 	 * @param pathFile the path where save the image
 	 */
-	public void saveFile ( ImagePlus imagePlus, String pathFile)
-	{
+	public void saveFile(ImagePlus imagePlus, String pathFile){
 		FileSaver fileSaver = new FileSaver(imagePlus);
 	    File file = new File(pathFile);
 	    if (file.exists())
 	    	fileSaver.saveAsTiffStack( pathFile+File.separator+imagePlus.getTitle());
-	    else
-	    {
+	    else{
 	    	file.mkdir();
 	    	fileSaver.saveAsTiffStack( pathFile+File.separator+imagePlus.getTitle());
 	    }

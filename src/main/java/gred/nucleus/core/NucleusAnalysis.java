@@ -6,7 +6,6 @@ import java.io.IOException;
 import ij.IJ;
 import ij.ImagePlus;
 
-
 /**
  * Several method to realise and create the outfile for the nuclear Analysis
  * 
@@ -14,10 +13,10 @@ import ij.ImagePlus;
  *
  */
 
-public class NucleusAnalysis
-{
+public class NucleusAnalysis{
+	
 	 @SuppressWarnings("unused")
-	 private static class IOEception {  public IOEception() { } }
+	 private static class IOEception{  public IOEception() { } }
 
 	 public NucleusAnalysis (){}
 
@@ -30,7 +29,7 @@ public class NucleusAnalysis
 	  * @param imagePlusInput image of the segmented nucleus
 	  * @throws IOException
 	  */
-	  public void nucleusParameter3D (String pathResultsFile, ImagePlus imagePlusInput) throws IOException
+	  public void nucleusParameter3D(String pathResultsFile, ImagePlus imagePlusInput) throws IOException
 	  {
 		  Measure3D measure3D = new Measure3D();
 		  File fileResults = new File(pathResultsFile);
@@ -38,12 +37,10 @@ public class NucleusAnalysis
 		  BufferedWriter bufferedWriterOutput;
 		  double volume = measure3D.computeVolumeObject(imagePlusInput,255);
 		  double surfaceArea = measure3D.computeSurfaceObject(imagePlusInput,255);
-		  if (exist)
-		  {
+		  if (exist){
 			  FileWriter fileWriter = new FileWriter(fileResults, true);
 		      bufferedWriterOutput = new BufferedWriter(fileWriter);
-		      bufferedWriterOutput.write
-		      (
+		      bufferedWriterOutput.write(
 		    		  imagePlusInput.getTitle()+"\t"
 		    		  +measure3D.computeVolumeObject(imagePlusInput,255)+"\t"
 		    		  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[0]+"\t"
@@ -53,12 +50,10 @@ public class NucleusAnalysis
 		    		  +surfaceArea+"\n"
 		     );
 		  }
-		  else
-		  {
+		  else{
 			  FileWriter fileWriter = new FileWriter(fileResults, true);
 		      bufferedWriterOutput = new BufferedWriter(fileWriter);
-		      bufferedWriterOutput.write
-		      (
+		      bufferedWriterOutput.write(
 		    		  "NucleusFileName\tVolume\tFlatness\tElongation\tSphericity\tEsr\tSurfaceArea\t\n"+
 		    		  imagePlusInput.getTitle()+"\t"
 		    		  +measure3D.computeVolumeObject(imagePlusInput,255)+"\t"
@@ -80,16 +75,13 @@ public class NucleusAnalysis
 	   *  
 	   * @param imagePlusInput image segmented
 	   */
-	  public void nucleusParameter3D (ImagePlus imagePlusInput)
-	  {
+	  public void nucleusParameter3D(ImagePlus imagePlusInput){
 		  Measure3D measure3D = new Measure3D();
 		  double volume = measure3D.computeVolumeObject(imagePlusInput,255);
 		  double surfaceArea = measure3D.computeSurfaceObject(imagePlusInput,255);
-		  
 		  IJ.log("3D parameters");
 		  IJ.log("NucleusFileName Volume Flatness Elongation Sphericity Esr SurfaceArea");
-		  IJ.log
-		  (
+		  IJ.log(
 				  imagePlusInput.getTitle()+" "
 				  +measure3D.computeVolumeObject(imagePlusInput,255)+" "
 				  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[0]+" "
@@ -99,7 +91,7 @@ public class NucleusAnalysis
 				  +surfaceArea+"\n"
 		  );
 	  }
-
+	  
 	  /**
 	   * 
 	   * this method compute severals 2D parameters of 2D shape for several nuclei.
@@ -108,30 +100,26 @@ public class NucleusAnalysis
 	   * @param imagePlusInput image of the segmented nucleus
 	   * @throws IOException
 	   */
-	  public void nucleusParameter2D (String pathResultsFile,ImagePlus imagePlusInput) throws IOException
-	  {
+	  
+	  public void nucleusParameter2D(String pathResultsFile,ImagePlus imagePlusInput) throws IOException{
 		  Measure2D measure2D = new Measure2D();
 		  measure2D.run(imagePlusInput);
 		  File fileResu = new File(pathResultsFile);
 		  boolean exist = fileResu.exists();
 		  BufferedWriter bufferedWriterOutput;
-		  if (exist)
-		  {
+		  if (exist){
 			  FileWriter fileWriter = new FileWriter(fileResu, true);
 		      bufferedWriterOutput = new BufferedWriter(fileWriter);
-		      bufferedWriterOutput.write
-		      (
+		      bufferedWriterOutput.write(
 		    		  imagePlusInput.getTitle()+"\t"
 		    		  +measure2D.getAspectRatio()+"\t"
 		    		  +measure2D.getCirculairty()+"\n"
 		      );
 		  }
-		  else
-		  {
+		  else{
 			  FileWriter fileWriter = new FileWriter(fileResu, true);
 		      bufferedWriterOutput = new BufferedWriter(fileWriter);
-		      bufferedWriterOutput.write
-		      (
+		      bufferedWriterOutput.write(
 		    		  "ImageTitle\tAspectRatio\tCircularity\n"+
 		    		  imagePlusInput.getTitle()+"\t"
 		    		  +measure2D.getAspectRatio()+"\t"
@@ -146,14 +134,12 @@ public class NucleusAnalysis
 	   * 
 	   * @param imagePlusInput
 	   */
-	  public void nucleusParameter2D (ImagePlus imagePlusInput)
-	  {
+	  public void nucleusParameter2D (ImagePlus imagePlusInput){
 		  Measure2D measure2D = new Measure2D();
 		  measure2D.run(imagePlusInput);
 		  IJ.log("2D parameters");
 		  IJ.log("ImageTitle AspectRatio Circularity");
-		  IJ.log
-		  (
+		  IJ.log(
 				  imagePlusInput.getTitle()+" "
 				  +measure2D.getAspectRatio()+" "
 				  +measure2D.getCirculairty()

@@ -14,11 +14,10 @@ import java.util.ArrayList;
  * @author Poulet Axel
  *
  */
-public class ProcessImageSegmentaion
-{
-	static int _nbLance = 0;
-	static boolean _continuer;
-	static int _indiceImage = 0;
+public class ProcessImageSegmentaion{
+	static int m_nbLance = 0;
+	static boolean m_continuer;
+	static int m_indiceImage = 0;
 
 
 	public ProcessImageSegmentaion(){}
@@ -26,47 +25,41 @@ public class ProcessImageSegmentaion
 	/**
 	 * method to run the segmentation and analysis with the features chosen by the user
 	 * 
-	 * @param nucleusSegmentationAndAnalysisBatchPlugin
+	 * @param nuc
 	 * @param tInputFile
 	 * @param doAnalysis
 	 * @throws InterruptedException
 	 */
-	public void go(NucleusSegmentationAndAnalysisBatchPlugin_ nucleusSegmentationAndAnalysisBatchPlugin, File[] tInputFile, boolean doAnalysis) throws InterruptedException
-	{
+	public void go(NucleusSegmentationAndAnalysisBatchPlugin_ nuc, File[] tInputFile, boolean doAnalysis) throws InterruptedException{
 		Calibration calibration = new Calibration();
-		calibration.pixelDepth = nucleusSegmentationAndAnalysisBatchPlugin.getZCalibration();
-		calibration.pixelWidth = nucleusSegmentationAndAnalysisBatchPlugin.getXCalibration();
-		calibration.pixelHeight = nucleusSegmentationAndAnalysisBatchPlugin.getYCalibration();
-		calibration.setUnit(nucleusSegmentationAndAnalysisBatchPlugin.getUnit());
-		_nbLance = 0;
+		calibration.pixelDepth = nuc.getZCalibration();
+		calibration.pixelWidth = nuc.getXCalibration();
+		calibration.pixelHeight = nuc.getYCalibration();
+		calibration.setUnit(nuc.getUnit());
+		m_nbLance = 0;
 		ArrayList<Thread> arrayListImageThread = new ArrayList<Thread>() ;
-		int nbCpu = nucleusSegmentationAndAnalysisBatchPlugin.getNbCpu();
+		int nbCpu = nuc.getNbCpu();
 		
-		for (int i = 0; i < tInputFile.length; ++i)
-		{
+		for (int i = 0; i < tInputFile.length; ++i){
 			IJ.log("Image processed "+tInputFile[i] +" "+i);
-			_continuer = false;
-			_indiceImage = i;
+			m_continuer = false;
+			m_indiceImage = i;
 			IJ.log("image"+(i+1)+" / "+tInputFile.length);
 			ImagePlus imagePlusInput = IJ.openImage(tInputFile[i].toString());
 			imagePlusInput.setCalibration(calibration);
-			arrayListImageThread.add
-			(new RunnableImageSegmentation
-				 (
-						 imagePlusInput,
-						 nucleusSegmentationAndAnalysisBatchPlugin.getMinVolume(),
-						 nucleusSegmentationAndAnalysisBatchPlugin.getMaxVolume(),
-						 nucleusSegmentationAndAnalysisBatchPlugin.getWorkDirectory(),
-						 nucleusSegmentationAndAnalysisBatchPlugin.is2D3DAnalysis(),
-						 nucleusSegmentationAndAnalysisBatchPlugin.is3DAnalysis(),
+			arrayListImageThread.add(
+				new RunnableImageSegmentation(
+						 imagePlusInput, nuc.getMinVolume(),
+						 nuc.getMaxVolume(), nuc.getWorkDirectory(),
+						 nuc.is2D3DAnalysis(), nuc.is3DAnalysis(),
 						 doAnalysis
 				)
 			);
 			arrayListImageThread.get(i).start();
 			
-			while (_continuer == false)
+			while (m_continuer == false)
 				Thread.sleep(10);
-			while (_nbLance >=nbCpu)
+			while (m_nbLance >=nbCpu)
 				Thread.sleep(10);
 		}
 		for (int i = 0; i < arrayListImageThread.size(); ++i)
@@ -77,46 +70,40 @@ public class ProcessImageSegmentaion
 	/**
 	 * method to run the segmentation with the features chosen by the user
 	 * 
-	 * @param nucleusSegmentationBatchPlugin
+	 * @param nuc
 	 * @param tInputFile
 	 * @param doAnalysis
 	 * @throws InterruptedException
 	 */
-	public void go(NucleusSegmentationBatchPlugin_ nucleusSegmentationBatchPlugin, File[] tInputFile, boolean doAnalysis) throws InterruptedException
-	{
+	public void go(NucleusSegmentationBatchPlugin_ nuc, File[] tInputFile, boolean doAnalysis) throws InterruptedException{
 		Calibration calibration = new Calibration();
-		calibration.pixelDepth = nucleusSegmentationBatchPlugin.getZCalibration();
-		calibration.pixelWidth = nucleusSegmentationBatchPlugin.getXCalibration();
-		calibration.pixelHeight = nucleusSegmentationBatchPlugin.getYCalibration();
-		calibration.setUnit(nucleusSegmentationBatchPlugin.getUnit());
-		_nbLance = 0;
+		calibration.pixelDepth = nuc.getZCalibration();
+		calibration.pixelWidth = nuc.getXCalibration();
+		calibration.pixelHeight = nuc.getYCalibration();
+		calibration.setUnit(nuc.getUnit());
+		m_nbLance = 0;
 		ArrayList<Thread> arrayListImageThread = new ArrayList<Thread>() ;
-		int nbCpu =nucleusSegmentationBatchPlugin.getNbCpu();
+		int nbCpu =nuc.getNbCpu();
 		IJ.log("Number processor used "+nbCpu);
-		for (int i = 0; i <tInputFile.length; ++i)
-		{
+		for (int i = 0; i <tInputFile.length; ++i){
 			IJ.log("Image processed "+tInputFile[i] +" "+i);
-			_continuer = false;
-			_indiceImage = i;
+			m_continuer = false;
+			m_indiceImage = i;
 			IJ.log("image"+(i+1)+" / "+tInputFile.length);
 			ImagePlus imagePlusInput = IJ.openImage(tInputFile[i].toString());
 			imagePlusInput.setCalibration(calibration);
-			arrayListImageThread.add
-			(new RunnableImageSegmentation
-					(
-							imagePlusInput,
-							nucleusSegmentationBatchPlugin.getMinVolume(),
-							nucleusSegmentationBatchPlugin.getMaxVolume(),
-							nucleusSegmentationBatchPlugin.getWorkDirectory(),
-							false,
-							false,
+			arrayListImageThread.add(
+				new RunnableImageSegmentation(
+						imagePlusInput, nuc.getMinVolume(),
+						nuc.getMaxVolume(), nuc.getWorkDirectory(),
+							false, false,
 							doAnalysis
 					)
 			);
 			arrayListImageThread.get(i).start();
-			while (_continuer == false)
+			while (m_continuer == false)
 				Thread.sleep(10);
-			while (_nbLance > nbCpu)
+			while (m_nbLance > nbCpu)
 				Thread.sleep(10);
 		}
 		for (int i = 0; i < arrayListImageThread.size(); ++i)

@@ -12,23 +12,21 @@ import ij.measure.*;
  * @author Poulet Axel
  *
  */
-public class Measure2D
-{
+public class Measure2D{
     /** Object to store the two parameters computed*/
-    ResultsTable _resultsTable;
+    private ResultsTable m_resultsTable;
 
-    public Measure2D ()  {   }
+    public Measure2D(){   }
     
     /**
      * Compute of the 2D parameters of the nucleus 
      * 
      * @param imagePlusSegmented image of segmented nucleus
      */
-    public void run (ImagePlus imagePlusSegmented)
-    {
+    public void run (ImagePlus imagePlusSegmented){
     	 StackConverter stackConverter = new StackConverter( imagePlusSegmented );
          if (imagePlusSegmented.getType() != ImagePlus.GRAY8)	stackConverter.convertToGray8();
-         _resultsTable = computePrameters(imagePlusSegmented,searchSliceWithMaxArea(imagePlusSegmented));  
+         m_resultsTable = computePrameters(imagePlusSegmented,searchSliceWithMaxArea(imagePlusSegmented));  
     }
 
     /**
@@ -37,8 +35,7 @@ public class Measure2D
      * @param imagePlusSegmented
      * @return the number of the stack with the greatest area
      */
-    private int searchSliceWithMaxArea(ImagePlus imagePlusSegmented)
-    {
+    private int searchSliceWithMaxArea(ImagePlus imagePlusSegmented){
     	Calibration calibration= imagePlusSegmented.getCalibration();
     	int indiceMaxArea = -1;
     	double xCalibration = calibration.pixelWidth;
@@ -46,18 +43,16 @@ public class Measure2D
         ImageStack imageStackSegmented = imagePlusSegmented.getStack();
         double areaMax = 0;
         double area = 0;
-        for (int k = 0; k < imagePlusSegmented.getNSlices(); ++k)
-        {
+        for (int k = 0; k < imagePlusSegmented.getNSlices(); ++k){
             int nbVoxel = 0;
-            for (int i = 1; i < imagePlusSegmented.getWidth(); ++i)
-            {
-                for (int j = 1;  j < imagePlusSegmented.getHeight(); ++j)
+            for (int i = 1; i < imagePlusSegmented.getWidth(); ++i){
+                for (int j = 1;  j < imagePlusSegmented.getHeight(); ++j){
                 	if (imageStackSegmented.getVoxel(i, j, k)>0)
                 		++nbVoxel ;
+                }
             }
             area = xCalibration*yCalibration*nbVoxel;
-            if (area > areaMax)
-            {
+            if (area > areaMax){
                 areaMax = area ;
                 indiceMaxArea = k;
             }
@@ -66,14 +61,13 @@ public class Measure2D
     }
 
     /**
-     * method to compute the parameter
+     * method computing the different parameters
      * 
      * @param imagePlusSegmented
      * @param indiceMaxArea 
-     * @return a resultTable object which contain the results
+     * @return a resultTable containinig the results
      */
-    private ResultsTable computePrameters(ImagePlus imagePlusSegmented, int indiceMaxArea)
-    {
+    private ResultsTable computePrameters(ImagePlus imagePlusSegmented, int indiceMaxArea){
     	ImagePlus imagePlusTemp = new ImagePlus();
     	ImageStack imageStackSegmented = imagePlusSegmented.getStack();
         ImageStack imageStackTemp = new ImageStack(imagePlusSegmented.getWidth(),imagePlusSegmented.getHeight());
@@ -92,20 +86,28 @@ public class Measure2D
        
     }
 	/**
-     * Aspect ratio The aspect ratio of the particle’s fitted ellipse, i.e., [M ajor Axis]/Minor Axis] . If Fit
-     * Ellipse is selected the Major and Minor axis are displayed. Uses the heading AR.
-     * 
-     * @return
+     * Getter of the Aspect ratio vaue 
+     * The aspect ratio of the particle’s fitted ellipse, i.e., [M ajor Axis]/Minor Axis] . 
+     * If Fit Ellipse is selected the Major and Minor axis are displayed. Uses the heading AR.
+     * (Soucre : ImageJ)
+     * @return double aspect ratio value
      */
-    public double getAspectRatio () {	return _resultsTable.getValue("AR", 0);	} 
+    public double getAspectRatio(){
+    	return m_resultsTable.getValue("AR", 0);
+    } 
     
     /**
+     * Getter of the circularity
+     * 
      * Circularity Particles with size circularity values outside the range specified in this field are also 
      * ignored. Circularity = (4π × [Area ] / [P erimeter]2 ) , see Set Measurements. . . ) ranges from 0 (infinitely
      * elongated polygon) to 1 (perfect circle).
+     * (Soucre : ImageJ)
      * 
-     * @return
+     * @return double circularity value
      */
     
-    public double getCirculairty() {   return _resultsTable.getValue("Circ.", 0); }
+    public double getCirculairty(){
+    	return m_resultsTable.getValue("Circ.", 0);
+    }
 }

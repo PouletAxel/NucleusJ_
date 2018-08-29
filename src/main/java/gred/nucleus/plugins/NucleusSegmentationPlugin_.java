@@ -11,39 +11,33 @@ import ij.plugin.*;
  * @author Poulet Axel
  *
  */
-public class NucleusSegmentationPlugin_ implements PlugIn
-{
+public class NucleusSegmentationPlugin_ implements PlugIn{
 	/** image to process*/
-	ImagePlus _imagePlusInput;
+	ImagePlus m_img;
 	
 	/**
 	 * This method permit to execute the ReginalExtremFilter on the selected image
 	 * 
 	 * @param arg 
 	 */
-	public void run(String arg)
-	{
-		_imagePlusInput = WindowManager.getCurrentImage();
-	    if (null == _imagePlusInput)
-	    {
+	public void run(String arg){
+		m_img = WindowManager.getCurrentImage();
+	    if(null == m_img){
 	       IJ.noImage();
 	       return;
 	    }
-	    else if (_imagePlusInput.getStackSize() == 1 || (_imagePlusInput.getType() != ImagePlus.GRAY8 && _imagePlusInput.getType() != ImagePlus.GRAY16))
-		{
+	    else if(m_img.getStackSize() == 1 || (m_img.getType() != ImagePlus.GRAY8 && m_img.getType() != ImagePlus.GRAY16)){
 	    	IJ.error("Image format", "No image in gray scale 8bits or 16 bits in 3D");
 	        return;
 	    }
-	    if (IJ.versionLessThan("1.32c"))
+	    if(IJ.versionLessThan("1.32c"))
 	    	return;
-	    NucleusSegmentationDialog nucleusSegmentationDialog = new NucleusSegmentationDialog(_imagePlusInput.getCalibration());
-	    while( nucleusSegmentationDialog.isShowing())
-		{
+	    NucleusSegmentationDialog nucleusSegmentationDialog = new NucleusSegmentationDialog(m_img.getCalibration());
+	    while( nucleusSegmentationDialog.isShowing()){
 			try {Thread.sleep(1);}
 			catch (InterruptedException e) {e.printStackTrace();}
 	    }	
-		if (nucleusSegmentationDialog.isStart())
-		{
+		if (nucleusSegmentationDialog.isStart()){
 			double xCalibration = nucleusSegmentationDialog.getXCalibration();
 			double yCalibration = nucleusSegmentationDialog.getYCalibration();
 			double zCalibration = nucleusSegmentationDialog.getZCalibration();
@@ -55,23 +49,17 @@ public class NucleusSegmentationPlugin_ implements PlugIn
 			calibration.pixelWidth = xCalibration;
 			calibration.pixelHeight = yCalibration;
 			calibration.setUnit(unit);
-			_imagePlusInput.setCalibration(calibration);
-			ImagePlus imagePlusSegmented= _imagePlusInput;
+			m_img.setCalibration(calibration);
+			ImagePlus imagePlusSegmented= m_img;
 			NucleusSegmentation nucleusSegmentation = new NucleusSegmentation();
 			nucleusSegmentation.setVolumeRange(volumeMin, volumeMax);
 			imagePlusSegmented = nucleusSegmentation.applySegmentation(imagePlusSegmented);
 			if(nucleusSegmentation.getBestThreshold()==0)
-				IJ.showMessageWithCancel
-				(
-					"Segmentation error",
-					"No object detected between "
-					+nucleusSegmentationDialog.getMinVolume()
-					+"and"+nucleusSegmentationDialog.getMaxVolume()
-					+" "+unit
+				IJ.showMessageWithCancel( "Segmentation error","No object detected between "
+					+nucleusSegmentationDialog.getMinVolume()+"and"+nucleusSegmentationDialog.getMaxVolume()+" "+unit
 				);
-			else
-			{
-				imagePlusSegmented.setTitle("Segmented"+_imagePlusInput.getTitle());
+			else{
+				imagePlusSegmented.setTitle("Segmented"+m_img.getTitle());
 				imagePlusSegmented.show();
 			}
 		}
