@@ -1,0 +1,41 @@
+image: maven:3.5.4-jdk-10
+stages:
+- build
+- test
+- package
+
+maven:build:
+  stage: build
+  environment: staging
+  script:
+  - "mvn clean compile"
+  artifacts:
+    when: on_success
+    expire_in: 1 day
+    paths:
+    - target/
+
+maven:test:
+  stage: test
+  environment: staging
+  dependencies:
+    - maven:build
+  script: "mvn clean test"
+  artifacts:
+    when: on_success
+    expire_in: 1 day
+    paths:
+    - target/
+
+
+maven:package:
+  stage: package
+  environment: staging
+  dependencies:
+    - maven:test
+  script: "mvn package"
+  artifacts:
+    when: on_success
+    expire_in: 1 day
+    paths:
+    - target/
