@@ -34,8 +34,37 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 			<version>1.0.3</version>
 		</dependency>
 		
-		<!-- Add a dependency to JUnit for unit tests --> 
-		
+		<!-- Add a dependency to JUnit for unit tests -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.1.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>5.1.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.vintage</groupId>
+			<artifactId>junit-vintage-engine</artifactId>
+			<version>5.1.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-launcher</artifactId>
+			<version>1.1.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-runner</artifactId>
+			<version>1.1.0</version>
+			<scope>test</scope>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/fr.inra.ijpb/MorphoLibJ_ -->
 		<dependency>
     		<groupId>fr.inra.ijpb</groupId>
@@ -69,6 +98,27 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 				<directory>${project.build.testSourceDirectory}</directory>
 			</testResource>
 		</testResources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.19.1</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.junit.platform</groupId>
+						<artifactId>junit-platform-surefire-provider</artifactId>
+						<version>1.1.0</version>
+					</dependency>
+					<dependency>
+						<groupId>org.junit.jupiter</groupId>
+						<artifactId>junit-jupiter-engine</artifactId>
+						<version>5.1.0</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+
 	</build>
 
 	<developers>
@@ -84,6 +134,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 			<timezone>+1</timezone>
 		</developer>
 	</developers>
+
 
 	<repositories>
 		<!-- NB: for project parent -->
