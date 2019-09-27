@@ -3,6 +3,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+
 import ij.IJ;
 import ij.ImagePlus;
 
@@ -15,10 +17,13 @@ import ij.ImagePlus;
 
 public class NucleusAnalysis{
 	
+	private ImagePlus _raw;
 	 @SuppressWarnings("unused")
 	 private static class IOEception{  public IOEception() { } }
-
 	 public NucleusAnalysis (){}
+	 public NucleusAnalysis (ImagePlus rawImage){
+		 _raw = rawImage;
+	 }
 
 	 /**
 	  * this method compute severals parameters of shape (sphericity, flataness and
@@ -29,39 +34,35 @@ public class NucleusAnalysis{
 	  * @param imagePlusInput image of the segmented nucleus
 	  * @throws IOException
 	  */
-	  public void nucleusParameter3D(String pathResultsFile, ImagePlus imagePlusInput) throws IOException
-	  {
+	  public void nucleusParameter3D(String pathResultsFile, ImagePlus imagePlusInput) throws IOException{
 		  Measure3D measure3D = new Measure3D();
 		  File fileResults = new File(pathResultsFile);
 		  boolean exist = fileResults.exists();
 		  BufferedWriter bufferedWriterOutput;
+		  ArrayList<Double> list = measure3D.computeIntensityParameters(imagePlusInput, _raw);
 		  double volume = measure3D.computeVolumeObject(imagePlusInput,255);
 		  double surfaceArea = measure3D.computeSurfaceObject(imagePlusInput,255);
 		  if (exist){
 			  FileWriter fileWriter = new FileWriter(fileResults, true);
 		      bufferedWriterOutput = new BufferedWriter(fileWriter);
-		      bufferedWriterOutput.write(
-		    		  imagePlusInput.getTitle()+"\t"
-		    		  +measure3D.computeVolumeObject(imagePlusInput,255)+"\t"
-		    		  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[0]+"\t"
-		    		  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[1]+"\t"
-		    		  +measure3D.computeSphericity(volume, surfaceArea)+"\t"
-		    		  +measure3D.equivalentSphericalRadius(volume)+"\t"
-		    		  +surfaceArea+"\n"
+		      bufferedWriterOutput.write(  imagePlusInput.getTitle()+"\t"+measure3D.computeVolumeObject(imagePlusInput,255)+"\t"
+		    		  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[0]+"\t" +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[1]+"\t"
+		    		  +measure3D.computeSphericity(volume, surfaceArea)+"\t"+measure3D.equivalentSphericalRadius(volume)+"\t"
+		    		  +surfaceArea+"\t"+list.get(0)+"\t"+list.get(1)+"\t"+list.get(2)+"\t"+list.get(3)+"\n"
 		     );
 		  }
 		  else{
 			  FileWriter fileWriter = new FileWriter(fileResults, true);
 		      bufferedWriterOutput = new BufferedWriter(fileWriter);
 		      bufferedWriterOutput.write(
-		    		  "NucleusFileName\tVolume\tFlatness\tElongation\tSphericity\tEsr\tSurfaceArea\t\n"+
+		    		  "NucleusFileName\tVolume\tFlatness\tElongation\tSphericity\tEsr\tSurfaceArea\tminIntensity\tMaxIntensity\tMeanIntensity\tstd\n"+
 		    		  imagePlusInput.getTitle()+"\t"
 		    		  +measure3D.computeVolumeObject(imagePlusInput,255)+"\t"
 		    		  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[0]+"\t"
 		    		  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[1]+"\t"
 		    		  +measure3D.computeSphericity(volume, surfaceArea)+"\t"
 		    		  +measure3D.equivalentSphericalRadius(volume)+"\t"
-		    		  +surfaceArea+"\n"
+		    		  +surfaceArea+"\t"+list.get(0)+"\t"+list.get(1)+"\t"+list.get(2)+"\t"+list.get(3)+"\n"
 		      );
 		  } 
 		  bufferedWriterOutput.flush();
@@ -79,8 +80,9 @@ public class NucleusAnalysis{
 		  Measure3D measure3D = new Measure3D();
 		  double volume = measure3D.computeVolumeObject(imagePlusInput,255);
 		  double surfaceArea = measure3D.computeSurfaceObject(imagePlusInput,255);
+		  ArrayList<Double> list = measure3D.computeIntensityParameters(imagePlusInput, _raw);
 		  IJ.log("3D parameters");
-		  IJ.log("NucleusFileName Volume Flatness Elongation Sphericity Esr SurfaceArea");
+		  IJ.log("NucleusFileName Volume Flatness Elongation Sphericity Esr SurfaceArea minIntensity MaxIntensity MeanIntensity std");
 		  IJ.log(
 				  imagePlusInput.getTitle()+" "
 				  +measure3D.computeVolumeObject(imagePlusInput,255)+" "
@@ -88,7 +90,7 @@ public class NucleusAnalysis{
 	    		  +measure3D.computeFlatnessAndElongation(imagePlusInput,255)[1]+" "
 				  +measure3D.computeSphericity(volume, surfaceArea)+" "
 				  +measure3D.equivalentSphericalRadius(volume)+" "
-				  +surfaceArea+"\n"
+				  +surfaceArea+list.get(0)+"\t"+list.get(1)+"\t"+list.get(2)+"\t"+list.get(3)+"\n"
 		  );
 	  }
 	  

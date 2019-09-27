@@ -13,7 +13,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	
 	<groupId>sc.fiji</groupId>
 	<artifactId>NucleusJ_</artifactId>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>1.0.6-SNAPSHOT</version>
 
 	<name>NucleusJ</name>
 	<description>Ensemble of ImageJ plugins for nuclear analysis</description>

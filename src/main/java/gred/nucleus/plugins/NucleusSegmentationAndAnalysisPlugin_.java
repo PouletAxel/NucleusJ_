@@ -58,7 +58,7 @@ public class NucleusSegmentationAndAnalysisPlugin_ implements PlugIn{
 			ImagePlus imagePlusSegmented = nucleusSegmentation.run(m_imgPlus);
 			if (nucleusSegmentation.getBestThreshold() > 0){
 				imagePlusSegmented.show();
-				NucleusAnalysis nucleusAnalysis = new NucleusAnalysis();
+				NucleusAnalysis nucleusAnalysis = new NucleusAnalysis(m_imgPlus);
 				if (nuc.is2D3DAnalysis()){
 					nucleusAnalysis.nucleusParameter3D(imagePlusSegmented);
 					nucleusAnalysis.nucleusParameter2D(imagePlusSegmented);

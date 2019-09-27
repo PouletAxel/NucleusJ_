@@ -1,4 +1,7 @@
 package gred.nucleus.multiThread;
+
+
+
 import gred.nucleus.core.NucleusAnalysis;
 import gred.nucleus.core.NucleusSegmentation;
 import ij.ImagePlus;
@@ -12,8 +15,7 @@ import java.io.IOException;
  * @author Poulet Axel
  *
  */
-public class RunnableImageSegmentation extends Thread implements Runnable
-{
+public class RunnableImageSegmentation extends Thread implements Runnable{
 	String _workDirectory;
 	ImagePlus _imagePlusInput;
 	double _volumeMin, _volumeMax;
@@ -32,8 +34,7 @@ public class RunnableImageSegmentation extends Thread implements Runnable
 	 * @param doAnalysis
 	 */
 	public RunnableImageSegmentation (ImagePlus imagePlusInput, double volumeMin, double volumeMax, String workDirectory,boolean analysis3D2D
-			,boolean analysis3D, boolean doAnalysis)
-	{
+			,boolean analysis3D, boolean doAnalysis){
 		_doAnalysis = doAnalysis;
 		_imagePlusInput = imagePlusInput;
 		_volumeMin = volumeMin;
@@ -46,25 +47,20 @@ public class RunnableImageSegmentation extends Thread implements Runnable
 	/**
 	 * Run parallel compute in function of the number of CPU chose by the user, and call the class ProcessImageSgmentation
 	 */
-	public void run()
-	{
+	public void run(){
 		ProcessImageSegmentaion.m_nbLance++;
 		ProcessImageSegmentaion.m_continuer = true;
 		NucleusSegmentation nucleusSegmentation = new NucleusSegmentation();
 		nucleusSegmentation.setLogErrorSegmentationFile(_workDirectory+File.separator+"logErrorSegmentation.txt");
 		nucleusSegmentation.setVolumeRange(_volumeMin, _volumeMax);
 		ImagePlus impagePlusSegmented = nucleusSegmentation.run(_imagePlusInput);
-		if (nucleusSegmentation.getBestThreshold()> 0)
-		{
+		if (nucleusSegmentation.getBestThreshold()> 0){
 			impagePlusSegmented.setTitle(_imagePlusInput.getTitle());
 			saveFile(impagePlusSegmented,_workDirectory+File.separator+"SegmentedDataNucleus");
-			NucleusAnalysis nucleusAnalysis = new NucleusAnalysis();
-			if(_doAnalysis)
-			{
-				try
-				{
-					if(_isanalysis2D3D)
-					{
+			NucleusAnalysis nucleusAnalysis = new NucleusAnalysis(_imagePlusInput);
+			if(_doAnalysis){
+				try{
+					if(_isanalysis2D3D){
 						nucleusAnalysis.nucleusParameter3D(_workDirectory+File.separator+"3DNucleiParameters.tab",impagePlusSegmented);
 						nucleusAnalysis.nucleusParameter2D(_workDirectory+File.separator+"2DNucleiParameters.tab",impagePlusSegmented);
 					}
@@ -73,7 +69,7 @@ public class RunnableImageSegmentation extends Thread implements Runnable
 					else
 						nucleusAnalysis.nucleusParameter2D(_workDirectory+File.separator+"2DNucleiParameters.tab",impagePlusSegmented);
 				}
-				catch (IOException e) {	e.printStackTrace();	}
+				catch (IOException e) {	e.printStackTrace();}
 			}
 		}
 		ProcessImageSegmentaion.m_nbLance--;
@@ -92,8 +88,7 @@ public class RunnableImageSegmentation extends Thread implements Runnable
 	    File file = new File(pathFile);
 	    if (file.exists())
 	    	fileSaver.saveAsTiffStack( pathFile+File.separator+imagePlusInput.getTitle());
-	    else
-	    {
+	    else{
 	      file.mkdir();
 	      fileSaver.saveAsTiffStack( pathFile+File.separator+imagePlusInput.getTitle());
 	    }

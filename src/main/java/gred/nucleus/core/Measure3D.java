@@ -3,6 +3,8 @@ import gred.nucleus.utils.Histogram;
 import gred.nucleus.utils.VoxelRecord;
 import ij.*;
 import ij.measure.*;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
@@ -36,9 +38,9 @@ public class Measure3D{
 		double yCalibration = calibration.pixelHeight;
 		double zCalibration = calibration.pixelDepth;
 		double surfaceArea = 0,voxelValue, neighborVoxelValue;
-		for (int k = 0; k < imagePlusInput.getStackSize(); ++k)
-			for (int i = 0; i < imagePlusInput.getWidth(); ++i)
-				for (int j = 0; j < imagePlusInput.getHeight(); ++j){
+		for (int k = 1; k < imagePlusInput.getStackSize()-1; ++k)
+			for (int i = 1; i < imagePlusInput.getWidth()-1; ++i)
+				for (int j = 1; j < imagePlusInput.getHeight()-1; ++j){
 					voxelValue = imageStackInput.getVoxel(i, j, k);
 					if (voxelValue == label){
 						for (int kk = k-1; kk <= k+1; kk += 2){
@@ -288,6 +290,58 @@ public class Measure3D{
 	    		}
 	    return chromocenterIntensity / nucleusIntensity;
 	}
+	
+	/**
+	 * intensity stat
+	 * 0: min
+	 * 1: max
+	 * 2: avg
+	 * 3: std
+	 * 
+	 * @param imagePlusInput
+	 * @param imagePlusSegmented
+	 * @param imagePlusChromocenter
+	 * @return
+	 */
+	public ArrayList<Double> computeIntensityParameters(ImagePlus imagePlusInput, ImagePlus imagePlusSegmented){
+		double min =3000;
+		double max = 0;
+		double sum = 0;
+		int nbPixel = 0;
+		double std = 0;
+	    double smec =0;
+	    ArrayList<Double> list= new ArrayList<Double>();
+	    ImageStack imageStackSegmented = imagePlusSegmented.getStack();
+	    ImageStack imageStackInput = imagePlusInput.getStack();
+	    for (int k = 0; k < imagePlusInput.getNSlices(); ++k){
+	    	for (int i = 0; i < imagePlusInput.getWidth(); ++i ){
+	    		for (int j = 0; j < imagePlusInput.getHeight(); ++j){
+	    			if (imageStackSegmented.getVoxel(i, j, k) > 0){
+	    				double current = imageStackInput.getVoxel(i, j, k); 
+	    				sum += current;
+	    				if ( current < min) min = current;
+	    				if ( current > max) max = current;
+	    				nbPixel++;
+	    			}
+	    		}
+	    	}
+	    }
+	    sum =sum/nbPixel;
+	    for (int k = 0; k < imagePlusInput.getNSlices(); ++k){
+	    	for (int i = 0; i < imagePlusInput.getWidth(); ++i ){
+	    		for (int j = 0; j < imagePlusInput.getHeight(); ++j){
+	    			if (imageStackSegmented.getVoxel(i, j, k) > 0) smec += (imageStackInput.getVoxel(i, j, k)-sum)*(imageStackInput.getVoxel(i, j, k)-sum); 
+	    		}
+	    	}
+	    }
+	    std = Math.sqrt(smec/(nbPixel-1));
+	    list.add(min);
+	    list.add(max);
+	    list.add(sum);
+	    list.add(std);
+	    return list;
+	}
+
 
 	  /**
 	   * Method which compute the RHF (total chromocenters volume / nucleus volume)
