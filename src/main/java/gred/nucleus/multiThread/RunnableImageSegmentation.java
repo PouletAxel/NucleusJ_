@@ -4,8 +4,12 @@ package gred.nucleus.multiThread;
 
 import gred.nucleus.core.NucleusAnalysis;
 import gred.nucleus.core.NucleusSegmentation;
+import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.io.FileSaver;
+import ij.plugin.GaussianBlur3D;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -53,6 +57,18 @@ public class RunnableImageSegmentation extends Thread implements Runnable{
 		NucleusSegmentation nucleusSegmentation = new NucleusSegmentation();
 		nucleusSegmentation.setLogErrorSegmentationFile(_workDirectory+File.separator+"logErrorSegmentation.txt");
 		nucleusSegmentation.setVolumeRange(_volumeMin, _volumeMax);
+		GaussianBlur3D.blur(_imagePlusInput,0.25,0.25,1);
+		ImageStack imageStack= _imagePlusInput.getStack();
+		int max = 0;
+		for(int k = 0; k < _imagePlusInput.getStackSize(); ++k)
+			for (int i = 0; i < _imagePlusInput.getWidth(); ++i )
+				for (int j = 0; j < _imagePlusInput.getHeight(); ++j){
+					if (max < imageStack.getVoxel(i, j, k)){
+						max = (int) imageStack.getVoxel(i, j, k);
+					}
+				}
+		IJ.setMinAndMax(_imagePlusInput, 0, max);	
+		IJ.run(_imagePlusInput, "Apply LUT", "stack");
 		ImagePlus impagePlusSegmented = nucleusSegmentation.run(_imagePlusInput);
 		if (nucleusSegmentation.getBestThreshold()> 0){
 			impagePlusSegmented.setTitle(_imagePlusInput.getTitle());

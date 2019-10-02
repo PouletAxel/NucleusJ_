@@ -3,8 +3,10 @@ import gred.nucleus.core.*;
 import gred.nucleus.dialogs.NucleusSegmentationAndAnalysisDialog;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.WindowManager;
 import ij.measure.Calibration;
+import ij.plugin.GaussianBlur3D;
 import ij.plugin.PlugIn;
 
 /**
@@ -52,6 +54,18 @@ public class NucleusSegmentationAndAnalysisPlugin_ implements PlugIn{
 			calibration.pixelHeight = yCalibration;
 			calibration.setUnit(unit);
 			m_imgPlus.setCalibration(calibration);
+			GaussianBlur3D.blur(m_imgPlus,0.25,0.25,1);
+			ImageStack imageStack= m_imgPlus.getStack();
+			int max = 0;
+			for(int k = 0; k < m_imgPlus.getStackSize(); ++k)
+				for (int i = 0; i < m_imgPlus.getWidth(); ++i )
+					for (int j = 0; j < m_imgPlus.getHeight(); ++j){
+						if (max < imageStack.getVoxel(i, j, k)){
+							max = (int) imageStack.getVoxel(i, j, k);
+						}
+					}
+			IJ.setMinAndMax(m_imgPlus, 0, max);	
+			IJ.run(m_imgPlus, "Apply LUT", "stack");
 			IJ.log("Begin image processing "+m_imgPlus.getTitle());
 			NucleusSegmentation nucleusSegmentation = new NucleusSegmentation();
 			nucleusSegmentation.setVolumeRange(volumeMin, volumeMax);

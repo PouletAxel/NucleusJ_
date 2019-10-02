@@ -8,7 +8,9 @@ import java.util.Map.Entry;
 import gred.nucleus.utils.FillingHoles;
 import gred.nucleus.utils.Histogram;
 import ij.*;
+import ij.plugin.ContrastEnhancer;
 import ij.plugin.Filters3D;
+import ij.plugin.GaussianBlur3D;
 import ij.process.*;
 import ij.measure.*;
 import ij.process.AutoThresholder.Method;
@@ -47,6 +49,7 @@ public class NucleusSegmentation{
 	 */
 	public ImagePlus run(ImagePlus imagePlusInput){
 		IJ.log("Begin segmentation"+imagePlusInput.getTitle());
+			
 		ImagePlus imagePlusSegmented = applySegmentation (imagePlusInput);
 		IJ.log("End segmentation "+imagePlusInput.getTitle()+" "+m_bestThreshold);
 		if(m_bestThreshold == 0){
@@ -96,16 +99,14 @@ public class NucleusSegmentation{
 		final double yCalibration = calibration.pixelHeight;
 		final double zCalibration = calibration.pixelDepth;
 		final double imageVolume = xCalibration*imagePlusInput.getWidth()*yCalibration*imagePlusInput.getHeight()*zCalibration*imagePlusInput.getStackSize();
-		
-		IJ.log(xCalibration+" "+yCalibration+" "+zCalibration+"  volume image :"+imageVolume);
+		IJ.log("new "+xCalibration+" "+yCalibration+" "+zCalibration+"  volume image :"+imageVolume);
 		ImagePlus imagePlusSegmented = new ImagePlus();
-		ArrayList<Integer> arrayListThreshold = computeMinMaxThreshold(imagePlusInput);		
+		ArrayList<Integer> arrayListThreshold = computeMinMaxThreshold(imagePlusInput);	
 		IJ.log("Lower limit: "+arrayListThreshold.get(0)+" Upper limit "+arrayListThreshold.get(1));
 		for (int t = arrayListThreshold.get(0) ; t <= arrayListThreshold.get(1); ++t){
 			ImagePlus imagePlusSegmentedTemp = generateSegmentedImage(imagePlusInput,t);
 			Measure3D measure3D = new Measure3D();
 			volume = measure3D.computeVolumeObject(imagePlusSegmentedTemp,255);
-			
 			if (testRelativeObjectVolume(volume,imageVolume)){	
 				morphologicalCorrection (imagePlusSegmentedTemp);
 				imagePlusSegmentedTemp = ConnectedComponents.computeLabels(imagePlusSegmentedTemp, 26, 32);

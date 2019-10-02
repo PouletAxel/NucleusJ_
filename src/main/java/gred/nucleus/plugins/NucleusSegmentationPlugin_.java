@@ -50,6 +50,18 @@ public class NucleusSegmentationPlugin_ implements PlugIn{
 			calibration.pixelHeight = yCalibration;
 			calibration.setUnit(unit);
 			m_img.setCalibration(calibration);
+			GaussianBlur3D.blur(m_img,0.25,0.25,1);
+			ImageStack imageStack= m_img.getStack();
+			int max = 0;
+			for(int k = 0; k < m_img.getStackSize(); ++k)
+				for (int i = 0; i < m_img.getWidth(); ++i )
+					for (int j = 0; j < m_img.getHeight(); ++j){
+						if (max < imageStack.getVoxel(i, j, k)){
+							max = (int) imageStack.getVoxel(i, j, k);
+						}
+					}
+			IJ.setMinAndMax(m_img, 0, max);	
+			IJ.run(m_img, "Apply LUT", "stack");
 			ImagePlus imagePlusSegmented= m_img;
 			NucleusSegmentation nucleusSegmentation = new NucleusSegmentation();
 			nucleusSegmentation.setVolumeRange(volumeMin, volumeMax);

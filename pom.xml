@@ -21,11 +21,13 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<dependencies>
 		<!-- When writing ImageJ/Fiji plugins, it is necessary to add a dependency 
 			 to ImageJ jar -->
+		<!-- https://mvnrepository.com/artifact/net.imagej/ij -->
 		<dependency>
-			<groupId>net.imagej</groupId>
-			<artifactId>ij</artifactId>
-			<version>${imagej1.version}</version>
+    		<groupId>net.imagej</groupId>
+    		<artifactId>ij</artifactId>
+    		<version>1.52q</version>
 		</dependency>
+
 	
 		<!-- Jama (Java Matrix package) is used for computing inertia ellipsoid --> 
 		<dependency>
