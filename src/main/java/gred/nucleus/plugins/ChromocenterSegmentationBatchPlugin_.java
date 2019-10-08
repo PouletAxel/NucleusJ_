@@ -2,9 +2,11 @@ package gred.nucleus.plugins;
 import gred.nucleus.core.ChromocentersEnhancement;
 import gred.nucleus.dialogs.*;
 import gred.nucleus.utils.FileList;
+import ij.plugin.GaussianBlur3D;
 import ij.plugin.PlugIn;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.io.FileSaver;
 import ij.measure.Calibration;
 
@@ -46,6 +48,18 @@ public class ChromocenterSegmentationBatchPlugin_ implements PlugIn{
 					if(fileList.isDirectoryOrFileExist(pathNucleusRaw,tFileRawData)){
 						ImagePlus imagePlusSegmented = IJ.openImage(pathImageSegmentedNucleus);
 						ImagePlus imagePlusInput = IJ.openImage(pathNucleusRaw);
+						GaussianBlur3D.blur(imagePlusInput,0.25,0.25,1);
+						ImageStack imageStack= imagePlusInput.getStack();
+						int max = 0;
+						for(int k = 0; k < imagePlusInput.getStackSize(); ++k)
+							for (int b = 0; b < imagePlusInput.getWidth(); ++b )
+								for (int j = 0; j < imagePlusInput.getHeight(); ++j){
+									if (max < imageStack.getVoxel(b, j, k)){
+										max = (int) imageStack.getVoxel(b, j, k);
+									}
+								}
+						IJ.setMinAndMax(imagePlusInput, 0, max);	
+						IJ.run(imagePlusInput, "Apply LUT", "stack");
 						Calibration calibration = new Calibration();
 						calibration.pixelDepth = zCalibration;
 						calibration.pixelWidth = xCalibration;

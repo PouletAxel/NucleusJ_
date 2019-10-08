@@ -3,8 +3,10 @@ import gred.nucleus.core.ChromocentersEnhancement;
 import ij.measure.Calibration;
 import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.WindowManager;
 import ij.gui.GenericDialog;
+import ij.plugin.GaussianBlur3D;
 import ij.plugin.PlugIn;
 	
 /**
@@ -57,6 +59,18 @@ public class ChromocenterSegmentationPlugin_ implements PlugIn{
 			return;
 		ImagePlus imagePlusInput =  WindowManager.getImage(wList[genericDialog.getNextChoiceIndex()]);
 		ImagePlus imagePlusSegmented =  WindowManager.getImage(wList[genericDialog.getNextChoiceIndex()]);
+		GaussianBlur3D.blur(imagePlusInput,0.25,0.25,1);
+		ImageStack imageStack= imagePlusInput.getStack();
+		int max = 0;
+		for(int k = 0; k < imagePlusInput.getStackSize(); ++k)
+			for (int i = 0; i < imagePlusInput.getWidth(); ++i )
+				for (int j = 0; j < imagePlusInput.getHeight(); ++j){
+					if (max < imageStack.getVoxel(i, j, k)){
+						max = (int) imageStack.getVoxel(i, j, k);
+					}
+				}
+		IJ.setMinAndMax(imagePlusInput, 0, max);	
+		IJ.run(imagePlusInput, "Apply LUT", "stack");
 		xCalibration = genericDialog.getNextNumber();
 		yCalibration = genericDialog.getNextNumber();
 		zCalibration = genericDialog.getNextNumber();
