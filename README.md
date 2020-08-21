@@ -1,6 +1,27 @@
 NucleusJ_
 ================
 
+New version available here:
+================
+
+NulceusJ2.0 https://gitlab.com/DesTristus/NucleusJ2.0
+================
+
+#
+
+#
+
+#
+
+#
+
+#
+
+#
+
+#
+
+#
 Ensemble of ImageJ plugins for nuclear analysis
 
 This plugin is dedicated to researchers interested in nuclear shape and chromatin organization. Starting from image stacks, the nuclear boundary as well as nuclear bodies are segmented. As output, NucleusJ automatically measures 15 parameters quantifying shape and size of nuclei as well as intra-nuclear objects and the positioning of the objects within the nuclear volume.
